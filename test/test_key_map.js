@@ -63,7 +63,7 @@ module.exports.run = function(next) {
           })(key);
         }
 
-        // test null
+        // test than when we try to retrieve with a non-existing ket, we get null back
         key_map.get(createRandomString(20), function(error, result) {
           if (error) {
             throw error;
@@ -78,7 +78,6 @@ module.exports.run = function(next) {
           next();
         }, 3000);
 
-        // test than when we try to retrieve with a non-existing ket, we get null back
       }, 2000);
 
     });
