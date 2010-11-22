@@ -49,6 +49,9 @@ var benchmark = {
 };
 
 test_module.run(benchmark, function() {
+  if (benchmark.length == 0) {
+    console.log("No results collected");
+  }
   benchmarks.forEach(function(benchmark) {
     console.log(benchmark);
   });
