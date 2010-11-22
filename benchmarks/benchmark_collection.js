@@ -1,9 +1,9 @@
 module.exports.run = function(benchmark, next) {
   
-  var OBJECT_COUNT= 10000;
+  var OBJECT_COUNT= 100000;
   
   benchmark.start('opening collection');
-  var collection = require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_test.alf');
+  var collection = require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_bench.alf');
   benchmark.end();
   var assert = require('assert');
 
@@ -20,8 +20,8 @@ module.exports.run = function(benchmark, next) {
   var createRandomObject = function() {
     return {
       a: createRandomString(10),
-      b: createRandomString(100),
-      c: createRandomString(100)
+      b: createRandomString(50),
+      c: createRandomString(50)
     };
   };
 
@@ -41,12 +41,12 @@ module.exports.run = function(benchmark, next) {
       benchmark.start('reading collection', OBJECT_COUNT);
       collection.read(function(error, record) {
         assert.equal(error, null);
-        index ++;
-        if(index == OBJECT_COUNT) {
-          // loaded all
+        if (record === null) {
           benchmark.end();
           collection.end();
           next();
+        } else {
+          index ++;
         }
       });
     }, 2000);

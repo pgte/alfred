@@ -2,6 +2,10 @@ module.exports.run = function(next) {
   
   var collection = require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_test.alf');
   var assert = require('assert');
+  
+  collection.on('error', function(error) {
+    throw error;
+  });
 
   var createRandomString = function(string_length) {
     var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
@@ -26,7 +30,7 @@ module.exports.run = function(next) {
   };
 
   var records = [];
-
+  
   collection.prune(function() {
     for (var i = 0; i < 1000; i ++) {
       record = createRandomObject()
@@ -37,14 +41,16 @@ module.exports.run = function(next) {
     // wait for flush
     setTimeout(function() {
       var index = 0;
-      collection.read(function(error, record) {
+      collection.read(function(error, record) {        
         assert.equal(error, null);
-        assert.ok(compareObjects(record, records[index], "Object at index " + index + ' differs.'));
-        index ++;
-        if(index == records.length) {
-          // loaded all
+        if(record === null) {
+          // reached the end
+          assert.equal(records.length, index);
           collection.end();
           next();
+        } else {
+          assert.ok(compareObjects(record, records[index], "Object at index " + index + ' differs.'));
+          index ++;
         }
       });
     }, 2000);
