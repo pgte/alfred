@@ -33,34 +33,38 @@ module.exports.run = function(next) {
       if (err) {
         throw err;
       }
+      var written = 0;
       for (var i = 0; i < OBJECT_COUNT; i ++) {
         var record = createRandomObject(c_values[i % c_values.length]);
         collection.write(record, function(err) {
           if (err) {
             throw err;
           }
+          written ++;
+          if (written == OBJECT_COUNT) {
+            // wait for flush
+            setTimeout(function() {
+              var result_count = 0;
+              collection.filter(function(record) {
+                return record.c == c_values[1];
+              }, function(error, record) {
+                if (error) {
+                  throw error;
+                }
+                if (record === null) {
+                  assert.equal(result_count, OBJECT_COUNT / 3);
+                  next();
+                } else {
+                  assert.equal(record.c, c_values[1]);
+                  result_count ++;
+                }
+
+              });
+            }, 1000);
+          }
         });
       }
 
-      // wait for flush
-      setTimeout(function() {
-        var result_count = 0;
-        collection.filter(function(record) {
-          return record.c == c_values[1];
-        }, function(error, record) {
-          if (error) {
-            throw error;
-          }
-          if (record === null) {
-            assert.equal(result_count, OBJECT_COUNT / 3);
-            next();
-          } else {
-            assert.equal(record.c, c_values[1]);
-            result_count ++;
-          }
-
-        });
-      }, 2000);
 
     });
     

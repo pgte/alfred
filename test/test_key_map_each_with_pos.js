@@ -42,37 +42,41 @@ module.exports.run = function(next) {
           if (err) {
             throw err;
           }
+          key_count ++;
+          
+          if (key_count == 1000) {
+            // wait for flush
+            setTimeout(function() {
+
+              // test if we can retrieve all keys
+              var tested_keys = 0;
+
+              key_map.each(function(err, key, value, pos, length) {
+                if (err) {
+                  throw err;
+                }
+                assert.deepEqual(map[key], value);
+                key_map.get_at_pos(pos, length, function(err, ret_key, ret_value) {
+                  if (err) {
+                    throw err;
+                  }
+                  assert.equal(key, ret_key, "iteration key (" + key + ") is not the same as one got from get_at_pos (" + ret_key + ")");
+                  assert.deepEqual(value, ret_value, "iteration value (" + value + ") is not the same as one got from get_at_pos (" + ret_value + ")");
+                  tested_keys ++;
+                });
+              });
+
+              setTimeout(function() {
+                assert.equal(key_count, tested_keys, 'tested key count (' + tested_keys + ') is not equal to original key count (' + key_count + ')');
+                next();
+              }, 3000);
+
+            }, 1000);
+            
+          }
         });
-        key_count ++;
       }
 
-      // wait for flush
-      setTimeout(function() {
-
-        // test if we can retrieve all keys
-        var tested_keys = 0;
-        
-        key_map.each(function(err, key, value, pos, length) {
-          if (err) {
-            throw err;
-          }
-          assert.deepEqual(map[key], value);
-          key_map.get_at_pos(pos, length, function(err, ret_key, ret_value) {
-            if (err) {
-              throw err;
-            }
-            assert.equal(key, ret_key, "iteration key (" + key + ") is not the same as one got from get_at_pos (" + ret_key + ")");
-            assert.deepEqual(value, ret_value, "iteration value (" + value + ") is not the same as one got from get_at_pos (" + ret_value + ")");
-            tested_keys ++;
-          });
-        });
-        
-        setTimeout(function() {
-          assert.equal(key_count, tested_keys, 'tested key count (' + tested_keys + ') is not equal to original key count (' + key_count + ')');
-          next();
-        }, 3000);
-
-      }, 2000);
 
     });
 

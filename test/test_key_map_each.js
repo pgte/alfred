@@ -41,27 +41,30 @@ module.exports.run = function(next) {
           if (err) {
             throw err;
           }
+          key_count ++;
+          if (key_count == 100) {
+            // wait for flush
+            setTimeout(function() {
+
+              // test if we can retrieve all keys
+              var tested_keys = 0;
+
+              key_map.each(function(err, key, value) {
+                assert.deepEqual(map[key], value);
+                tested_keys ++;
+              });
+
+              setTimeout(function() {
+                assert.equal(key_count, tested_keys, 'tested keys is not equal to original key count');
+                next();
+              }, 3000);
+
+            }, 1000);
+
+            
+          }
         });
-        key_count ++;
       }
-
-      // wait for flush
-      setTimeout(function() {
-
-        // test if we can retrieve all keys
-        var tested_keys = 0;
-        
-        key_map.each(function(err, key, value) {
-          assert.deepEqual(map[key], value);
-          tested_keys ++;
-        });
-        
-        setTimeout(function() {
-          assert.equal(key_count, tested_keys, 'tested keys is not equal to original key count');
-          next();
-        }, 3000);
-
-      }, 2000);
 
     });
 

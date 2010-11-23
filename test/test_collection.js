@@ -30,32 +30,35 @@ module.exports.run = function(next) {
       if (err) {
         throw err;
       }
+      var written = 0;
       for (var i = 0; i < 1000; i ++) {
         var record = createRandomObject();
         records.push(record);
         collection.write(record, function(err) {
           if (err) {
-            throw err
+            throw err;
+          }
+          written ++;
+          if (written == 1000) {
+            // wait for flush
+            setTimeout(function() {
+              var index = 0;
+              collection.read(function(error, record) {        
+                assert.equal(error, null);
+                if(record === null) {
+                  // reached the end
+                  assert.equal(records.length, index);
+                  collection.end();
+                  next();
+                } else {
+                  assert.deepEqual(record, records[index], "Object at index " + index + ' differs.');
+                  index ++;
+                }
+              });
+            }, 1000);
           }
         });
       }
-
-      // wait for flush
-      setTimeout(function() {
-        var index = 0;
-        collection.read(function(error, record) {        
-          assert.equal(error, null);
-          if(record === null) {
-            // reached the end
-            assert.equal(records.length, index);
-            collection.end();
-            next();
-          } else {
-            assert.deepEqual(record, records[index], "Object at index " + index + ' differs.');
-            index ++;
-          }
-        });
-      }, 2000);
 
     });
     

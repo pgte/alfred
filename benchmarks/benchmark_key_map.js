@@ -39,6 +39,7 @@ module.exports.run = function(benchmark, next) {
       if (err) {
         throw err;
       }
+      var written = 0;
       benchmark.start('Insert object into key map', KEY_COUNT);
       for (var i = 0; i < KEY_COUNT; i ++) {
         var value = createRandomObject();
@@ -49,34 +50,36 @@ module.exports.run = function(benchmark, next) {
           if (err) {
             throw err;
           }
+          written ++;
+          if (written == KEY_COUNT) {
+            // wait for flush
+            setTimeout(function() {
+
+              var sample_key_index = Math.floor(Math.random() * KEY_COUNT)
+              var key = keys[sample_key_index];
+              var retrieved_keys = 0;
+
+              benchmark.start('Retrieve a random object by key from a ' + KEY_COUNT + ' hash map', RETRIEVE_RANDOM_COUNT);
+              for(var i = 0; i < RETRIEVE_RANDOM_COUNT; i++) {
+                key_map.get(key, function(err, record) {
+                  if (err) {
+                    throw err;
+                  }
+                  retrieved_keys ++;
+                  if (retrieved_keys == RETRIEVE_RANDOM_COUNT) {
+                    benchmark.end();
+                    next();
+                  }
+                });        
+              }
+
+              // test than when we try to retrieve with a non-existing ket, we get null back
+
+            }, 1000);
+          }
         });
       }
       benchmark.end();
-
-      // wait for flush
-      setTimeout(function() {
-
-        var sample_key_index = Math.floor(Math.random() * KEY_COUNT)
-        var key = keys[sample_key_index];
-        var retrieved_keys = 0;
-
-        benchmark.start('Retrieve a random object by key from a ' + KEY_COUNT + ' hash map', RETRIEVE_RANDOM_COUNT);
-        for(var i = 0; i < RETRIEVE_RANDOM_COUNT; i++) {
-          key_map.get(key, function(err, record) {
-            if (err) {
-              throw err;
-            }
-            retrieved_keys ++;
-            if (retrieved_keys == RETRIEVE_RANDOM_COUNT) {
-              benchmark.end();
-              next();
-            }
-          });        
-        }
-
-        // test than when we try to retrieve with a non-existing ket, we get null back
-
-      }, 5000);
 
     });
     

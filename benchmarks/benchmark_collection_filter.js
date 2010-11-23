@@ -36,34 +36,34 @@ module.exports.run = function(benchmark, next) {
       if (err) {
         throw err;
       }
+      var written = 0;
       for (var i = 0; i < OBJECT_COUNT; i ++) {
         record = createRandomObject(c_values[i % c_values.length]);
         collection.write(record, function(err) {
-          if (err)
+          if (err) {
             throw err;
+          }
+          written ++;
+          if (written == OBJECT_COUNT) {
+            // wait for flush
+            setTimeout(function() {
+              var index = 0;
+              benchmark.start('Collection filter', OBJECT_COUNT);
+              collection.filter(function(record) {
+                return record.c == c_values[1];
+              }, function(error, result) {
+                if (error) {
+                  throw error;
+                }
+                if (result === null) {
+                  benchmark.end();
+                  next();
+                }
+              });
+            }, 1000);
+          }
         });
       }
-
-      // wait for flush
-      setTimeout(function() {
-        var index = 0;
-        benchmark.start('Collection filter', OBJECT_COUNT);
-        collection.filter(function(record) {
-          return record.c == c_values[1];
-        }, function(error, result) {
-          if (error) {
-            throw error;
-          }
-          if (result === null) {
-            benchmark.end();
-            next();
-          }
-        });
-      }, 2000);
-
     });
-    
   });
-  
-
 }

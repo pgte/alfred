@@ -44,32 +44,34 @@ module.exports.run = function(benchmark, next) {
           if (err) {
             throw err;
           }
+          key_count ++;
+          if (key_count == OBJECT_COUNT) {
+            // wait for flush
+            setTimeout(function() {
+
+              // test if we can retrieve all keys
+              var tested_keys = 0;
+
+              benchmark.start("key_map.each_with_pos", OBJECT_COUNT);
+
+              key_map.each(function(err, key, value, pos, length) {
+                if (err) {
+                  throw err;
+                }
+                tested_keys ++;
+                if (tested_keys == key_count) {
+                  benchmark.end();
+                  next();
+                }
+
+              });
+
+
+            }, 1000);
+          }
         });
-        key_count ++;
       }
 
-      // wait for flush
-      setTimeout(function() {
-
-        // test if we can retrieve all keys
-        var tested_keys = 0;
-        
-        benchmark.start("key_map.each_with_pos", OBJECT_COUNT);
-        
-        key_map.each_with_pos(function(err, key, value, pos, length) {
-          if (err) {
-            throw err;
-          }
-          tested_keys ++;
-          if (tested_keys == key_count) {
-            benchmark.end();
-            next();
-          }
-          
-        });
-        
-
-      }, 2000);
 
     });
 

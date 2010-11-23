@@ -42,47 +42,51 @@ module.exports.run = function(next) {
           if (err) {
             throw err;
           }
+          key_count ++;
+          if (key_count == 100) {
+            
+            // wait for flush
+            setTimeout(function() {
+
+              // test if we can retrieve all keys
+              var tested_keys = 0;
+              var tested_null = false;
+              for(var key in map) {
+                (function(key) {
+                  key_map.get(key, function(error, result) {
+                    if (error) {
+                      throw error;
+                    }
+                    if (result == null) {
+                      console.log('did not find for key ' + key + '. Already tested ' + tested_keys);
+                    }
+                    assert.deepEqual(map[key], result);
+                    tested_keys ++;
+                  });
+                })(key);
+              }
+
+              // test than when we try to retrieve with a non-existing ket, we get null back
+              key_map.get(createRandomString(20), function(error, result) {
+                if (error) {
+                  throw error;
+                }
+                assert.equal(result, null);
+                tested_null = true;
+              });
+
+              setTimeout(function() {
+                assert.equal(key_count, tested_keys, 'tested keys count (' + tested_keys + ') is not equal to original key count (' + key_count + ')');
+                assert.equal(true, tested_null, 'did not reach the test null');
+                next();
+              }, 5000);
+
+            }, 1000);
+            
+          }
         });
-        key_count ++;
       }
 
-      // wait for flush
-      setTimeout(function() {
-
-        // test if we can retrieve all keys
-        var tested_keys = 0;
-        var tested_null = false;
-        for(var key in map) {
-          (function(key) {
-            key_map.get(key, function(error, result) {
-              if (error) {
-                throw error;
-              }
-              if (result == null) {
-                console.log('did not find for key ' + key + '. Already tested ' + tested_keys);
-              }
-              assert.deepEqual(map[key], result);
-              tested_keys ++;
-            });
-          })(key);
-        }
-
-        // test than when we try to retrieve with a non-existing ket, we get null back
-        key_map.get(createRandomString(20), function(error, result) {
-          if (error) {
-            throw error;
-          }
-          assert.equal(result, null);
-          tested_null = true;
-        });
-
-        setTimeout(function() {
-          assert.equal(key_count, tested_keys, 'tested keys count (' + tested_keys + ') is not equal to original key count (' + key_count + ')');
-          assert.equal(true, tested_null, 'did not reach the test null');
-          next();
-        }, 5000);
-
-      }, 3000);
 
     });
 
