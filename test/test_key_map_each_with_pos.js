@@ -52,7 +52,7 @@ module.exports.run = function(next) {
         // test if we can retrieve all keys
         var tested_keys = 0;
         
-        key_map.each_with_pos(function(err, key, value, pos, length) {
+        key_map.each(function(err, key, value, pos, length) {
           if (err) {
             throw err;
           }
@@ -61,8 +61,8 @@ module.exports.run = function(next) {
             if (err) {
               throw err;
             }
-            assert.equal(key, ret_key);
-            assert.deepEqual(value, ret_value);
+            assert.equal(key, ret_key, "iteration key (" + key + ") is not the same as one got from get_at_pos (" + ret_key + ")");
+            assert.deepEqual(value, ret_value, "iteration value (" + value + ") is not the same as one got from get_at_pos (" + ret_value + ")");
             tested_keys ++;
           });
         });

@@ -7,7 +7,7 @@ module.exports.run = function(next) {
       throw err;
     }
 
-    var OBJECT_COUNT = 900;
+    var OBJECT_COUNT = 15000;
 
     var createRandomString = function(string_length) {
       var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
@@ -25,10 +25,6 @@ module.exports.run = function(next) {
         b: createRandomString(100),
         c: c_value
       };
-    };
-
-    var compareObjects = function(a, b) {
-      return a.a === b.a && a.b === b.b && a.c === b.c;
     };
 
     var c_values = [createRandomString(100), createRandomString(100), createRandomString(100)]
@@ -57,7 +53,9 @@ module.exports.run = function(next) {
           }
           if (record === null) {
             assert.equal(result_count, OBJECT_COUNT / 3);
+            next();
           } else {
+            assert.equal(record.c, c_values[1]);
             result_count ++;
           }
 

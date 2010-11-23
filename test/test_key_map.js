@@ -1,6 +1,7 @@
 module.exports.run = function(next) {
   
-  var assert = require('assert');
+  var assert = require('assert'),
+      sys    = require('sys');
 
   require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/key_map_test.alf', function(err, key_map) {
     
@@ -57,6 +58,9 @@ module.exports.run = function(next) {
               if (error) {
                 throw error;
               }
+              if (result == null) {
+                console.log('did not find for key ' + key + '. Already tested ' + tested_keys);
+              }
               assert.deepEqual(map[key], result);
               tested_keys ++;
             });
@@ -68,17 +72,17 @@ module.exports.run = function(next) {
           if (error) {
             throw error;
           }
-          assert.equal(null, result);
+          assert.equal(result, null);
           tested_null = true;
         });
 
         setTimeout(function() {
-          assert.equal(key_count, tested_keys, 'tested keys is not equal to original key count');
+          assert.equal(key_count, tested_keys, 'tested keys count (' + tested_keys + ') is not equal to original key count (' + key_count + ')');
           assert.equal(true, tested_null, 'did not reach the test null');
           next();
-        }, 3000);
+        }, 5000);
 
-      }, 2000);
+      }, 3000);
 
     });
 

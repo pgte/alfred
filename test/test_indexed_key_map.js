@@ -1,12 +1,17 @@
 module.exports.run = function(next) {
   
   var assert = require('assert');
-  var sys = require('sys') || require('util');
+  var sys    = require('sys') || require('util');
+  var fs    = require('fs');
 
   var TEST_KEYS_NUMBER = 10;
+  var OBJECT_COUNT = 1000;
+  
+  var file_path = __dirname + '/../tmp/indexed_key_map_test.alf';
 
-  require(__dirname + '/../lib/alfred/indexed_key_map.js').open(__dirname + '/../tmp/indexed_key_map_test.alf', function(err, key_map) {
-
+  fs.unlinkSync(file_path);
+  require(__dirname + '/../lib/alfred/indexed_key_map.js').open(file_path, function(err, key_map) {
+    
     if (err) {
       throw err;
     }
@@ -37,7 +42,7 @@ module.exports.run = function(next) {
       if (err) {
         throw err;
       }
-      for (var i = 0; i < 1000; i ++) {
+      for (var i = 0; i < OBJECT_COUNT; i ++) {
         var value = createRandomObject();
         var key = createRandomString(16);
         keys.push(key);
@@ -46,8 +51,8 @@ module.exports.run = function(next) {
           if (err) {
             throw err;
           }
+          key_count ++;
         });
-        key_count ++;
       }
 
       // wait for flush
@@ -75,7 +80,7 @@ module.exports.run = function(next) {
           }
         }
         
-      }, 2000);
+      }, 3000);
 
     });
 
