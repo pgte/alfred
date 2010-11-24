@@ -5,7 +5,7 @@ module.exports.run = function(next) {
       key_map_module = require(__dirname + '/../lib/alfred/key_map');
 
 
-  var file_path = __dirname + '/../tmp/key_map_test.alf';
+  var file_path = __dirname + '/../tmp/funcitonal_index_reload_test.alf';
   key_map_module.open(file_path, function(err, key_map) {
     
     if (err) {
