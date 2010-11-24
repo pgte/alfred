@@ -13,7 +13,7 @@ var do_exit = function() {
   if (exiting) return;
   exiting = true;
   if (test_module.teardown) test_module.teardown();
-  process.removeListener('exit', do_exit);
+  process.removeListener('exit', abnormal_process_exit);
   process.nextTick(function() {
     process.exit();
   });
@@ -34,8 +34,14 @@ process.on('uncaughtException', function(excp) {
   do_exit();
 });
 
-process.on('exit', do_exit);
+var abnormal_process_exit = function() {
+  console.log('process exited abnormally')
+  do_exit();
+};
+process.on('exit', abnormal_process_exit);
 
 if (test_module.setup) test_module.setup();
 
-test_module.run(do_exit);
+test_module.run(function() {
+  do_exit();
+});

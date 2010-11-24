@@ -61,7 +61,7 @@ module.exports.run = function(next) {
                   assert.deepEqual(record, records[index], "Object at index " + index + ' differs.');
                   index ++;
                 }
-              });
+              }, true);
             }, 1000);
           }
         });

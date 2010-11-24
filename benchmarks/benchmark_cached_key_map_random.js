@@ -74,7 +74,7 @@ module.exports.run = function(benchmark, next) {
                   throw err;
                 }
 
-                benchmark.start('reopen indexed key map', OBJECT_COUNT);
+                benchmark.start('reopen indexed key map with ' + OBJECT_COUNT + ' records');
                 cached_key_map.open(file_path, function(err, key_map) {
 
                   if (err) {

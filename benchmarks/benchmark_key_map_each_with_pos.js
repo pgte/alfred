@@ -52,7 +52,7 @@ module.exports.run = function(benchmark, next) {
               // test if we can retrieve all keys
               var tested_keys = 0;
 
-              benchmark.start("key_map.each_with_pos", OBJECT_COUNT);
+              benchmark.start("key_map.each_with_pos for a key map with " +  OBJECT_COUNT + ' elements');
 
               key_map.each(function(err, key, value, pos, length) {
                 if (err) {

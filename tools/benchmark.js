@@ -12,10 +12,10 @@ process.on('uncaughtException', function(excp) {
 
 var path = require('path');
 
-var test_path = path.join(__dirname, '..', 'benchmarks', process.argv[2] + '.js');
-if (!path.existsSync(test_path)) throw "Could not find test path " + test_path;
+var benchmark_path = path.join(__dirname, '..', 'benchmarks', process.argv[2] + '.js');
+if (!path.existsSync(benchmark_path)) throw "Could not find benchmark path " + benchmark_path;
 
-var test_module = require(test_path);
+var benchmark_module = require(benchmark_path);
 
 var benchmarks = [];
 var current_benchmark;
@@ -48,11 +48,9 @@ var benchmark = {
   }
 };
 
-test_module.run(benchmark, function() {
+benchmark_module.run(benchmark, function() {
   if (benchmark.length == 0) {
     console.log("No results collected");
   }
-  benchmarks.forEach(function(benchmark) {
-    console.log(benchmark);
-  });
+  console.log(JSON.stringify(benchmarks));
 });

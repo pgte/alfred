@@ -48,7 +48,7 @@ module.exports.run = function(benchmark, next) {
             // wait for flush
             setTimeout(function() {
               var index = 0;
-              benchmark.start('Collection filter', OBJECT_COUNT);
+              benchmark.start('Collection filter of collection with ' + OBJECT_COUNT + ' records');
               collection.filter(function(record) {
                 return record.c == c_values[1];
               }, function(error, result) {

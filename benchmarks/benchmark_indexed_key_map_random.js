@@ -5,7 +5,7 @@ module.exports.run = function(benchmark, next) {
   var fs     = require('fs');
   var cached_key_map = require(__dirname + '/../lib/alfred/indexed_key_map.js');
 
-  var OBJECT_COUNT = 20000;
+  var OBJECT_COUNT = 100000;
   var file_path = __dirname + '/../tmp/indexed_key_map_random_benchmark.alf';
 
   try {
@@ -74,7 +74,7 @@ module.exports.run = function(benchmark, next) {
                   throw err;
                 }
 
-                benchmark.start('reopen indexed key map', OBJECT_COUNT);
+                benchmark.start('reopen indexed key map with ' + OBJECT_COUNT + ' elements');
                 cached_key_map.open(file_path, function(err, key_map) {
 
                   if (err) {

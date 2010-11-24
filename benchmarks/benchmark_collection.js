@@ -1,6 +1,6 @@
 module.exports.run = function(benchmark, next) {
   
-  var OBJECT_COUNT= 100000;
+  var OBJECT_COUNT= 1000;
   
   benchmark.start('opening collection');
   require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_bench.alf', function(err, collection) {
@@ -49,7 +49,7 @@ module.exports.run = function(benchmark, next) {
       // wait for flush
       setTimeout(function() {
         var index = 0;
-        benchmark.start('reading collection', OBJECT_COUNT);
+        benchmark.start('reading entire collection of ' + OBJECT_COUNT + ' records');
         collection.read(function(error, record) {
           assert.equal(error, null);
           if (record === null) {
@@ -59,13 +59,10 @@ module.exports.run = function(benchmark, next) {
           } else {
             index ++;
           }
-        });
+        }, true);
       }, 2000);
-
+      
     });
-    
-    
   });
-
 }
 
