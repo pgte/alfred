@@ -9,7 +9,11 @@ module.exports.run = function(next) {
   
   var file_path = __dirname + '/../tmp/indexed_key_map_test.alf';
 
-  fs.unlinkSync(file_path);
+  try {
+    fs.unlinkSync(file_path);
+  } catch(excp) {
+    // do nothing
+  }
   require(__dirname + '/../lib/alfred/indexed_key_map.js').open(file_path, function(err, key_map) {
     
     if (err) {
@@ -26,11 +30,15 @@ module.exports.run = function(next) {
       return randomstring;
     };
     
+    var random = function(max) {
+      return Math.floor(Math.random() * max);
+    };
+
     var createRandomObject = function() {
       return {
-        a: createRandomString(10),
-        b: createRandomString(100),
-        c: createRandomString(100)
+        a: createRandomString(random(10)),
+        b: createRandomString(random(100)),
+        c: createRandomString(random(100))
       };
     };
 

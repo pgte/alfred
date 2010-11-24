@@ -8,7 +8,11 @@ module.exports.run = function(next) {
   var TEST_KEYS_NUMBER = 10;
   var file_path = __dirname + '/../tmp/indexed_key_map_reload_test.alf';
 
-  fs.unlinkSync(file_path);
+  try {
+    fs.unlinkSync(file_path);
+  } catch(excp) {
+    // do nothing
+  }
 
   indexed_key_map.open(file_path, function(err, key_map) {
 
@@ -26,11 +30,15 @@ module.exports.run = function(next) {
       return randomstring;
     };
     
+    var random = function(max) {
+      return Math.floor(Math.random() * max);
+    };
+
     var createRandomObject = function() {
       return {
-        a: createRandomString(10),
-        b: createRandomString(100),
-        c: createRandomString(100)
+        a: createRandomString(random(10)),
+        b: createRandomString(random(100)),
+        c: createRandomString(random(100))
       };
     };
 

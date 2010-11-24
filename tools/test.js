@@ -40,10 +40,10 @@ var do_test = function() {
   test_child.on('exit', function() {
     console.log('finished');
     test_index ++;
-    if(test_index < tests.length) {
-      setTimeout(do_test, 4000);
+    if (test_index < tests.length) {
+      setTimeout(do_test, 1000);
     }
   });
 
-}
+};
 do_test();

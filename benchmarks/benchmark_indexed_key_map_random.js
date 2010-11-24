@@ -3,10 +3,10 @@ module.exports.run = function(benchmark, next) {
   var assert = require('assert');
   var sys    = require('sys') || require('util');
   var fs     = require('fs');
-  var indexed_key_map = require(__dirname + '/../lib/alfred/indexed_key_map.js');
+  var cached_key_map = require(__dirname + '/../lib/alfred/indexed_key_map.js');
 
   var OBJECT_COUNT = 20000;
-  var file_path = __dirname + '/../tmp/indexed_key_map_reload_test.alf';
+  var file_path = __dirname + '/../tmp/indexed_key_map_random_benchmark.alf';
 
   try {
     fs.unlinkSync(file_path);
@@ -15,7 +15,7 @@ module.exports.run = function(benchmark, next) {
   }
 
   benchmark.start('open empty indexed key map');
-  indexed_key_map.open(file_path, function(err, key_map) {
+  cached_key_map.open(file_path, function(err, key_map) {
 
     if (err) {
       throw err;
@@ -75,7 +75,7 @@ module.exports.run = function(benchmark, next) {
                 }
 
                 benchmark.start('reopen indexed key map', OBJECT_COUNT);
-                indexed_key_map.open(file_path, function(err, key_map) {
+                cached_key_map.open(file_path, function(err, key_map) {
 
                   if (err) {
                     throw err;
@@ -85,32 +85,28 @@ module.exports.run = function(benchmark, next) {
 
                   var timeout = setTimeout(function() {
                     assert.ok(false, "timeout");
-                  }, 10000)
+                  }, 30000)
 
                   var tested_keys = 0;
 
                   var going_for = OBJECT_COUNT * 3;
 
-                  benchmark.start('indexed_key_map.get', going_for);
-
-                  for(var j = 0; j < 3; j++) {
-                    (function(j) {
-                      for (var i = 0; i < OBJECT_COUNT; i++) {
-                        (function(i) {
-                          var key = keys[i];
-                          var value = map[key];
-                          key_map.get(key, function(err, record) {
-                            assert.deepEqual(record, value);
-                          });
-                          tested_keys ++;
-                          if (tested_keys == going_for) {
-                            benchmark.end();
-                            clearTimeout(timeout);
-                            next();
-                          }
-                        })(i);
+                  benchmark.start('cached_key_map.get', going_for);
+                  
+                  var gets = 0;
+                  for(var j = 0; j < going_for; j++) {
+                    var key = keys[Math.floor(Math.random() * keys.length)];
+                    key_map.get(key, function(err, value) {
+                      if (err) {
+                        throw err;
                       }
-                    })(j);
+                      gets ++;
+                      if (gets == going_for) {
+                        benchmark.end();
+                        clearTimeout(timeout);
+                        next();
+                      }
+                    });
                   }
 
                 });

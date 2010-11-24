@@ -1,13 +1,25 @@
 module.exports.run = function(next) {
   
   var assert = require('assert');
+  var sys    = require('sys') || require('util');
+  var fs    = require('fs');
 
-  require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/key_map_each_test.alf', function(err, key_map) {
+  var TEST_KEYS_NUMBER = 10;
+  var OBJECT_COUNT = 1000;
+  
+  var file_path = __dirname + '/../tmp/cached_key_map_test.alf';
+
+  try {
+    fs.unlinkSync(file_path);
+  } catch(excp) {
+    // do nothing
+  }
+  require(__dirname + '/../lib/alfred/cached_key_map.js').open(file_path, function(err, key_map) {
     
     if (err) {
       throw err;
     }
-
+    
     var createRandomString = function(string_length) {
       var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
       var randomstring = '';
@@ -17,7 +29,7 @@ module.exports.run = function(next) {
       }
       return randomstring;
     };
-
+    
     var random = function(max) {
       return Math.floor(Math.random() * max);
     };
@@ -31,48 +43,59 @@ module.exports.run = function(next) {
     };
 
     var map = {};
+    var keys = [];
     var key_count = 0;
 
     key_map.clear(function(err) {
       if (err) {
         throw err;
       }
-      for (var i = 0; i < 100; i ++) {
+      for (var i = 0; i < OBJECT_COUNT; i ++) {
         var value = createRandomObject();
         var key = createRandomString(16);
+        keys.push(key);
         map[key] = value;
         key_map.put(key, value, function(err) {
           if (err) {
             throw err;
           }
           key_count ++;
-          if (key_count == 100) {
+          
+          if (key_count == OBJECT_COUNT) {
             // wait for flush
             setTimeout(function() {
 
               // test if we can retrieve all keys
+
+              var timeout = setTimeout(function() {
+                assert.ok(false, "timeout");
+              }, 10000)
+
               var tested_keys = 0;
 
-              key_map.each(function(err, key, value) {
-                assert.deepEqual(map[key], value);
-                tested_keys ++;
-              });
-
-              setTimeout(function() {
-                assert.equal(key_count, tested_keys, 'tested keys is not equal to original key count');
-                next();
-              }, 3000);
+              for (var i = 0; i < TEST_KEYS_NUMBER; i++) {
+                (function(i) {
+                  var key = keys[Math.floor(Math.random() * key_count)];
+                  var value = map[key];
+                  assert.ok(!!value);
+                  key_map.get(key, function(err, record) {
+                    assert.deepEqual(record, value);
+                  });
+                  tested_keys ++;
+                  if (tested_keys == TEST_KEYS_NUMBER) {
+                    clearTimeout(timeout);
+                    next();
+                  }
+                })(i);
+              }
 
             }, 1000);
-
-            
           }
         });
       }
 
     });
 
-    
   });
   
 

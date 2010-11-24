@@ -19,15 +19,19 @@ module.exports.run = function(next) {
       return randomstring;
     };
 
+    var random = function(max) {
+      return Math.floor(Math.random() * max);
+    };
+
     var createRandomObject = function(c_value) {
       return {
-        a: createRandomString(10),
-        b: createRandomString(100),
+        a: createRandomString(random(10)),
+        b: createRandomString(random(100)),
         c: c_value
       };
     };
 
-    var c_values = [createRandomString(100), createRandomString(100), createRandomString(100)]
+    var c_values = [createRandomString(random(100)), createRandomString(random(100)), createRandomString(random(100))]
 
     collection.clear(function(err) {
       if (err) {
