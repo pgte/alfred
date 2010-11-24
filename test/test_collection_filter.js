@@ -10,6 +10,9 @@ module.exports.run = function(next) {
     var OBJECT_COUNT = 15000;
 
     var createRandomString = function(string_length) {
+      if (string_length == 0) {
+        string_length = 3;
+      }
       var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
       var randomstring = '';
       for (var i=0; i<string_length; i++) {
