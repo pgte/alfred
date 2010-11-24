@@ -82,7 +82,7 @@ module.exports.run = function(benchmark, next) {
                 
                 benchmark.end();
                 
-                benchmark.start('reopening key map', OBJECT_COUNT);
+                benchmark.start('reopening key map with ' + OBJECT_COUNT + ' entries');
                 key_map_module.open(file_path, function(err, key_map) {
                   if (err) {
                     throw err;
@@ -90,7 +90,7 @@ module.exports.run = function(benchmark, next) {
                   
                   benchmark.end();
                   
-                  benchmark.start('adding index to key map', OBJECT_COUNT);
+                  benchmark.start('adding index to key map with ' + OBJECT_COUNT + ' entries');
                   key_map.addIndex('a', function(record) {
                     //console.log(record);
                     return {
@@ -109,7 +109,7 @@ module.exports.run = function(benchmark, next) {
                       assert.ok(false, "key_map.filter timeout 1");
                     }, 15000);
                     
-                    benchmark.start("scan index", OBJECT_COUNT);
+                    benchmark.start("scan index with " + OBJECT_COUNT + ' entries');
 
                     key_map.filter('a', function(record) {
                       return false;
@@ -132,7 +132,7 @@ module.exports.run = function(benchmark, next) {
                         assert.ok(false, "key_map.filter timeout 2");
                       }, 15000);
 
-                      benchmark.start("scan and get", expect_count);
+                      benchmark.start('filter and get ' + expect_count + ' records from a key map with ' + OBJECT_COUNT + ' elements');
                       
                       key_map.filter('a', function(record) {
                         return record.e == looking_for;
