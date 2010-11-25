@@ -67,10 +67,15 @@ module.exports.run = function(benchmark, next) {
                   }
                   retrieved_keys ++;
                   if (retrieved_keys == RETRIEVE_RANDOM_COUNT) {
-                    benchmark.end();
-                    next();
+                    key_map.end(function(err) {
+                      if (err) {
+                        throw err;
+                      }
+                      benchmark.end();
+                      next();
+                    })
                   }
-                });        
+                });
               }
 
               // test than when we try to retrieve with a non-existing ket, we get null back
