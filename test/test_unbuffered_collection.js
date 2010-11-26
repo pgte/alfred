@@ -74,7 +74,7 @@ module.exports.run = function(next) {
 
     });
     
-  }, {buffered: true});
+  }, {buffered: false});
 
 }
 
