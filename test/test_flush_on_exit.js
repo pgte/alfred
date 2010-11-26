@@ -3,7 +3,7 @@ module.exports.run = function(next) {
   var assert = require('assert'),
       sys    = require('sys'),
       fs     = require('fs'),
-      random = require('random');
+      random = require('../tools/random_generator');
   
   var file_path = __dirname + '/../tmp/flush_on_exit_test.alf';
       
