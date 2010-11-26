@@ -49,11 +49,15 @@ module.exports.run = function(next) {
                   assert.deepEqual(map[key], result);
                   tested_keys ++;
                   if (tested_keys == 100) {
+                    
+                    // test if the result of a non-existing key is null
                     key_map.get(random.createRandomString(20), function(error, result) {
                       if (error) {
                         throw error;
                       }
                       assert.equal(result, null);
+                      
+                      // end test
                       key_map.end(function(err) {
                         if (err) {
                           throw err;
@@ -61,6 +65,7 @@ module.exports.run = function(next) {
                         clearTimeout(timeout);
                         next();
                       });
+                      
                     });
                   }
                 });

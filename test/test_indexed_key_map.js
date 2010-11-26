@@ -59,12 +59,20 @@ module.exports.run = function(next) {
                 });
                 tested_keys ++;
                 if (tested_keys == TEST_KEYS_NUMBER) {
-                  key_map.end(function(err) {
+
+                  key_map.count(function(err, count) {
                     if (err) {
                       throw err;
                     }
-                    clearTimeout(timeout);
-                    next();
+                    assert.equal(OBJECT_COUNT, count, "key_map count result (" + count + ") is different from inserted keys count (" + OBJECT_COUNT + ")");
+
+                    key_map.end(function(err) {
+                      if (err) {
+                        throw err;
+                      }
+                      clearTimeout(timeout);
+                      next();
+                    });
                   });
                 }
               })(i);
