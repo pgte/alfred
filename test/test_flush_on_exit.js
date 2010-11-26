@@ -22,19 +22,21 @@ module.exports.run = function(next) {
           throw err;
         }
         for (var i = 0; i < 25; i ++) {
-          var value = random.createRandomObject();
-          var key = random.createRandomString(16);
-          map[key] = value;
-          key_map.put(key, value, function(err) {
-            if (err) {
-              throw err;
-            }
-            key_count ++;
-            if (key_count == 25) {
-              next();
-              process.exit();
-            }
-          });
+          (function(i){
+            var value = random.createRandomObject();
+            var key = random.createRandomString(16);
+            map[key] = value;
+            key_map.put(key, value, function(err) {
+              if (err) {
+                throw err;
+              }
+              key_count ++;
+              if (key_count == 25) {
+                next();
+                process.exit();
+              }
+            });
+          })(i);
         }
       });
     });
@@ -42,7 +44,7 @@ module.exports.run = function(next) {
   } else {
     var child_process = require('child_process');
     var child_env = {};
-    for(env_var in process.env) {
+    for(var env_var in process.env) {
       child_env[env_var] = process.env[env_var];
     }
     child_env._ALBERT_TEST_FLUSH_CHILD = true;
@@ -61,9 +63,7 @@ module.exports.run = function(next) {
         assert.equal(26, lines.length); // expect that the file contains 25 records plus an end-of-line, making the last one empty
         assert.equal(lines[25], ""); // expect the last line to be empty
         next();
-      })
+      });
     });
   }
-
-}
-
+};

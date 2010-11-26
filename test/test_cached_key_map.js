@@ -45,7 +45,7 @@ module.exports.run = function(next) {
 
             var timeout = setTimeout(function() {
               assert.ok(false, "timeout");
-            }, 10000)
+            }, 10000);
 
             var tested_keys = 0;
 
@@ -65,7 +65,7 @@ module.exports.run = function(next) {
                     }
                     clearTimeout(timeout);
                     next();
-                  })
+                  });
                 }
               })(i);
             }
@@ -74,5 +74,5 @@ module.exports.run = function(next) {
       }
     });
   });
-}
+};
 

@@ -18,7 +18,7 @@ module.exports.run = function(next) {
       };
     };
 
-    var c_values = [random.createRandomString(random.random(100)), random.createRandomString(random.random(100)), random.createRandomString(random.random(100))]
+    var c_values = [random.createRandomString(random.random(100)), random.createRandomString(random.random(100)), random.createRandomString(random.random(100))];
 
     collection.clear(function(err) {
       if (err) {
@@ -26,43 +26,39 @@ module.exports.run = function(next) {
       }
       var written = 0;
       for (var i = 0; i < OBJECT_COUNT; i ++) {
-        var record = createRandomObject(c_values[i % c_values.length]);
-        collection.write(record, function(err) {
-          if (err) {
-            throw err;
-          }
-          written ++;
-          if (written == OBJECT_COUNT) {
-            var result_count = 0;
-            collection.filter(function(record) {
-              return record.c == c_values[1];
-            }, function(error, record) {
-              if (error) {
-                throw error;
-              }
-              if (record === null) {
-                assert.equal(result_count, OBJECT_COUNT / 3);
-                collection.end(function(err) {
-                  if (err) {
-                    throw err;
-                  }
-                  next();
-                });
-              } else {
-                assert.equal(record.c, c_values[1]);
-                result_count ++;
-              }
+        (function(i) {
+          var record = createRandomObject(c_values[i % c_values.length]);
+          collection.write(record, function(err) {
+            if (err) {
+              throw err;
+            }
+            written ++;
+            if (written == OBJECT_COUNT) {
+              var result_count = 0;
+              collection.filter(function(record) {
+                return record.c == c_values[1];
+              }, function(error, record) {
+                if (error) {
+                  throw error;
+                }
+                if (record === null) {
+                  assert.equal(result_count, OBJECT_COUNT / 3);
+                  collection.end(function(err) {
+                    if (err) {
+                      throw err;
+                    }
+                    next();
+                  });
+                } else {
+                  assert.equal(record.c, c_values[1]);
+                  result_count ++;
+                }
 
-            });
-          }
-        });
+              });
+            }
+          });
+        })(i);
       }
-
-
     });
-    
   });
-  
-
-}
-
+};

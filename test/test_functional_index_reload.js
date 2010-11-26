@@ -32,69 +32,70 @@ module.exports.run = function(next) {
         throw err;
       }
       for (var i = 0; i < 90; i ++) {
-        var value_index = i % 3;
-        var value = createRandomObject(a_values[value_index], b_values[value_index]);
-        var key = random.createRandomString(16);
-        map[key] = value;
-        key_map.put(key, value, function(err) {
-          if (err) {
-            throw err;
-          }
-          
-          key_count ++;
-          if (key_count == 90) {
-            key_map.end(function(err) {
-              if (err) {
-                throw err
-              }
-              
-              key_map_module.open(file_path, function(err, key_map) {
+        (function(i) {
+          var value_index = i % 3;
+          var value = createRandomObject(a_values[value_index], b_values[value_index]);
+          var key = random.createRandomString(16);
+          map[key] = value;
+          key_map.put(key, value, function(err) {
+            if (err) {
+              throw err;
+            }
+
+            key_count ++;
+            if (key_count == 90) {
+              key_map.end(function(err) {
                 if (err) {
                   throw err;
                 }
-                
-                key_map.addIndex('a', function(record) {
-                  //console.log(record);
-                  return {
-                    e: record.a + record.b,
-                    f: record.a + record.c,
-                  };
-                }, function(err, index) {
-                  // done creating the index
+
+                key_map_module.open(file_path, function(err, key_map) {
                   if (err) {
                     throw err;
                   }
-                  var idx = random.random(3);
-                  var looking_for = a_values[idx] + b_values[idx];
-                  var selected = 0;
 
-                  var timeout = setTimeout(function() {
-                    assert.ok(false, "key_map.filter timeout. Only selected " + selected + " records");
-                  }, 10000);
-
-                  key_map.filter('a', function(record) {
-                    //console.log('comparing ' + record.e + ' and ')
-                    return record.e == looking_for;
-                  }, function(err, key, value) {
-                    selected ++;
-                    if (selected == 30) {
-                      key_map.end(function(err) {
-                        if (err) {
-                          throw err;
-                        }
-                        clearTimeout(timeout);
-                        next();
-                      });
+                  key_map.addIndex('a', function(record) {
+                    //console.log(record);
+                    return {
+                      e: record.a + record.b,
+                      f: record.a + record.c
+                    };
+                  }, function(err, index) {
+                    // done creating the index
+                    if (err) {
+                      throw err;
                     }
+                    var idx = random.random(3);
+                    var looking_for = a_values[idx] + b_values[idx];
+                    var selected = 0;
+
+                    var timeout = setTimeout(function() {
+                      assert.ok(false, "key_map.filter timeout. Only selected " + selected + " records");
+                    }, 10000);
+
+                    key_map.filter('a', function(record) {
+                      //console.log('comparing ' + record.e + ' and ')
+                      return record.e == looking_for;
+                    }, function(err, key, value) {
+                      selected ++;
+                      if (selected == 30) {
+                        key_map.end(function(err) {
+                          if (err) {
+                            throw err;
+                          }
+                          clearTimeout(timeout);
+                          next();
+                        });
+                      }
+                    });
                   });
+
                 });
-                
               });
-            });
-          }
-        });
+            }
+          });
+        })(i);
       }
     });
   });
-}
-
+};

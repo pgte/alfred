@@ -15,40 +15,37 @@ module.exports.run = function(next) {
       }
       var written = 0;
       for (var i = 0; i < 1000; i ++) {
-        var record = random.createRandomObject();
-        records.push(record);
-        collection.write(record, function(err) {
-          if (err) {
-            throw err;
-          }
-          written ++;
-          if (written == 1000) {
-            var index = 0;
-            collection.read(function(error, record) {        
-              assert.equal(error, null);
-              if(record === null) {
-                // reached the end
-                assert.equal(records.length, index);
-                collection.end(function(err) {
-                  if (err) {
-                    throw err;
-                  }
-                  next();
-                });
-                
-              } else {
-                assert.deepEqual(record, records[index], "Object at index " + index + ' differs.');
-                index ++;
-              }
-            }, true);
-          }
-        });
+        (function(i) {
+          var record = random.createRandomObject();
+          records.push(record);
+          collection.write(record, function(err) {
+            if (err) {
+              throw err;
+            }
+            written ++;
+            if (written == 1000) {
+              var index = 0;
+              collection.read(function(error, record) {        
+                assert.equal(error, null);
+                if(record === null) {
+                  // reached the end
+                  assert.equal(records.length, index);
+                  collection.end(function(err) {
+                    if (err) {
+                      throw err;
+                    }
+                    next();
+                  });
+
+                } else {
+                  assert.deepEqual(record, records[index], "Object at index " + index + ' differs.');
+                  index ++;
+                }
+              }, true);
+            }
+          });
+        })(i);
       }
-
     });
-    
   });
-  
-
-}
-
+};

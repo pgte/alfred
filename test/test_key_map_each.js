@@ -17,45 +17,40 @@ module.exports.run = function(next) {
         throw err;
       }
       for (var i = 0; i < 100; i ++) {
-        var value = random.createRandomObject();
-        var key = random.createRandomString(16);
-        map[key] = value;
-        key_map.put(key, value, function(err) {
-          if (err) {
-            throw err;
-          }
-          key_count ++;
-          if (key_count == 100) {
-            // test if we can retrieve all keys
-            var tested_keys = 0;
+        (function(i) {
+          var value = random.createRandomObject();
+          var key = random.createRandomString(16);
+          map[key] = value;
+          key_map.put(key, value, function(err) {
+            if (err) {
+              throw err;
+            }
+            key_count ++;
+            if (key_count == 100) {
+              // test if we can retrieve all keys
+              var tested_keys = 0;
 
-            var timeout = setTimeout(function() {
-              assert.ok(false, 'timeout');
-            }, 10000);
+              var timeout = setTimeout(function() {
+                assert.ok(false, 'timeout');
+              }, 10000);
 
-            key_map.each(function(err, key, value) {
-              assert.deepEqual(map[key], value);
-              tested_keys ++;
-              if (tested_keys == 100) {
-                key_map.end(function(err) {
-                  if (err) {
-                    throw err;
-                  }
-                  clearTimeout(timeout);
-                  next();
-                });
-              }
-            });
-
-          }
-        });
+              key_map.each(function(err, key, value) {
+                assert.deepEqual(map[key], value);
+                tested_keys ++;
+                if (tested_keys == 100) {
+                  key_map.end(function(err) {
+                    if (err) {
+                      throw err;
+                    }
+                    clearTimeout(timeout);
+                    next();
+                  });
+                }
+              });
+            }
+          });
+        })(i);
       }
-
     });
-
-    
   });
-  
-
-}
-
+};

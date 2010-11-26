@@ -30,57 +30,58 @@ module.exports.run = function(next) {
         throw err;
       }
       for (var i = 0; i < OBJECT_COUNT; i ++) {
-        var value = random.createRandomObject();
-        var key = random.createRandomString(16);
-        keys.push(key);
-        map[key] = value;
-        key_map.put(key, value, function(err) {
-          if (err) {
-            throw err;
-          }
-          key_count ++;
-          
-          if (key_count == OBJECT_COUNT) {
+        (function(i) {
+          var value = random.createRandomObject();
+          var key = random.createRandomString(16);
+          keys.push(key);
+          map[key] = value;
+          key_map.put(key, value, function(err) {
+            if (err) {
+              throw err;
+            }
+            key_count ++;
 
-            // test if we can retrieve all keys
-            var timeout = setTimeout(function() {
-              assert.ok(false, "timeout");
-            }, 10000)
+            if (key_count == OBJECT_COUNT) {
 
-            var tested_keys = 0;
+              // test if we can retrieve all keys
+              var timeout = setTimeout(function() {
+                assert.ok(false, "timeout");
+              }, 10000);
 
-            for (var i = 0; i < TEST_KEYS_NUMBER; i++) {
-              (function(i) {
-                var key = keys[Math.floor(Math.random() * key_count)];
-                var value = map[key];
-                assert.ok(!!value);
-                key_map.get(key, function(err, record) {
-                  assert.deepEqual(record, value);
-                });
-                tested_keys ++;
-                if (tested_keys == TEST_KEYS_NUMBER) {
+              var tested_keys = 0;
 
-                  key_map.count(function(err, count) {
-                    if (err) {
-                      throw err;
-                    }
-                    assert.equal(OBJECT_COUNT, count, "key_map count result (" + count + ") is different from inserted keys count (" + OBJECT_COUNT + ")");
+              for (var i = 0; i < TEST_KEYS_NUMBER; i++) {
+                (function(i) {
+                  var key = keys[Math.floor(Math.random() * key_count)];
+                  var value = map[key];
+                  assert.ok(!!value);
+                  key_map.get(key, function(err, record) {
+                    assert.deepEqual(record, value);
+                  });
+                  tested_keys ++;
+                  if (tested_keys == TEST_KEYS_NUMBER) {
 
-                    key_map.end(function(err) {
+                    key_map.count(function(err, count) {
                       if (err) {
                         throw err;
                       }
-                      clearTimeout(timeout);
-                      next();
+                      assert.equal(OBJECT_COUNT, count, "key_map count result (" + count + ") is different from inserted keys count (" + OBJECT_COUNT + ")");
+
+                      key_map.end(function(err) {
+                        if (err) {
+                          throw err;
+                        }
+                        clearTimeout(timeout);
+                        next();
+                      });
                     });
-                  });
-                }
-              })(i);
+                  }
+                })(i);
+              }
             }
-          }
-        });
+          });
+        })(i);
       }
     });
   });
-}
-
+};

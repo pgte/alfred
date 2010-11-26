@@ -29,64 +29,65 @@ module.exports.run = function(next) {
         throw err;
       }
       for (var i = 0; i < 90; i ++) {
-        var value_index = i % 3;
-        var value = createRandomObject(a_values[value_index], b_values[value_index]);
-        var key = random.createRandomString(16);
-        map[key] = value;
-        key_map.put(key, value, function(err) {
-          if (err) {
-            throw err;
-          }
-          
-          key_count ++;
-          if (key_count == 90) {
-            key_map.addIndex('a', function(record) {
-              //console.log(record);
-              return {
-                e: record.a + record.b,
-                f: record.a + record.c,
-              };
-            }, function(err, index) {
-              // done creating the index
-              if (err) {
-                throw err;
-              }
-              var idx = random.random(3);
-              var looking_for = a_values[idx] + b_values[idx];
-              var selected = 0;
-              
-              var timeout = setTimeout(function() {
-                assert.ok(false, "key_map.filter timeout. Only selected " + selected + " records");
-              }, 10000);
-              
-              var filter_function = function(record) {
-                //console.log('comparing ' + record.e + ' and ')
-                return record.e == looking_for;
-              };
-              
-              key_map.filter('a', filter_function, function(err, key, value) {
-                selected ++;
-                if (selected == 30) {
-                  
-                  key_map.count_filter('a', filter_function, function(err, count) {
-                    
-                    assert.equal(selected, count, "key_map.count_filter results (" + count + ") is different from previously selected count (" + selected + ")");
-                    
-                    key_map.end(function(err) {
-                      if (err) {
-                        throw err;
-                      }
-                      clearTimeout(timeout);
-                      next();
-                    });
-                  });
+        (function(i) {
+          var value_index = i % 3;
+          var value = createRandomObject(a_values[value_index], b_values[value_index]);
+          var key = random.createRandomString(16);
+          map[key] = value;
+          key_map.put(key, value, function(err) {
+            if (err) {
+              throw err;
+            }
+
+            key_count ++;
+            if (key_count == 90) {
+              key_map.addIndex('a', function(record) {
+                //console.log(record);
+                return {
+                  e: record.a + record.b,
+                  f: record.a + record.c
+                };
+              }, function(err, index) {
+                // done creating the index
+                if (err) {
+                  throw err;
                 }
+                var idx = random.random(3);
+                var looking_for = a_values[idx] + b_values[idx];
+                var selected = 0;
+
+                var timeout = setTimeout(function() {
+                  assert.ok(false, "key_map.filter timeout. Only selected " + selected + " records");
+                }, 10000);
+
+                var filter_function = function(record) {
+                  //console.log('comparing ' + record.e + ' and ')
+                  return record.e == looking_for;
+                };
+
+                key_map.filter('a', filter_function, function(err, key, value) {
+                  selected ++;
+                  if (selected == 30) {
+
+                    key_map.count_filter('a', filter_function, function(err, count) {
+
+                      assert.equal(selected, count, "key_map.count_filter results (" + count + ") is different from previously selected count (" + selected + ")");
+
+                      key_map.end(function(err) {
+                        if (err) {
+                          throw err;
+                        }
+                        clearTimeout(timeout);
+                        next();
+                      });
+                    });
+                  }
+                });
               });
-            });
-          }
-        });
+            }
+          });
+        })(i);
       }
     });
   });
-}
-
+};
