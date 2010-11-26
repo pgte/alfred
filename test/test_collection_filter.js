@@ -49,25 +49,27 @@ module.exports.run = function(next) {
           }
           written ++;
           if (written == OBJECT_COUNT) {
-            // wait for flush
-            setTimeout(function() {
-              var result_count = 0;
-              collection.filter(function(record) {
-                return record.c == c_values[1];
-              }, function(error, record) {
-                if (error) {
-                  throw error;
-                }
-                if (record === null) {
-                  assert.equal(result_count, OBJECT_COUNT / 3);
+            var result_count = 0;
+            collection.filter(function(record) {
+              return record.c == c_values[1];
+            }, function(error, record) {
+              if (error) {
+                throw error;
+              }
+              if (record === null) {
+                assert.equal(result_count, OBJECT_COUNT / 3);
+                collection.end(function(err) {
+                  if (err) {
+                    throw err;
+                  }
                   next();
-                } else {
-                  assert.equal(record.c, c_values[1]);
-                  result_count ++;
-                }
+                });
+              } else {
+                assert.equal(record.c, c_values[1]);
+                result_count ++;
+              }
 
-              });
-            }, 1000);
+            });
           }
         });
       }

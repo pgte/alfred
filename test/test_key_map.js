@@ -52,44 +52,44 @@ module.exports.run = function(next) {
           key_count ++;
           if (key_count == 100) {
             
-            // wait for flush
-            setTimeout(function() {
-
               // test if we can retrieve all keys
-              var tested_keys = 0;
-              var tested_null = false;
-              for(var key in map) {
-                (function(key) {
-                  key_map.get(key, function(error, result) {
-                    if (error) {
-                      throw error;
-                    }
-                    if (result == null) {
-                      console.log('did not find for key ' + key + '. Already tested ' + tested_keys);
-                    }
-                    assert.deepEqual(map[key], result);
-                    tested_keys ++;
-                  });
-                })(key);
-              }
+            var tested_keys = 0;
+            var tested_null = false;
 
-              // test than when we try to retrieve with a non-existing ket, we get null back
-              key_map.get(createRandomString(20), function(error, result) {
-                if (error) {
-                  throw error;
-                }
-                assert.equal(result, null);
-                tested_null = true;
-              });
+            var timeout = setTimeout(function() {
+              assert.ok(false, "timeout");
+            }, 10000);
 
-              setTimeout(function() {
-                assert.equal(key_count, tested_keys, 'tested keys count (' + tested_keys + ') is not equal to original key count (' + key_count + ')');
-                assert.equal(true, tested_null, 'did not reach the test null');
-                next();
-              }, 5000);
-
-            }, 1000);
-            
+            // test than when we try to retrieve with a non-existing ket, we get null back
+            for(var key in map) {
+              (function(key) {
+                key_map.get(key, function(error, result) {
+                  if (error) {
+                    throw error;
+                  }
+                  if (result == null) {
+                    console.log('did not find for key ' + key + '. Already tested ' + tested_keys);
+                  }
+                  assert.deepEqual(map[key], result);
+                  tested_keys ++;
+                  if (tested_keys == 100) {
+                    key_map.get(createRandomString(20), function(error, result) {
+                      if (error) {
+                        throw error;
+                      }
+                      assert.equal(result, null);
+                      key_map.end(function(err) {
+                        if (err) {
+                          throw err;
+                        }
+                        clearTimeout(timeout);
+                        next();
+                      });
+                    });
+                  }
+                });
+              })(key);
+            }
           }
         });
       }

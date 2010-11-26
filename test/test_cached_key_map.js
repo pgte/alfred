@@ -65,42 +65,38 @@ module.exports.run = function(next) {
           key_count ++;
           
           if (key_count == OBJECT_COUNT) {
-            // wait for flush
-            setTimeout(function() {
+            // test if we can retrieve all keys
 
-              // test if we can retrieve all keys
+            var timeout = setTimeout(function() {
+              assert.ok(false, "timeout");
+            }, 10000)
 
-              var timeout = setTimeout(function() {
-                assert.ok(false, "timeout");
-              }, 10000)
+            var tested_keys = 0;
 
-              var tested_keys = 0;
-
-              for (var i = 0; i < TEST_KEYS_NUMBER; i++) {
-                (function(i) {
-                  var key = keys[Math.floor(Math.random() * key_count)];
-                  var value = map[key];
-                  assert.ok(!!value);
-                  key_map.get(key, function(err, record) {
-                    assert.deepEqual(record, value);
-                  });
-                  tested_keys ++;
-                  if (tested_keys == TEST_KEYS_NUMBER) {
+            for (var i = 0; i < TEST_KEYS_NUMBER; i++) {
+              (function(i) {
+                var key = keys[Math.floor(Math.random() * key_count)];
+                var value = map[key];
+                assert.ok(!!value);
+                key_map.get(key, function(err, record) {
+                  assert.deepEqual(record, value);
+                });
+                tested_keys ++;
+                if (tested_keys == TEST_KEYS_NUMBER) {
+                  key_map.end(function(err) {
+                    if (err) {
+                      throw err;
+                    }
                     clearTimeout(timeout);
                     next();
-                  }
-                })(i);
-              }
-
-            }, 1000);
+                  })
+                }
+              })(i);
+            }
           }
         });
       }
-
     });
-
   });
-  
-
 }
 

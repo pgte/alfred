@@ -47,22 +47,24 @@ module.exports.run = function(next) {
           }
           written ++;
           if (written == 1000) {
-            // wait for flush
-            setTimeout(function() {
-              var index = 0;
-              collection.read(function(error, record) {        
-                assert.equal(error, null);
-                if(record === null) {
-                  // reached the end
-                  assert.equal(records.length, index);
-                  collection.end();
+            var index = 0;
+            collection.read(function(error, record) {        
+              assert.equal(error, null);
+              if(record === null) {
+                // reached the end
+                assert.equal(records.length, index);
+                collection.end(function(err) {
+                  if (err) {
+                    throw err;
+                  }
                   next();
-                } else {
-                  assert.deepEqual(record, records[index], "Object at index " + index + ' differs.');
-                  index ++;
-                }
-              }, true);
-            }, 1000);
+                });
+                
+              } else {
+                assert.deepEqual(record, records[index], "Object at index " + index + ' differs.');
+                index ++;
+              }
+            }, true);
           }
         });
       }
