@@ -59,18 +59,26 @@ module.exports.run = function(next) {
                 assert.ok(false, "key_map.filter timeout. Only selected " + selected + " records");
               }, 10000);
               
-              key_map.filter('a', function(record) {
+              var filter_function = function(record) {
                 //console.log('comparing ' + record.e + ' and ')
                 return record.e == looking_for;
-              }, function(err, key, value) {
+              };
+              
+              key_map.filter('a', filter_function, function(err, key, value) {
                 selected ++;
                 if (selected == 30) {
-                  key_map.end(function(err) {
-                    if (err) {
-                      throw err;
-                    }
-                    clearTimeout(timeout);
-                    next();
+                  
+                  key_map.count_filter('a', filter_function, function(err, count) {
+                    
+                    assert.equal(selected, count, "key_map.count_filter results (" + count + ") is different from previously selected count (" + selected + ")");
+                    
+                    key_map.end(function(err) {
+                      if (err) {
+                        throw err;
+                      }
+                      clearTimeout(timeout);
+                      next();
+                    });
                   });
                 }
               });
