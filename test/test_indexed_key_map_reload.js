@@ -4,6 +4,7 @@ module.exports.run = function(next) {
   var sys    = require('sys') || require('util');
   var fs     = require('fs');
   var indexed_key_map = require(__dirname + '/../lib/alfred/indexed_key_map.js');
+  var random = require('../tools/random_generator');
 
   var TEST_KEYS_NUMBER = 10;
   var file_path = __dirname + '/../tmp/indexed_key_map_reload_test.alf';
@@ -19,31 +20,6 @@ module.exports.run = function(next) {
     if (err) {
       throw err;
     }
-    
-    var createRandomString = function(string_length) {
-      if (string_length == 0) {
-        string_length = 3;
-      }
-      var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
-      var randomstring = '';
-      for (var i=0; i<string_length; i++) {
-        var rnum = Math.floor(Math.random() * chars.length);
-        randomstring += chars.substring(rnum,rnum+1);
-      }
-      return randomstring;
-    };
-    
-    var random = function(max) {
-      return Math.floor(Math.random() * max);
-    };
-
-    var createRandomObject = function() {
-      return {
-        a: createRandomString(random(10)),
-        b: createRandomString(random(100)),
-        c: createRandomString(random(100))
-      };
-    };
 
     var map = {};
     var keys = [];
@@ -54,8 +30,8 @@ module.exports.run = function(next) {
         throw err;
       }
       for (var i = 0; i < 1000; i ++) {
-        var value = createRandomObject();
-        var key = createRandomString(16);
+        var value = random.createRandomObject();
+        var key = random.createRandomString(16);
         keys.push(key);
         map[key] = value;
         key_map.put(key, value, function(err) {

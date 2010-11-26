@@ -41,7 +41,7 @@ var do_test = function() {
     console.log('finished');
     test_index ++;
     if (test_index < tests.length) {
-      setTimeout(do_test, 1000);
+      do_test();
     }
   });
 

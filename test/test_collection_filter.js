@@ -1,5 +1,6 @@
 module.exports.run = function(next) {
   var assert = require('assert');
+  var random = require('../tools/random_generator');
   
   require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_filter_test.alf', function(err, collection) {
 
@@ -9,32 +10,15 @@ module.exports.run = function(next) {
 
     var OBJECT_COUNT = 15000;
 
-    var createRandomString = function(string_length) {
-      if (string_length == 0) {
-        string_length = 3;
-      }
-      var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
-      var randomstring = '';
-      for (var i=0; i<string_length; i++) {
-        var rnum = Math.floor(Math.random() * chars.length);
-        randomstring += chars.substring(rnum,rnum+1);
-      }
-      return randomstring;
-    };
-
-    var random = function(max) {
-      return Math.floor(Math.random() * max);
-    };
-
     var createRandomObject = function(c_value) {
       return {
-        a: createRandomString(random(10)),
-        b: createRandomString(random(100)),
+        a: random.createRandomString(random.random(10)),
+        b: random.createRandomString(random.random(100)),
         c: c_value
       };
     };
 
-    var c_values = [createRandomString(random(100)), createRandomString(random(100)), createRandomString(random(100))]
+    var c_values = [random.createRandomString(random.random(100)), random.createRandomString(random.random(100)), random.createRandomString(random.random(100))]
 
     collection.clear(function(err) {
       if (err) {

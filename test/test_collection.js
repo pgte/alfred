@@ -1,36 +1,12 @@
 module.exports.run = function(next) {
   
   var assert = require('assert');
+  var random = require('../tools/random_generator');
   require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_test.alf', function(err, collection) {
     if (err) {
       throw err;
     }
     
-    var createRandomString = function(string_length) {
-      if (string_length == 0) {
-        string_length = 3;
-      }
-      var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
-      var randomstring = '';
-      for (var i=0; i<string_length; i++) {
-        var rnum = Math.floor(Math.random() * chars.length);
-        randomstring += chars.substring(rnum,rnum+1);
-      }
-      return randomstring;
-    };
-    
-    var random = function(max) {
-      return Math.floor(Math.random() * max);
-    };
-
-    var createRandomObject = function() {
-      return {
-        a: createRandomString(random(10)),
-        b: createRandomString(random(100)),
-        c: createRandomString(random(100))
-      };
-    };
-
     var records = [];
 
     collection.clear(function(err) {
@@ -39,7 +15,7 @@ module.exports.run = function(next) {
       }
       var written = 0;
       for (var i = 0; i < 1000; i ++) {
-        var record = createRandomObject();
+        var record = random.createRandomObject();
         records.push(record);
         collection.write(record, function(err) {
           if (err) {

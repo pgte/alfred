@@ -2,7 +2,8 @@ module.exports.run = function(next) {
   
   var assert = require('assert'),
       sys    = require('sys'),
-      key_map_module = require(__dirname + '/../lib/alfred/key_map');
+      key_map_module = require(__dirname + '/../lib/alfred/key_map'),
+      random = require('../tools/random_generator');
 
 
   var file_path = __dirname + '/../tmp/funcitonal_index_reload_test.alf';
@@ -12,36 +13,19 @@ module.exports.run = function(next) {
       throw err;
     }
 
-    var createRandomString = function(string_length) {
-      if (string_length == 0) {
-        string_length = 3;
-      }
-      var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
-      var randomstring = '';
-      for (var i=0; i<string_length; i++) {
-        var rnum = Math.floor(Math.random() * chars.length);
-        randomstring += chars.substring(rnum,rnum+1);
-      }
-      return randomstring;
-    };
-
-    var random = function(max) {
-      return Math.floor(Math.random() * max);
-    };
-
     var createRandomObject = function(a, b) {
       return {
         a: a,
         b: b,
-        c: createRandomString(random(100))
+        c: random.createRandomString(random(100))
       };
     };
 
     var map = {};
     var key_count = 0;
     
-    var a_values = [createRandomString(random(100)), createRandomString(random(100)), createRandomString(random(100))];
-    var b_values = [createRandomString(random(100)), createRandomString(random(100)), createRandomString(random(100))];
+    var a_values = [random.createRandomString(random.random(100)), random.createRandomString(random.random(100)), random.createRandomString(random.random(100))];
+    var b_values = [random.createRandomString(random.random(100)), random.createRandomString(random.random(100)), random.createRandomString(random.random(100))];
     
     key_map.clear(function(err) {
       if (err) {
@@ -50,7 +34,7 @@ module.exports.run = function(next) {
       for (var i = 0; i < 90; i ++) {
         var value_index = i % 3;
         var value = createRandomObject(a_values[value_index], b_values[value_index]);
-        var key = createRandomString(16);
+        var key = random.createRandomString(16);
         map[key] = value;
         key_map.put(key, value, function(err) {
           if (err) {
@@ -80,7 +64,7 @@ module.exports.run = function(next) {
                   if (err) {
                     throw err;
                   }
-                  var idx = random(3);
+                  var idx = random.random(3);
                   var looking_for = a_values[idx] + b_values[idx];
                   var selected = 0;
 
