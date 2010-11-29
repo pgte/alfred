@@ -40,10 +40,17 @@ var do_benchmark = function() {
   });
   benchmark_child.on('exit', function() {
     benchmark_index ++;
+    var res;
+    try {
+      res = JSON.parse(child_output)
+    } catch(excp) {
+      res = child_output;
+    }
     benchmark_results.push({
       benchmark: benchmark,
-      results: JSON.parse(child_output)
+      results: res
     });
+    
     if (benchmark_index < benchmarks.length) {
       setTimeout(do_benchmark, 1000);
     } else {
