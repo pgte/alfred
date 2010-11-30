@@ -69,8 +69,12 @@ module.exports.run = function(next) {
                         }
                         assert.equal(value.counter, CONCURRENCY);
                         clearTimeout(timeout);
-                        key_map.end();
-                        next();
+                        key_map.end(function(err) {
+                          if (err) {
+                            throw err;
+                          }
+                          next();
+                        });
                       });
                     }
                   });

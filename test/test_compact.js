@@ -31,7 +31,7 @@ module.exports.run = function(next) {
           written_count ++;
           written_keys[key] = obj;
         });
-      }, 100);
+      }, 50);
       
       setTimeout(function() {
         clearInterval(interval);
@@ -52,7 +52,11 @@ module.exports.run = function(next) {
                     // keep writing more keys
                     interval = setInterval(function() {
                       var obj = random.createRandomObject();
-                      var key = random.createRandomString(16);
+                      var key = random.createRandomString(24);
+                      
+                      if (written_keys[key]) {
+                        throw new Error('generated key already exists');
+                      }
                       
                       key_map.put(key, obj, function(err) {
                         if (err) {
@@ -60,11 +64,14 @@ module.exports.run = function(next) {
                         }
                         written_count ++;
                         written_keys[key] = obj;
+                        var the_count = 0;
+                        for(var k in written_keys) {
+                          the_count ++;
+                        }
                       });
-                    }, 100);
+                    }, 50);
                     
                     setTimeout(function() {
-                      
                       key_map.compact(function(err) {
                         clearInterval(interval);
                         var read_count = 0;
@@ -77,8 +84,12 @@ module.exports.run = function(next) {
                               assert.deepEqual(value, written_keys[key]);
                               read_count ++;
                               if (read_count == written_count) {
-                                key_map.end();
-                                next();
+                                key_map.end(function(err) {
+                                  if (err) {
+                                    throw err;
+                                  }
+                                  next();
+                                });
                               }
                             });
                           })(key);
