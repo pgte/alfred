@@ -17,7 +17,7 @@ var source_dir = __dirname + '/../benchmarks/results/runs';
 var cases = {};
 
 var processMetric = function(date, _case, benchmark, metric_name, value, callback) {
-  var day = date.toJSON().substring(0, 10);
+  var day = date.toJSON();
   if (!cases[_case]) {
     cases[_case] = {};
   }
