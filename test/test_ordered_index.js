@@ -41,12 +41,9 @@ module.exports.run = function(next) {
 
             key_count ++;
             if (key_count == 90) {
-              key_map.addIndex('a', function(record) {
+              key_map.addIndex('a', {ordered: true}, function(record) {
                 //console.log(record);
-                return {
-                  e: record.a + record.b,
-                  f: record.a + record.c
-                };
+                return record.a + record.b;
               }, function(err, index) {
                 // done creating the index
                 if (err) {
@@ -61,14 +58,13 @@ module.exports.run = function(next) {
                 }, 10000);
 
                 var filter_function = function(record) {
-                  //console.log('comparing ' + record.e + ' and ')
-                  return record.e == looking_for;
+                  return record == looking_for;
                 };
-
+                
                 key_map.filter('a', filter_function, function(err, key, value) {
                   selected ++;
                   if (selected == 30) {
-
+                    
                     key_map.count_filter('a', filter_function, function(err, count) {
 
                       assert.equal(selected, count, "key_map.count_filter results (" + count + ") is different from previously selected count (" + selected + ")");

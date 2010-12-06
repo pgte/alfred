@@ -1,0 +1,113 @@
+var LeafNode     = require('./leaf_node'),
+    InternalNode = require('./internal_node');
+
+var default_options = {
+  order: 2 // Min 1
+};
+
+var BPlusTree = module.exports = function(options) {
+  this.options = options || default_options;
+  if (!this.options.order) {
+    this.options.order = default_options.order;
+  }
+  this.root = new LeafNode(this.options.order);
+};
+
+
+BPlusTree.prototype.set = function(key, value) {
+  var node = this._search(key);
+  var ret = node.insert(key, value);
+};
+
+BPlusTree.prototype.get = function(key) {
+  var node = this._search(key);
+  for(var i=0; i<node.data.length; i++){
+    if(node.data[i].key == key) return node.data[i].value;
+  }
+  return null;
+};
+
+BPlusTree.prototype.getNode = function(key) {
+  return this._search(key);
+};
+
+BPlusTree.prototype._search = function(key) {
+  var current = this.root;
+  var found = false;
+
+  while(current.isInternalNode){
+    found = false;
+    var len = current.data.length;
+    for(var i=1; i<len; i+=2){
+      if( key <= current.data[i]) {
+        current = current.data[i-1];
+        found = true;
+        break;
+      }
+    }
+
+    // Follow infinity pointer
+    if(!found) current = current.data[len - 1];
+  }
+
+  return current;
+};
+
+// walk the tree in order
+BPlusTree.prototype.each = function(callback, node) {
+  if (!node) {
+    node = this.root;
+  }
+  var current = node;
+  if(current.isLeafNode){
+    for(var i = 0; i < current.data.length; i++) {
+      var node = current.data[i];
+      if (node.value) {
+        callback(node.key, node.value);
+      }
+    }
+  } else {
+    for(var i=0; i<node.data.length; i+=2) {
+      this.each(callback, node.data[i]);
+    }
+  }
+};
+
+// B+ tree dump routines
+BPlusTree.prototype.walk = function(node, level, arr) {
+  var current = node;
+  if(!arr[level]) arr[level] = [];
+
+  if(current.isLeafNode){
+    for(var i=0; i<current.data.length; i++){
+      arr[level].push("<"+current.data[i].key+">");
+    }
+    arr[level].push(" -> ");
+  }else{
+
+    for(var i=1; i<node.data.length; i+=2){
+      arr[level].push("<"+node.data[i]+">");
+    }
+    arr[level].push(" -> ");
+    for(var i=0; i<node.data.length; i+=2) {
+      this.walk(node.data[i], level+1, arr);
+    }
+
+  }
+  return arr;
+};
+
+BPlusTree.prototype.dump = function() {
+  var arr = [];
+  this.walk(this.root, 0, arr);
+  for(var i=0; i<arr.length; i++){
+    var s = "";
+    for(var j=0; j<arr[i].length; j++){
+      s += arr[i][j];
+    }
+  }
+};
+
+module.exports.create = function(options) {
+  return new BPlusTree(options);
+};
