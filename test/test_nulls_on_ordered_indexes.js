@@ -34,7 +34,7 @@ module.exports.run = function(next) {
             key_count ++;
             if (key_count == OBJECT_COUNT) {
               
-              key_map.addIndex('a', {orderered: true}, function(record) {
+              key_map.addIndex('a', {orderered: true, bplustree_order: 10}, function(record) {
                 return record.a + record.b;
               }, function(err) {
                 if (err) {

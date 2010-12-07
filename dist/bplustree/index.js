@@ -17,6 +17,9 @@ var BPlusTree = module.exports = function(options) {
 BPlusTree.prototype.set = function(key, value) {
   var node = this._search(key);
   var ret = node.insert(key, value);
+  if (ret) {
+    this.root = ret;
+  }
 };
 
 BPlusTree.prototype.get = function(key) {
@@ -34,7 +37,7 @@ BPlusTree.prototype.getNode = function(key) {
 BPlusTree.prototype._search = function(key) {
   var current = this.root;
   var found = false;
-
+  
   while(current.isInternalNode){
     found = false;
     var len = current.data.length;
@@ -76,32 +79,29 @@ BPlusTree.prototype.each = function(callback, node) {
 
 // Get a range
 BPlusTree.prototype.range = function(start, end, callback) {
-  var node;
-  if (node) {
-    node = this._search(start)
-  }
+  var node = this._search(start);
   if (!node) {
     node = this.root;
+    while (!node.isLeafNode) {
+      node = node[0]; // smallest node
+    }
   }
-  while (!node.isLeafNode) {
-    node = node[0]; // smallest node
-  }
-  
   var ended = false;
   
   while (!ended) {
-    for(var i = 0; i < node.length; i ++) {
-      var key = node.key;
+    for(var i = 0; i < node.data.length; i ++) {
+      var data = node.data[i];
+      var key = data.key;
       if (end && key > end) {
         ended = true;
         break;
       } else {
-        if (node.value) {
-          callback(key, node.value);
+        if ((start === undefined || start <= key) && (end === undefined || end >= key) && data.value) {
+          callback(key, data.value);
         }
       }
     }
-    node = node[node.length - 1];
+    node = node.nextNode;
     if (!node) {
       ended = true
     }
