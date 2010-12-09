@@ -25,10 +25,16 @@ module.exports.run = function(next) {
             match_count ++;
             assert.equal(1, match_count, 'more than one match');
             if (err) { throw err; }
-            db.close(function(err) {
-              if (err) { throw err; }
-              next();
-            });
+            db.drop_index('users', 'idx', function(err) {
+              
+              assert.ok(!!!db.users.idx, 'index not removed');
+              
+              db.close(function(err) {
+                if (err) { throw err; }
+                next();
+              });
+              
+            })
           });
         });
         
