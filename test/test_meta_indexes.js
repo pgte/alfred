@@ -13,8 +13,8 @@ module.exports.run = function(next) {
         return record;
       };
       assert.ok(!!db.users);
-      db.users.addIndex('idx', {ordered : true}, transform_function, function(err) {
-        if (err) { throw err; }
+      
+      var done_with_index = function() {
         assert.ok(!!db.users.idx);
         
         db.users.put('abc', 'def', function(err) {
@@ -29,16 +29,34 @@ module.exports.run = function(next) {
               
               assert.ok(!!!db.users.idx, 'index not removed');
               
-              db.close(function(err) {
-                if (err) { throw err; }
-                next();
+              db.users.addIndex('idx', {ordered: true}, transform_function, function(err) {
+                assert.ok(!!db.users.idx);
+                db.close(function(err) {
+                  alfred.open(DB_PATH, function(err, db) {
+                    if (err) { throw err; }
+                    db.users.idx.indexMatch('def', function(err, value) {
+                      if (err) { throw err; }
+                      assert.ok(!!db.users, 'db.users is no longer here after DB restart');
+                      assert.ok(!!db.users.idx, 'db.users.idx is no longer here after DB restart');
+                      next();
+                    });
+                  });
+                });
               });
-              
             })
           });
         });
         
-      });
+      };
+      
+      if (!db.users.idx) {
+        db.users.addIndex('idx', {ordered : true}, transform_function, function(err) {
+          if (err) { throw err; }
+          done_with_index();
+        });
+      } else {
+        done_with_index();
+      }
     }
     
     if (!db.users) {
