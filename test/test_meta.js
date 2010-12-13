@@ -7,15 +7,7 @@ module.exports.run = function(next) {
   
   alfred.open(DB_PATH, function(err, db) {
     if (err) { throw err; }
-    if (!db.users) {
-      db.attach_key_map('users', null, function(err, key_map) {
-        if (err) { throw err; }
-        done();
-      });
-    } else {
-      done();
-    }
-    
+
     var done = function() {
       db.users.put('abc', 'def', function(err) {
         if (err) { throw err; }
@@ -55,8 +47,14 @@ module.exports.run = function(next) {
         });
       });
     };
-    
+
+    if (!db.users) {
+      db.attach_key_map('users', null, function(err, key_map) {
+        if (err) { throw err; }
+        done();
+      });
+    } else {
+      done();
+    }
   });
-
-
 };
