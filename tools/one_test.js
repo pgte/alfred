@@ -1,4 +1,3 @@
-
 var path = require('path');
 
 var test_path = path.join(__dirname, '..', 'test', process.argv[2] + '.js');

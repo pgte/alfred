@@ -1,3 +1,5 @@
+var util = require('util');
+
 module.exports.run = function(next) {
   
   var assert = require('assert');
@@ -38,7 +40,7 @@ module.exports.run = function(next) {
                   });
 
                 } else {
-                  assert.deepEqual(record, records[index], "Object at index " + index + ' differs.');
+                  assert.deepEqual(record, records[index], "Object at index " + index + ' differs: original: ' + util.inspect(records[index]) + ', read: ' + util.inspect(record));
                   index ++;
                 }
               }, true);

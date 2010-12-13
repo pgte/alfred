@@ -8,8 +8,9 @@ module.exports.run = function(next) {
   var WRITE_READ_COUNT = 10000;
   
   var file_path = __dirname + '/../tmp/flush_interleaved_test.alf';
-      
-  require(__dirname + '/../lib/alfred/cached_key_map.js').open(file_path, function(err, key_map) {
+  
+  var ckm = require(__dirname + '/../lib/alfred/cached_key_map.js');
+  ckm.open(file_path, function(err, key_map) {
 
     if (err) {
       throw err;
