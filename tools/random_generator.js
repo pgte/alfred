@@ -4,9 +4,9 @@ var random = module.exports.random = function(max) {
 
 var createRandomString = module.exports.createRandomString = function(string_length) {
   if (string_length == 0) {
-    string_length = 3;
+    string_length = 6;
   }
-  var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyzÇç'àáÁÀèÉÈìíÍÌòóÓÒúùÚÙ\"";
+  var chars = "abcdefghijklmnopqrstuvwxyzÇç'àáÁÀèÉÈìíÍÌòóÓÒúùÚÙ\"";
   var randomstring = '';
   for (var i=0; i<string_length; i++) {
     var rnum = Math.floor(Math.random() * chars.length);
