@@ -15,7 +15,7 @@
   , "web" : "http://github.com/pgte/alfred/issues"
   }
 , "directories" : { "lib" : "./lib" }
-, "engines" : { "node" : ">=0.2.5" }
+, "engines" : { "node" : ">=0.3.1" }
 , "scripts" : {}
 , "dependencies" :
   { "step" : ">=0.0.3"
