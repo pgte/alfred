@@ -35,10 +35,11 @@ module.exports.run = function(next) {
                   if (err) { throw err; }
                   alfred.open(DB_PATH, function(err, db) {
                     if (err) { throw err; }
-
                     assert.ok(!!!db.users);
-
-                    next();
+                    db.close(function(err) {
+                      if (err) { throw err; }
+                      next();
+                    });
                   });
                 });
               });

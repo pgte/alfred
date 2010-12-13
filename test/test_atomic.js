@@ -8,7 +8,7 @@ module.exports.run = function(next) {
   var WRITE_COUNT = 100;
   var CONCURRENCY = 1000;
   
-  var file_path = __dirname + '/../tmp/flush_interleaved_test.alf';
+  var file_path = __dirname + '/../tmp/atomic_test.alf';
       
   require(__dirname + '/../lib/alfred/indexed_key_map.js').open(file_path, function(err, key_map) {
 

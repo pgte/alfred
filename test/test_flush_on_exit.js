@@ -32,8 +32,11 @@ module.exports.run = function(next) {
               }
               key_count ++;
               if (key_count == 25) {
-                next();
-                process.exit();
+                key_map.end(function(err) {
+                  if (err) { throw err; }
+                  next();
+                  process.exit();
+                });
               }
             });
           })(i);

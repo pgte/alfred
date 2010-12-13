@@ -72,7 +72,10 @@ module.exports.run = function(next) {
                           matches ++;
                           if (matches == WRITE_READ_COUNT) {
                             clearTimeout(timeout);
-                            next();
+                            key_map.end(function(err) {
+                              if (err) { throw err; }
+                              next();
+                            });
                           }
                         }, true);
                       });

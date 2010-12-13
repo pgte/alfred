@@ -38,7 +38,10 @@ module.exports.run = function(next) {
                       if (err) { throw err; }
                       assert.ok(!!db.users, 'db.users is no longer here after DB restart');
                       assert.ok(!!db.users.idx, 'db.users.idx is no longer here after DB restart');
-                      next();
+                      db.close(function(err) {
+                        if (err) { throw err; }
+                        next();
+                      });
                     });
                   });
                 });

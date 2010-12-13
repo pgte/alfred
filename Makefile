@@ -8,6 +8,9 @@ mkdirresults:
 	mkdir -p benchmarks/results/runs
 	mkdir -p benchmarks/results/summaries
 
+clean:
+	rm -rf tmp
+
 test: mkdirtmp
 	node tools/test.js test_collection test_collection_filter test_key_map test_key_map_each_with_pos test_indexed_key_map test_indexed_key_map_reload \
 	test_cached_key_map test_unordered_index test_unbuffered_collection test_flush_on_exit test_interleaved test_atomic test_compact test_nulls_on_indexes \
