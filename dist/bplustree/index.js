@@ -108,6 +108,38 @@ BPlusTree.prototype.range = function(start, end, callback) {
   }
 };
 
+BPlusTree.prototype.rangeSync = function(start, end) {
+  var values = [];
+  var node = this._search(start);
+  if (!node) {
+    node = this.root;
+    while (!node.isLeafNode) {
+      node = node[0]; // smallest node
+    }
+  }
+  var ended = false;
+  
+  while (!ended) {
+    for(var i = 0; i < node.data.length; i ++) {
+      var data = node.data[i];
+      var key = data.key;
+      if (end && key > end) {
+        ended = true;
+        break;
+      } else {
+        if ((start === undefined || start === null || start <= key) && (end === undefined || end === null || end >= key) && data.value) {
+          values.push(data.value);
+        }
+      }
+    }
+    node = node.nextNode;
+    if (!node) {
+      ended = true
+    }
+  }
+  return values;
+};
+
 // B+ tree dump routines
 BPlusTree.prototype.walk = function(node, level, arr) {
   var current = node;
