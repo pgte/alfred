@@ -108,7 +108,7 @@ BPlusTree.prototype.range = function(start, end, callback) {
   }
 };
 
-BPlusTree.prototype.rangeSync = function(start, end) {
+BPlusTree.prototype.rangeSync = function(start, end, exclusive_start) {
   var values = [];
   var node = this._search(start);
   if (!node) {
@@ -127,7 +127,7 @@ BPlusTree.prototype.rangeSync = function(start, end) {
         ended = true;
         break;
       } else {
-        if ((start === undefined || start === null || start <= key) && (end === undefined || end === null || end >= key) && data.value) {
+        if ((start === undefined || start === null || !exclusive_start && start <= key || exclusive_start && start < key) && (end === undefined || end === null || end >= key) && data.value) {
           values.push(data.value);
         }
       }

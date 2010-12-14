@@ -44,13 +44,13 @@ module.exports.run = function(next) {
                   
                   var users_found = 0;
                   
-                  db.users.find({'age' : {$gte: 31}}, function(err, key, value) {
+                  db.users.find({'age' : {$gt: 32}}, function(err, key, value) {
                     if (err) { throw err; }
                     assert.deepEqual(value, USERS[key]);
-                    assert.ok(value.age >= 31, 'age is not greater or equal than 31 for found user with key ' + key);
+                    assert.ok(value.age > 32, 'age is not greater than 32 for found user with key ' + key);
                     users_found ++;
-                    assert.ok(users_found <= 3);
-                    if (users_found == 3) {
+                    assert.ok(users_found <= 2);
+                    if (users_found == 2) {
                       clearTimeout(timeout);
                       db.close(function(err) {
                         if (err) { throw err; }
