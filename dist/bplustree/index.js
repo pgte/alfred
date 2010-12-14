@@ -127,7 +127,16 @@ BPlusTree.prototype.rangeSync = function(start, end, exclusive_start) {
         ended = true;
         break;
       } else {
-        if ((start === undefined || start === null || !exclusive_start && start <= key || exclusive_start && start < key) && (end === undefined || end === null || end >= key) && data.value) {
+        if (
+          (    start === undefined
+            || start === null
+            || !exclusive_start && start <= key
+            || exclusive_start && start < key
+          ) && (
+               end === undefined
+            || end === null
+            || end >= key
+          ) && data.value) {
           values.push(data.value);
         }
       }
