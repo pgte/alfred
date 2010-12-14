@@ -4,6 +4,8 @@ module.exports.run = function(next) {
   var sys = require('sys') || require('util');
   var random = require('../tools/random_generator');
 
+  var OBJECT_COUNT = 10;
+
   require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/key_map_each_with_pos_test.alf', function(err, key_map) {
     
     if (err) {
@@ -17,7 +19,7 @@ module.exports.run = function(next) {
       if (err) {
         throw err;
       }
-      for (var i = 0; i < 1000; i ++) {
+      for (var i = 0; i < OBJECT_COUNT; i ++) {
         (function(i) {
           var value = random.createRandomObject();
           var key = random.createRandomString(16);
@@ -28,7 +30,7 @@ module.exports.run = function(next) {
             }
             key_count ++;
 
-            if (key_count == 1000) {
+            if (key_count == OBJECT_COUNT) {
               // test if we can retrieve all keys
               var tested_keys = 0;
               var timeout = setTimeout(function() {
@@ -49,7 +51,7 @@ module.exports.run = function(next) {
                   assert.equal(key, ret_key, "iteration key (" + key + ") is not the same as one got from get_at_pos (" + ret_key + ")");
                   assert.deepEqual(value, ret_value, "iteration value (" + value + ") is not the same as one got from get_at_pos (" + ret_value + ")");
                   tested_keys ++;
-                  if (tested_keys == 1000) {
+                  if (tested_keys == OBJECT_COUNT) {
                     key_map.end(function(err) {
                       if (err) {
                         throw err;
