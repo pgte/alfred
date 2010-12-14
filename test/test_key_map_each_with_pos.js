@@ -4,7 +4,7 @@ module.exports.run = function(next) {
   var sys = require('sys') || require('util');
   var random = require('../tools/random_generator');
 
-  var OBJECT_COUNT = 10;
+  var OBJECT_COUNT = 1000;
 
   require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/key_map_each_with_pos_test.alf', function(err, key_map) {
     
