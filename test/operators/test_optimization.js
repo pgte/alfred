@@ -1,4 +1,5 @@
-var assert     = require('assert');
+var assert = require('assert')
+  , fs     = require('fs');
 
 var DB_PATH = __dirname + '/../../tmp/db';
 
@@ -13,6 +14,12 @@ var USERS = {
 };
 
 var USER_COUNT = 7;
+
+module.exports.setup = function() {
+  fs.readdirSync(DB_PATH).forEach(function(dir) {
+    fs.unlinkSync(DB_PATH + '/' + dir);
+  });
+};
 
 module.exports.run = function(next) {
   var alfred = require('../../lib/alfred');
