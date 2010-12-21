@@ -26,8 +26,8 @@ process.on('uncaughtException', function(excp) {
     if (excp.backtrace) process.stdout.write(excp.backtrace);
     if (excp.stack) process.stdout.write(excp.stack);
   } else {
-    sys = require('sys');
-    process.stdout.write(sys.inspect(excp));    
+    var util = require('util');
+    process.stdout.write(util.inspect(excp));    
   }
   process.stdout.write("\n");
   do_exit();
