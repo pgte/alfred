@@ -1,10 +1,9 @@
 var assert        = require('assert')
   , fs            = require('fs')
   , net           = require('net')
-  , child_process = require('child_process');
+  , child_process = require('child_process')
+  , carrier       = require('carrier');
   
-var random_generator = require('../../tools/random_generator');
-
 var DB_PATH = __dirname + '/../../tmp/db';
 
 var USERS = {
@@ -43,6 +42,17 @@ module.exports.run = function(next) {
   
   if (!process.env._TEST_MASTER) {
     // spawn master and mock slave
+
+
+    var exited_count = 0;
+    var child_exiter = function() {
+      exited_count ++;
+      console.log(exited_count + ' exited');
+      if (exited_count == 2) {
+        next()
+      }
+    }
+
     var args = process.argv;
     var command = args.splice(0, 1)[0];
     var env = process.env;
@@ -52,9 +62,7 @@ module.exports.run = function(next) {
     master.stdout.on('data', function(data) {
       console.log(data.toString('utf8'));
     });
-    master.on('exit', function() {
-      console.log('master exited');
-    });
+    master.on('exit', child_exiter);
     master.stderr.on('data', function(data) {
       console.log(data.toString('utf8'));
     });
@@ -64,9 +72,8 @@ module.exports.run = function(next) {
     child.stdout.on('data', function(data) {
       console.log(data.toString('utf8'));
     });
-    child.on('exit', function() {
-      console.log('child exited');
-    });
+    
+    child.on('exit', child_exiter);
     child.stderr.on('data', function(data) {
       console.log(data.toString('utf8'));
     });
@@ -122,12 +129,13 @@ module.exports.run = function(next) {
                               if (USERS.hasOwnProperty(id)) {
                                 (function(id) {
                                   var user = USERS[id];
-                                  user.rndm = random_generator.createRandomString(20);
+                                  user.rndm = id;
                                   db.users.put(id, user, function(err) {
                                     if (err) { throw err; }
                                     more_users_count ++;
                                     if (more_users_count == USER_COUNT) {
                                       console.log('users updated');
+                                      next();
                                     }
                                   });
                                 })(id);
@@ -149,6 +157,62 @@ module.exports.run = function(next) {
     } else {
       // mock-slave
       
+      var expected_objects = [
+      { m: 'meta',
+        k: 'key_maps',
+        v: { users: { command: 'attach_key_map', arguments: [Object] } } }
+      ,{ m: 'meta',
+        k: 'indexes',
+        v: { users: { sex: [Object] } } }
+      ,{ m: 'meta',
+        k: 'indexes',
+        v: { users: { sex: [Object], age: [Object] } } }
+      ,{ m: 'users',
+        k: '1',
+        v: { name: 'Pedro', age: 35, sex: 'm' } }
+      ,{ m: 'users',
+        k: '2',
+        v: { name: 'John', age: 32, sex: 'm' } }
+      ,{ m: 'users',
+        k: '3',
+        v: { name: 'Bruno', age: 28, sex: 'm' } }
+      ,{ m: 'users',
+        k: '4',
+        v: { name: 'Sandra', age: 35, sex: 'f' } }
+      , { m: 'users',
+        k: '5',
+        v: { name: 'Patricia', age: 42, sex: 'f' } }
+      , { m: 'users',
+        k: '6',
+        v: { name: 'Joana', age: 29, sex: 'f' } }
+      , { m: 'users',
+        k: '7',
+        v: { name: 'Susana', age: 30, sex: 'f' } }
+      , { m: 'users',
+        k: '1',
+        v: { name: 'Pedro', age: 35, sex: 'm', rndm: '1' } }
+      , { m: 'users',
+        k: '2',
+        v: { name: 'John', age: 32, sex: 'm', rndm: '2' } }
+      , { m: 'users',
+        k: '3',
+        v: { name: 'Bruno', age: 28, sex: 'm', rndm: '3' } }
+      , { m: 'users',
+        k: '4',
+        v: { name: 'Sandra', age: 35, sex: 'f', rndm: '4' } }
+      , { m: 'users',
+        k: '5',
+        v: { name: 'Patricia', age: 42, sex: 'f', rndm: '5' } }
+      , { m: 'users',
+        k: '6',
+        v: { name: 'Joana', age: 29, sex: 'f', rndm: '6' } }
+      , { m: 'users',
+        k: '7',
+        v: { name: 'Susana', age: 30, sex: 'f', rndm: '7' } }
+      ];
+      
+      var records = [];
+      
       var sendJSON = function(stream, data) {
         stream.write(JSON.stringify(data) + "\n");
       };
@@ -163,13 +227,25 @@ module.exports.run = function(next) {
         conn.on('connect', function() {
           console.log('connected');
           sendJSON(conn, {command: 'sync'});
+          
+          var result_count = 0;
+          
+          carrier.carry(conn, function(line) {
+            var obj = JSON.parse(line);
+            records.push(obj)
+            console.log(obj);
+            result_count ++;
+            console.log(result_count);
+            if (result_count == expected_objects.length) {
+              console.log('done here');
+              assert.deepEqual(expected_objects, record);
+              next();
+            }
+          });
+
         });
         
-        conn.on('data', function(data) {
-          console.log('data');
-          console.log(data.toString('utf8'));
-        });
-        
+
       }, 2000);
     }
 
