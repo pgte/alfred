@@ -2,6 +2,8 @@ var assert        = require('assert')
   , fs            = require('fs')
   , net           = require('net')
   , child_process = require('child_process');
+  
+var random_generator = require('../../tools/random_generator');
 
 var DB_PATH = __dirname + '/../../tmp/db';
 
@@ -112,7 +114,26 @@ module.exports.run = function(next) {
                         if (users_in == USER_COUNT) {
                           // all users done
                           console.log('done populating');
-
+                          
+                          setTimeout(function() {
+                            console.log('now updating existing users');
+                            var more_users_count = 0;
+                            for(var id in USERS) {
+                              if (USERS.hasOwnProperty(id)) {
+                                (function(id) {
+                                  var user = USERS[id];
+                                  user.rndm = random_generator.createRandomString(20);
+                                  db.users.put(id, user, function(err) {
+                                    if (err) { throw err; }
+                                    more_users_count ++;
+                                    if (more_users_count == USER_COUNT) {
+                                      console.log('users updated');
+                                    }
+                                  });
+                                })(id);
+                              }
+                            }
+                          }, 2000);
                         }
                       });
                     })(id);
