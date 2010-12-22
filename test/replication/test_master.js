@@ -2,6 +2,7 @@ var assert        = require('assert')
   , fs            = require('fs')
   , net           = require('net')
   , child_process = require('child_process')
+  , util          = require('util')
   , carrier       = require('carrier');
   
 var DB_PATH = __dirname + '/../../tmp/db';
@@ -43,26 +44,23 @@ module.exports.run = function(next) {
   if (!process.env._TEST_MASTER) {
     // spawn master and mock slave
 
-
-    var exited_count = 0;
-    var child_exiter = function() {
-      exited_count ++;
-      console.log(exited_count + ' exited');
-      if (exited_count == 2) {
-        next()
-      }
-    }
-
+    var timeout = setTimeout(function() {
+      assert.ok(false, 'timeout');
+    }, 10000);
+    
     var args = process.argv;
     var command = args.splice(0, 1)[0];
     var env = process.env;
+    var exiting = false;
     
     env._TEST_MASTER = 'master';
     var master = child_process.spawn(command, args, {env: env})
     master.stdout.on('data', function(data) {
       console.log(data.toString('utf8'));
     });
-    master.on('exit', child_exiter);
+    master.on('exit', function() {
+      assert.ok(exiting, 'master died');
+    });
     master.stderr.on('data', function(data) {
       console.log(data.toString('utf8'));
     });
@@ -73,14 +71,15 @@ module.exports.run = function(next) {
       console.log(data.toString('utf8'));
     });
     
-    child.on('exit', child_exiter);
+    child.on('exit', function() {
+      exiting = true;
+      master.kill();
+      clearTimeout(timeout);
+      next();
+    });
     child.stderr.on('data', function(data) {
       console.log(data.toString('utf8'));
     });
-    
-    setTimeout(function() {
-      assert.ok(false, 'timeout');
-    }, 10000);
     
   } else {
 
@@ -89,12 +88,11 @@ module.exports.run = function(next) {
 
       var timeout = setTimeout(function() {
         throw new Error('timeout');
-      }, 5000);
+      }, 10000);
 
       alfred.open(DB_PATH, {replication_master: true}, function(err, db) {
         if (err) { throw err; }
         setTimeout(function() {
-          console.log('going to start populating');
           db.ensure_key_map_attached('users', null, function(err) {
             if (err) { throw err; }
 
@@ -120,10 +118,8 @@ module.exports.run = function(next) {
                         users_in ++;
                         if (users_in == USER_COUNT) {
                           // all users done
-                          console.log('done populating');
                           
                           setTimeout(function() {
-                            console.log('now updating existing users');
                             var more_users_count = 0;
                             for(var id in USERS) {
                               if (USERS.hasOwnProperty(id)) {
@@ -134,8 +130,6 @@ module.exports.run = function(next) {
                                     if (err) { throw err; }
                                     more_users_count ++;
                                     if (more_users_count == USER_COUNT) {
-                                      console.log('users updated');
-                                      next();
                                     }
                                   });
                                 })(id);
@@ -160,13 +154,41 @@ module.exports.run = function(next) {
       var expected_objects = [
       { m: 'meta',
         k: 'key_maps',
-        v: { users: { command: 'attach_key_map', arguments: [Object] } } }
-      ,{ m: 'meta',
+        v: 
+         { users: 
+            { command: 'attach_key_map',
+              arguments: 
+               [ 'users',
+                 { type: 'cached_key_map', compact_interval: 3600000 } ] } } }
+      , { m: 'meta',
         k: 'indexes',
-        v: { users: { sex: [Object] } } }
-      ,{ m: 'meta',
+        v: 
+         { users: 
+            { sex: 
+               { command: 'add_index',
+                 arguments: 
+                  [ 'users',
+                    'sex',
+                    { ordered: true },
+                    'function (user) {\n              return user.sex;\n            }' ] } } } }
+      , { m: 'meta',
         k: 'indexes',
-        v: { users: { sex: [Object], age: [Object] } } }
+        v: 
+         { users: 
+            { sex: 
+               { command: 'add_index',
+                 arguments: 
+                  [ 'users',
+                    'sex',
+                    { ordered: true },
+                    'function (user) {\n              return user.sex;\n            }' ] },
+              age: 
+               { command: 'add_index',
+                 arguments: 
+                  [ 'users',
+                    'age',
+                    { ordered: true },
+                    'function (user) {\n              return user.age;\n            }' ] } } } }
       ,{ m: 'users',
         k: '1',
         v: { name: 'Pedro', age: 35, sex: 'm' } }
@@ -217,6 +239,10 @@ module.exports.run = function(next) {
         stream.write(JSON.stringify(data) + "\n");
       };
       
+      var timeout = setTimeout(function() {
+        throw new Error('timeout');
+      }, 10000);
+      
       setTimeout(function() {
         var conn = net.createConnection(5293);
         
@@ -225,7 +251,6 @@ module.exports.run = function(next) {
         });
         
         conn.on('connect', function() {
-          console.log('connected');
           sendJSON(conn, {command: 'sync'});
           
           var result_count = 0;
@@ -233,12 +258,10 @@ module.exports.run = function(next) {
           carrier.carry(conn, function(line) {
             var obj = JSON.parse(line);
             records.push(obj)
-            console.log(obj);
             result_count ++;
-            console.log(result_count);
             if (result_count == expected_objects.length) {
-              console.log('done here');
-              assert.deepEqual(expected_objects, record);
+              assert.deepEqual(expected_objects, records);
+              clearTimeout(timeout);
               next();
             }
           });
