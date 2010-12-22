@@ -25,6 +25,8 @@ module.exports.setup = function() {
   });
 };
 
+var child, master;
+
 process.on('uncaughtException', function(excp) {
   if (excp.message || excp.name) {
     if (excp.name) process.stdout.write(excp.name);
@@ -54,27 +56,28 @@ module.exports.run = function(next) {
     var exiting = false;
     
     env._TEST_MASTER = 'master';
-    var master = child_process.spawn(command, args, {env: env})
-    master.stdout.on('data', function(data) {
+    master = child_process.spawn(command, args, {env: env})
+    
+    var data_outer = function(data) {
       console.log(data.toString('utf8'));
-    });
+    };
+    master.stdout.on('data', data_outer);
+    master.stderr.on('data', data_outer);
     master.on('exit', function() {
+      master = undefined;
       assert.ok(exiting, 'master died');
-    });
-    master.stderr.on('data', function(data) {
-      console.log(data.toString('utf8'));
     });
 
     env._TEST_MASTER = 'slave';
-    var child = child_process.spawn(command, args, {env: env})
-    child.stdout.on('data', function(data) {
-      console.log(data.toString('utf8'));
-    });
+    child = child_process.spawn(command, args, {env: env})
+    child.stdout.on('data', data_outer);
+    child.stderr.on('data', data_outer);
     
     child.on('exit', function() {
       exiting = true;
       master.kill();
       clearTimeout(timeout);
+      child = undefined;
       next();
     });
     child.stderr.on('data', function(data) {
@@ -87,14 +90,14 @@ module.exports.run = function(next) {
       var alfred = require('../../lib/alfred');
 
       var timeout = setTimeout(function() {
-        throw new Error('timeout');
+        next(new Error('timeout'));
       }, 10000);
 
       alfred.open(DB_PATH, {replication_master: true}, function(err, db) {
-        if (err) { throw err; }
+        if (err) { next(err); return; }
         setTimeout(function() {
           db.ensure_key_map_attached('users', null, function(err) {
-            if (err) { throw err; }
+            if (err) { next(err); return;}
 
             var age_transform_function = function(user) {
               return user.age;
@@ -106,7 +109,7 @@ module.exports.run = function(next) {
 
             db.users.ensureIndex('sex', {ordered: true}, sex_transform_function, function(err) {
               db.users.ensureIndex('age', {ordered: true}, age_transform_function, function(err) {
-                if (err) { throw err; }
+                if (err) { next(err); return; }
 
                 var users_in = 0;
                 for (var id in USERS) {
@@ -114,7 +117,7 @@ module.exports.run = function(next) {
                     (function(id) {
                       var user = USERS[id];
                       db.users.put(id, user, function(err) {
-                        if (err) { throw err; }
+                        if (err) { next(err); return; }
                         users_in ++;
                         if (users_in == USER_COUNT) {
                           // all users done
@@ -127,7 +130,7 @@ module.exports.run = function(next) {
                                   var user = USERS[id];
                                   user.rndm = id;
                                   db.users.put(id, user, function(err) {
-                                    if (err) { throw err; }
+                                    if (err) { next(err); return; }
                                     more_users_count ++;
                                     if (more_users_count == USER_COUNT) {
                                     }
@@ -152,43 +155,26 @@ module.exports.run = function(next) {
       // mock-slave
       
       var expected_objects = [
-      { m: 'meta',
-        k: 'key_maps',
-        v: 
-         { users: 
-            { command: 'attach_key_map',
-              arguments: 
-               [ 'users',
-                 { type: 'cached_key_map', compact_interval: 3600000 } ] } } }
+        { m: 'meta',
+        command: 'attach_key_map',
+        argument: [ 'users', { cache_slots: 1000 } ] }
+
       , { m: 'meta',
-        k: 'indexes',
-        v: 
-         { users: 
-            { sex: 
-               { command: 'add_index',
-                 arguments: 
-                  [ 'users',
-                    'sex',
-                    { ordered: true },
-                    'function (user) {\n              return user.sex;\n            }' ] } } } }
+        command: 'add_index',
+        argument: 
+         [ 'users',
+           'sex',
+           { bplustree_order: 100, ordered: true },
+           'function (user) {\n              return user.sex;\n            }' ] }
+
       , { m: 'meta',
-        k: 'indexes',
-        v: 
-         { users: 
-            { sex: 
-               { command: 'add_index',
-                 arguments: 
-                  [ 'users',
-                    'sex',
-                    { ordered: true },
-                    'function (user) {\n              return user.sex;\n            }' ] },
-              age: 
-               { command: 'add_index',
-                 arguments: 
-                  [ 'users',
-                    'age',
-                    { ordered: true },
-                    'function (user) {\n              return user.age;\n            }' ] } } } }
+        command: 'add_index',
+        argument: 
+         [ 'users',
+           'age',
+           { bplustree_order: 100, ordered: true },
+           'function (user) {\n              return user.age;\n            }' ] }
+
       ,{ m: 'users',
         k: '1',
         v: { name: 'Pedro', age: 35, sex: 'm' } }
@@ -240,14 +226,15 @@ module.exports.run = function(next) {
       };
       
       var timeout = setTimeout(function() {
-        throw new Error('timeout');
+        next(new Error('timeout'));
+        return;
       }, 10000);
       
       setTimeout(function() {
         var conn = net.createConnection(5293);
         
         conn.on('error', function(err) {
-          throw err;
+          next(err);
         });
         
         conn.on('connect', function() {
@@ -274,4 +261,15 @@ module.exports.run = function(next) {
 
   }
 
+};
+
+module.exports.teardown = function() {
+  if (master) {
+    master.kill();
+  }
+  master = undefined;
+  if (child) {
+    child.kill();
+  }
+  child = undefined;
 };

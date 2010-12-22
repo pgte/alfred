@@ -18,8 +18,7 @@ var do_exit = function() {
   });
 }
 
-if (!test_module.run) throw "test module " + module_path + " does not export run() function";
-process.on('uncaughtException', function(excp) {
+var exception_handler = function(excp) {
   if (excp.message || excp.name) {
     if (excp.name) process.stdout.write(excp.name);
     if (excp.message) process.stdout.write(excp.message);
@@ -31,7 +30,10 @@ process.on('uncaughtException', function(excp) {
   }
   process.stdout.write("\n");
   do_exit();
-});
+};
+
+if (!test_module.run) throw "test module " + module_path + " does not export run() function";
+process.on('uncaughtException', exception_handler);
 
 var abnormal_process_exit = function() {
   console.log('process exited abnormally')
@@ -41,6 +43,9 @@ process.on('exit', abnormal_process_exit);
 
 if (test_module.setup) test_module.setup();
 
-test_module.run(function() {
+test_module.run(function(err) {
+  if (err) {
+    exception_handler(err);
+  }
   do_exit();
 });
