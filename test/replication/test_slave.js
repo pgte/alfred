@@ -60,22 +60,29 @@ module.exports.run = function(next) {
     var exiting = false;
     
     env._TEST_MASTER = 'master';
-    master = child_process.spawn(command, args, {env: env})
+    master = child_process.spawn(command, args, {env: env});
     
-    var data_outer = function(data) {
-      console.log(data.toString('utf8'));
+    var data_outer = function(prefix) {
+      return function(data) {
+        console.log(prefix + ":  >>>>:\n" + data.toString('utf8') + "\n  <<<<");
+      };
     };
-    master.stdout.on('data', data_outer);
-    master.stderr.on('data', data_outer);
+    
+    master.stdout.on('data', data_outer('master'));
+    master.stderr.on('data', data_outer('master'));
     master.on('exit', function() {
       master = undefined;
       assert.ok(exiting, 'master died');
     });
 
-    env._TEST_MASTER = 'slave';
-    child = child_process.spawn(command, args, {env: env})
-    child.stdout.on('data', data_outer);
-    child.stderr.on('data', data_outer);
+    var new_env = {};
+    for(var envvar in env) {
+      new_env[envvar] = process.env[envvar];
+    }
+    new_env._TEST_MASTER = 'slave';
+    child = child_process.spawn(command, args, {env: new_env})
+    child.stdout.on('data', data_outer('slave'));
+    child.stderr.on('data', data_outer('slave'));
     
     child.on('exit', function() {
       exiting = true;
@@ -126,7 +133,7 @@ module.exports.run = function(next) {
       var timeout = setTimeout(function() {
         next(new Error('timeout'));
       }, 10000);
-
+      
       alfred.open(MASTER_DB_PATH, {replication_master: true}, function(err, db) {
         if (err) { next(err); return; }
         setTimeout(function() {
@@ -140,7 +147,7 @@ module.exports.run = function(next) {
             var sex_transform_function = function(user) {
               return user.sex;
             };
-
+            
             db.users.ensureIndex('sex', {ordered: true}, sex_transform_function, function(err) {
               db.users.ensureIndex('age', {ordered: true}, age_transform_function, function(err) {
                 if (err) { next(err); return; }
@@ -195,7 +202,7 @@ module.exports.run = function(next) {
       
       var alfred = require('../../lib/alfred');
 
-      alfred.open(SLAVE_DB_PATH, {replication_master: true}, function(err, db) {
+      alfred.open(SLAVE_DB_PATH, function(err, db) {
         if (err) { next(err); return; }
         
         setTimeout(function() {
