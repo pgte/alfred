@@ -2,6 +2,7 @@ all: test
 
 mkdirtmp:
 	mkdir -p tmp/db
+	mkdir -p tmp/db2
 
 mkdirresults:
 	mkdir -p benchmarks/results
@@ -18,7 +19,7 @@ test: mkdirtmp
 	test_file_close test_stream \
 	operators/test_gte operators/test_gt operators/test_lte operators/test_lt operators/test_eq operators/test_composed operators/test_optimization operators/test_in \
 	operators/test_nin operators/test_neq operators/test_or operators/test_global_or \
-	replication/test_master
+	replication/test_master replication/test_slave
 
 benchmark: mkdirtmp mkdirresults
 	node tools/benchmarks.js benchmark_collection benchmark_collection_filter benchmark_key_map benchmark_key_map_each_with_pos benchmark_indexed_key_map \

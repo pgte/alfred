@@ -5,7 +5,8 @@ var assert        = require('assert')
   , util          = require('util')
   , carrier       = require('carrier');
   
-var DB_PATH = __dirname + '/../../tmp/db';
+var MASTER_DB_PATH = __dirname + '/../../tmp/db';
+var SLAVE_DB_PATH = __dirname + '/../../tmp/db2';
 
 var USERS = {
     1: {name: 'Pedro', age: 35, sex: 'm'}
@@ -20,8 +21,11 @@ var USERS = {
 var USER_COUNT = 7;
 
 module.exports.setup = function() {
-  fs.readdirSync(DB_PATH).forEach(function(dir) {
-    fs.unlinkSync(DB_PATH + '/' + dir);
+  fs.readdirSync(MASTER_DB_PATH).forEach(function(dir) {
+    fs.unlinkSync(MASTER_DB_PATH + '/' + dir);
+  });
+  fs.readdirSync(SLAVE_DB_PATH).forEach(function(dir) {
+    fs.unlinkSync(SLAVE_DB_PATH + '/' + dir);
   });
 };
 
@@ -76,15 +80,45 @@ module.exports.run = function(next) {
     child.on('exit', function() {
       exiting = true;
       master.kill();
-      clearTimeout(timeout);
       child = undefined;
-      next();
+      
+      var alfred = require('../../lib/alfred');
+      
+      alfred.open(SLAVE_DB_PATH, function(err, slave_db) {
+        if (err) { next(err); return; }
+        assert.ok(!!slave_db.users);
+        
+        var got_users = 0;
+        
+        for(id in USERS) {
+          if (USERS.hasOwnProperty(id)) {
+            (function(id) {
+              var user = USERS[id];
+              slave_db.users.get(id, function(err, value) {
+                assert.ok(!!value);
+                assert.equal(value.name, user.name);
+                assert.equal(value.age, user.age);
+                assert.equal(value.rndm, id);
+                
+                got_users ++;
+                if (got_users == USER_COUNT) {
+                  clearTimeout(timeout);
+                  next();
+                }
+              });
+            })(id);
+          }
+        }
+      });
+      
     });
     child.stderr.on('data', function(data) {
       console.log(data.toString('utf8'));
     });
     
   } else {
+    
+    // Master
 
     if (process.env._TEST_MASTER == 'master') {
       var alfred = require('../../lib/alfred');
@@ -93,7 +127,7 @@ module.exports.run = function(next) {
         next(new Error('timeout'));
       }, 10000);
 
-      alfred.open(DB_PATH, {replication_master: true}, function(err, db) {
+      alfred.open(MASTER_DB_PATH, {replication_master: true}, function(err, db) {
         if (err) { next(err); return; }
         setTimeout(function() {
           db.ensure_key_map_attached('users', null, function(err) {
@@ -152,115 +186,27 @@ module.exports.run = function(next) {
       });
       
     } else {
-      // mock-slave
       
-      var expected_objects = [
-        { m: 'meta',
-        command: 'attach_key_map',
-        arguments: [ 'users', { cache_slots: 1000 } ] }
-
-      , { m: 'meta',
-        command: 'add_index',
-        arguments: 
-         [ 'users',
-           'sex',
-           { bplustree_order: 100, ordered: true },
-           'function (user) {\n              return user.sex;\n            }' ] }
-
-      , { m: 'meta',
-        command: 'add_index',
-        arguments: 
-         [ 'users',
-           'age',
-           { bplustree_order: 100, ordered: true },
-           'function (user) {\n              return user.age;\n            }' ] }
-
-      ,{ m: 'users',
-        k: '1',
-        v: { name: 'Pedro', age: 35, sex: 'm' } }
-      ,{ m: 'users',
-        k: '2',
-        v: { name: 'John', age: 32, sex: 'm' } }
-      ,{ m: 'users',
-        k: '3',
-        v: { name: 'Bruno', age: 28, sex: 'm' } }
-      ,{ m: 'users',
-        k: '4',
-        v: { name: 'Sandra', age: 35, sex: 'f' } }
-      , { m: 'users',
-        k: '5',
-        v: { name: 'Patricia', age: 42, sex: 'f' } }
-      , { m: 'users',
-        k: '6',
-        v: { name: 'Joana', age: 29, sex: 'f' } }
-      , { m: 'users',
-        k: '7',
-        v: { name: 'Susana', age: 30, sex: 'f' } }
-      , { m: 'users',
-        k: '1',
-        v: { name: 'Pedro', age: 35, sex: 'm', rndm: '1' } }
-      , { m: 'users',
-        k: '2',
-        v: { name: 'John', age: 32, sex: 'm', rndm: '2' } }
-      , { m: 'users',
-        k: '3',
-        v: { name: 'Bruno', age: 28, sex: 'm', rndm: '3' } }
-      , { m: 'users',
-        k: '4',
-        v: { name: 'Sandra', age: 35, sex: 'f', rndm: '4' } }
-      , { m: 'users',
-        k: '5',
-        v: { name: 'Patricia', age: 42, sex: 'f', rndm: '5' } }
-      , { m: 'users',
-        k: '6',
-        v: { name: 'Joana', age: 29, sex: 'f', rndm: '6' } }
-      , { m: 'users',
-        k: '7',
-        v: { name: 'Susana', age: 30, sex: 'f', rndm: '7' } }
-      ];
-      
-      var records = [];
-      
-      var sendJSON = function(stream, data) {
-        stream.write(JSON.stringify(data) + "\n");
-      };
-      
-      var timeout = setTimeout(function() {
-        next(new Error('timeout'));
-        return;
-      }, 10000);
+      // SLAVE
       
       setTimeout(function() {
-        var conn = net.createConnection(5293);
+        next();
+      }, 5000);
+      
+      var alfred = require('../../lib/alfred');
+
+      alfred.open(SLAVE_DB_PATH, {replication_master: true}, function(err, db) {
+        if (err) { next(err); return; }
         
-        conn.on('error', function(err) {
-          next(err);
-        });
-        
-        conn.on('connect', function() {
-          sendJSON(conn, {command: 'sync'});
-          
-          var result_count = 0;
-          
-          carrier.carry(conn, function(line) {
-            var obj = JSON.parse(line);
-            records.push(obj)
-            result_count ++;
-            if (result_count == expected_objects.length) {
-              assert.deepEqual(expected_objects, records);
-              clearTimeout(timeout);
-              next();
-            }
+        setTimeout(function() {
+          db.replicate_from('localhost', {}, function(err) {
+            next(err);
           });
-
-        });
+        }, 2000);
         
-
-      }, 2000);
+      });
     }
-
   }
-
 };
 
 module.exports.teardown = function() {
