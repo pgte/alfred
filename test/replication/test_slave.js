@@ -2,8 +2,7 @@ var assert        = require('assert')
   , fs            = require('fs')
   , net           = require('net')
   , child_process = require('child_process')
-  , util          = require('util')
-  , carrier       = require('carrier');
+  , util          = require('util');
   
 var MASTER_DB_PATH = __dirname + '/../../tmp/db';
 var SLAVE_DB_PATH = __dirname + '/../../tmp/db2';
