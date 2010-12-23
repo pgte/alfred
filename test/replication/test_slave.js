@@ -86,7 +86,7 @@ module.exports.run = function(next) {
       
       alfred.open(SLAVE_DB_PATH, function(err, slave_db) {
         if (err) { next(err); return; }
-        assert.ok(!!slave_db.users);
+        assert.ok(!!slave_db.users, 'no users database on slave');
         
         var got_users = 0;
         
