@@ -94,6 +94,8 @@ module.exports.run = function(next) {
       alfred.open(SLAVE_DB_PATH, function(err, slave_db) {
         if (err) { next(err); return; }
         assert.ok(!!slave_db.users, 'no users database on slave');
+        assert.ok(!!slave_db.users.indexes.age, 'no users.age index on slave');
+        assert.ok(!!slave_db.users.indexes.sex, 'no users.sex index on slave');
         
         var got_users = 0;
         
@@ -208,6 +210,7 @@ module.exports.run = function(next) {
         setTimeout(function() {
           db.replicate_from('localhost', {}, function(err) {
             next(err);
+            throw err;
           });
         }, 2000);
         
