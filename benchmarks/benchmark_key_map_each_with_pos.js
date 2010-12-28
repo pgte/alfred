@@ -50,7 +50,7 @@ module.exports.run = function(benchmark, next) {
                       }
                       benchmark.end();
                       next();
-                    })
+                    });
                   }
                 });
               }, 1000);

@@ -4,7 +4,7 @@ module.exports.run = function(next) {
       sys    = require('sys'),
       random = require('../tools/random_generator');
 
-  require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/unordered_index_test.alf', function(err, key_map) {
+  require(__dirname + '/../lib/alfred/indexed_key_map.js').open(__dirname + '/../tmp/unordered_index_test.alf', function(err, key_map) {
     
     if (err) {
       throw err;

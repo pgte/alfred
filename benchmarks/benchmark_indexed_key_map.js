@@ -55,7 +55,7 @@ module.exports.run = function(benchmark, next) {
                 if (err) {
                   throw err;
                 }
-
+                
                 benchmark.start('reopen indexed key map with ' + OBJECT_COUNT + ' elements');
                 indexed_key_map.open(file_path, function(err, key_map) {
                   
@@ -67,7 +67,7 @@ module.exports.run = function(benchmark, next) {
 
                   var timeout = setTimeout(function() {
                     assert.ok(false, "timeout");
-                  }, 60000);
+                  }, 120000);
 
                   var tested_keys = 0;
 

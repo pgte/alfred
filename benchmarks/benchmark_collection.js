@@ -1,7 +1,7 @@
 module.exports.run = function(benchmark, next) {
   
   var random = require('../tools/random_generator');
-  var OBJECT_COUNT= 1000;
+  var OBJECT_COUNT= 100000;
   
   benchmark.start('opening collection');
   require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_bench.alf', function(err, collection) {

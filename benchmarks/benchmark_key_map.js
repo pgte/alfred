@@ -3,13 +3,13 @@ module.exports.run = function(benchmark, next) {
   var assert = require('assert');
   var random = require('../tools/random_generator');
   
-  require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/key_map_benchmark.alf', function(err, key_map) {
+  require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/key_map_benchmark.alf', {buffered: true}, function(err, key_map) {
     if (err) {
       throw err;
     }
 
     var KEY_COUNT = 50000;
-    var RETRIEVE_RANDOM_COUNT = 10;
+    var RETRIEVE_RANDOM_COUNT = 10; //0;
 
     var keys = [];
     var map = {};

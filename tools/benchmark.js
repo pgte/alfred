@@ -20,10 +20,6 @@ var benchmark_module = require(benchmark_path);
 var benchmarks = [];
 var current_benchmark;
 
-var getCurrentMilliseconds = function() {
-  d = new Date();
-  return d.getTime();
-}
 var benchmark = {
   start: function(name, count) {
     if (!count) {
@@ -32,13 +28,13 @@ var benchmark = {
     var memory_usage = process.memoryUsage();
     current_benchmark = {
       name: name,
-      started: getCurrentMilliseconds(),
+      started: Date.now(),
       count: count,
       mem_usage_before: memory_usage
     };
   },
   end: function() {
-    current_benchmark.ended = getCurrentMilliseconds();
+    current_benchmark.ended = Date.now();
     current_benchmark.ellapsed = current_benchmark.ended - current_benchmark.started;
     current_benchmark.average = current_benchmark.ellapsed / current_benchmark.count;
     current_benchmark.throughput = Math.floor(1000 / current_benchmark.average);

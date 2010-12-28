@@ -4,7 +4,7 @@ module.exports.run = function(next) {
   
   var assert = require('assert');
   var random = require('../tools/random_generator');
-  require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_test.alf', function(err, collection) {
+  require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_test.alf', {read_buffer_size: 1024}, function(err, collection) {
     if (err) {
       throw err;
     }
@@ -27,7 +27,7 @@ module.exports.run = function(next) {
             written ++;
             if (written == 1000) {
               var index = 0;
-              collection.read(function(error, record) {        
+              collection.read(function(error, record) {
                 assert.equal(error, null);
                 if(record === null) {
                   // reached the end

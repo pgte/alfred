@@ -54,95 +54,91 @@ module.exports.run = function(benchmark, next) {
 
             key_count ++;
             if (key_count == OBJECT_COUNT) {
-
+              
               benchmark.end();
-              // let it flush
-              setTimeout(function() {
+              
+              benchmark.start('end key map');
+              key_map.end(function(err) {
+                if (err) {
+                  throw err;
+                }
 
-                benchmark.start('end key map');
-                key_map.end(function(err) {
+                benchmark.end();
+
+                benchmark.start('reopen key map with ' + OBJECT_COUNT + ' elements');
+                key_map_module.open(file_path, function(err, key_map) {
                   if (err) {
                     throw err;
                   }
 
                   benchmark.end();
 
-                  benchmark.start('reopen key map with ' + OBJECT_COUNT + ' elements');
-                  key_map_module.open(file_path, function(err, key_map) {
+                  benchmark.start('add index to key map with ' + OBJECT_COUNT + ' elements');
+                  key_map.addIndex('a', function(record) {
+                    //console.log(record);
+                    return {
+                      e: record.a + record.b,
+                      f: record.a + record.c
+                    };
+                  }, function(err, index) {
+                    // done creating the index
                     if (err) {
                       throw err;
                     }
 
                     benchmark.end();
 
-                    benchmark.start('add index to key map with ' + OBJECT_COUNT + ' elements');
-                    key_map.addIndex('a', function(record) {
-                      //console.log(record);
-                      return {
-                        e: record.a + record.b,
-                        f: record.a + record.c
-                      };
-                    }, function(err, index) {
-                      // done creating the index
+                    var timeout = setTimeout(function() {
+                      assert.ok(false, "key_map.filter timeout 1");
+                    }, 15000);
+
+                    benchmark.start("scan index of key map with " + OBJECT_COUNT + ' elements');
+
+                    key_map.filter('a', function(record) {
+                      return false;
+                    }, function(err, key, value) {
+
                       if (err) {
                         throw err;
                       }
 
+                      clearTimeout(timeout);
                       benchmark.end();
+                      assert.equal(null, key);
 
-                      var timeout = setTimeout(function() {
-                        assert.ok(false, "key_map.filter timeout 1");
+                      var idx = random.random(3);
+                      var looking_for = a_values[idx] + b_values[idx];
+                      var selected = 0;
+                      var expect_count = OBJECT_COUNT / 3;
+
+                      timeout = setTimeout(function() {
+                        assert.ok(false, "key_map.filter timeout 2");
                       }, 15000);
 
-                      benchmark.start("scan index of key map with " + OBJECT_COUNT + ' elements');
+                      benchmark.start("scan and get " + expect_count + "elements from a key map with " + OBJECT_COUNT + 'elements', expect_count);
 
                       key_map.filter('a', function(record) {
-                        return false;
+                        return record.e == looking_for;
                       }, function(err, key, value) {
-
                         if (err) {
                           throw err;
                         }
+                        selected ++;
+                        if (selected == expect_count) {
+                          benchmark.end();
+                          key_map.end(function(err) {
+                            clearTimeout(timeout);
+                            next();
+                          });
+                        }
 
-                        clearTimeout(timeout);
-                        benchmark.end();
-                        assert.equal(null, key);
+                      });
 
-                        var idx = random.random(3);
-                        var looking_for = a_values[idx] + b_values[idx];
-                        var selected = 0;
-                        var expect_count = OBJECT_COUNT / 3;
-
-                        timeout = setTimeout(function() {
-                          assert.ok(false, "key_map.filter timeout 2");
-                        }, 15000);
-
-                        benchmark.start("scan and get " + expect_count + "elements from a key map with " + OBJECT_COUNT + 'elements', expect_count);
-
-                        key_map.filter('a', function(record) {
-                          return record.e == looking_for;
-                        }, function(err, key, value) {
-                          if (err) {
-                            throw err;
-                          }
-                          selected ++;
-                          if (selected == expect_count) {
-                            benchmark.end();
-                            key_map.end(function(err) {
-                              clearTimeout(timeout);
-                              next();
-                            });
-                          }
-
-                        });
-
-                      }, true);
-                    });
-
+                    }, true);
                   });
-                });
 
-              }, 1000);
+                });
+              });
             }
           });
         })(i);

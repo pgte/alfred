@@ -1,0 +1,6 @@
+SyntaxErrorUnexpected end of inputSyntaxError: Unexpected end of input
+    at Object.parse (native)
+    at /Users/pedroteixeira/projects/alfred/tools/aggregate_benchmarks.js:66:33
+    at [object Object].<anonymous> (fs.js:86:5)
+    at [object Object].emit (events.js:28:17)
+    at afterRead (fs.js:746:12)
