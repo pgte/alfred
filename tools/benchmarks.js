@@ -30,7 +30,6 @@ var do_benchmark = function() {
   var module_path = path.join(__dirname, '..', 'benchmarks', benchmark + ".js");
   if (!path.existsSync(module_path)) throw new Error("Could not find benchmark path "+module_path);
   var run_this = [path.join(__dirname, 'benchmark.js'), benchmark];
-  console.log(benchmark + ' started');
   var benchmark_child = child_process.spawn(process.argv[0], run_this, {env: process.env});
   var child_output = '';
   benchmark_child.stdout.on('data', function(data) {
@@ -47,7 +46,6 @@ var do_benchmark = function() {
     } catch(excp) {
       res = child_output;
     }
-    console.log(benchmark + ' finished');
     benchmark_results.push({
       benchmark: benchmark,
       results: res
