@@ -22,6 +22,7 @@ var current_benchmark;
 
 var benchmark = {
   start: function(name, count) {
+    console.log('start');
     if (!count) {
       count = 1;
     }

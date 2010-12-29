@@ -4,7 +4,7 @@ module.exports.run = function(benchmark, next) {
   var sys    = require('sys') || require('util');
   var fs     = require('fs');
   var random = require('../tools/random_generator');
-  var cached_key_map = require(__dirname + '/../lib/alfred/indexed_key_map_random.js');
+  var cached_key_map = require(__dirname + '/../lib/alfred/indexed_key_map.js');
 
   var OBJECT_COUNT = 100000;
   var file_path = __dirname + '/../tmp/indexed_key_map_random_benchmark.alf';

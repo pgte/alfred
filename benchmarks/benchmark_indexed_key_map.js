@@ -67,7 +67,7 @@ module.exports.run = function(benchmark, next) {
 
                   var timeout = setTimeout(function() {
                     assert.ok(false, "timeout");
-                  }, 120000);
+                  }, 240000);
 
                   var tested_keys = 0;
 
