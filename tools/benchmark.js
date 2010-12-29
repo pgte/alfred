@@ -39,6 +39,7 @@ var benchmark = {
     current_benchmark.average = current_benchmark.ellapsed / current_benchmark.count;
     current_benchmark.throughput = Math.floor(1000 / current_benchmark.average);
     current_benchmark.memory_usage_after = process.memoryUsage();
+    current_benchmark.rss_diff = current_benchmark.memory_usage_after.rss - current_benchmark.mem_usage_before.rss;
     benchmarks.push(current_benchmark);
     current_benchmark = null;
   }

@@ -46,9 +46,10 @@ var processBenchmark = function(when, benchmark, callback) {
   };
   benchmark.results.forEach(function(result) {
     var benchmark_name = result.name;
-    processMetric(when, _case, benchmark_name, 'vsize_before', result.mem_usage_before.vsize, next_callback);
+    processMetric(when, _case, benchmark_name, 'rss_before', result.mem_usage_before.rss, next_callback);
     processMetric(when, _case, benchmark_name, 'ellapsed', result.ellapsed, next_callback);
-    processMetric(when, _case, benchmark_name, 'vsize_after', result.memory_usage_after.vsize, next_callback);
+    processMetric(when, _case, benchmark_name, 'rss_after', result.memory_usage_after.rss, next_callback);
+    processMetric(when, _case, benchmark_name, 'rss_diff', result.rss_diff, next_callback);
     processMetric(when, _case, benchmark_name, 'throughput', result.throughput, next_callback);
   });
 };
@@ -59,7 +60,7 @@ var processFile = function(file, callback) {
     if (err) {
       callback(err);
     } else {
-      fs.readFile(file_full_path, 'utf-8', function(err, file_data) {
+      fs.readFile(file_full_path, 'utf8', function(err, file_data) {
         if (err) {
           callback(err);
         } else {
