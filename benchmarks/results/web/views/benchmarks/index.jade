@@ -1,0 +1,31 @@
+h2 All benchmarks
+#benchmarks
+script(id='benchmark_template', type='text/x-jquery-tmpl')
+  | <h3>\${name}</h3>
+  | {{each results}}
+  |   <h4>\${$value.name}</h4>
+  |   <table>
+  |     <thead>
+  |      <tr>
+  |        <th>Date</th>
+  |        <th>vsize_before</th>
+  |        <th>ellapsed</th>
+  |        <th>vsize_after</th>
+  |        <th>throughput</th>
+  |      </tr>
+  |     </thead>
+  |     <tbody>
+  |       {{each $value.results_by_date}}
+  |         <tr>
+  |           <td>\${$index}</td>
+  |           {{each $value}}
+  |             {{if $index >= 4 && $index % 4 == 0}}
+  |               </tr><tr><td></td>
+  |             {{/if}}
+  |             <td>\${$value.name}: \${$value.measure}</td>
+  |           {{/each}}
+  |         </tr>
+  |       {{/each}}
+  |     </tbody>
+  |   </table>
+  | {{/each}}

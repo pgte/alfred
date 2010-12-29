@@ -29,5 +29,6 @@ benchmark: mkdirtmp mkdirresults
 
 aggregate_benchmarks: mkdirresults
 	node tools/aggregate_benchmarks.js > benchmarks/results/summaries/`date  "+%Y%m%d%H%M%S"`
+	cd benchmarks/results/summaries && rm -f latest && ln -s `ls -t1 | head -n1` latest && cd ../../..
 
 .PHONY: test
