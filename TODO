@@ -1,1 +1,2 @@
 - Compact meta key_map on database startup.
+- Allow an order on key_map.find

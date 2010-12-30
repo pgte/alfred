@@ -76,6 +76,25 @@ BPlusTree.prototype.each = function(callback, node) {
   }
 };
 
+BPlusTree.prototype.each_reverse = function(callback, node) {
+  if (!node) {
+    node = this.root;
+  }
+  var current = node;
+  if(current.isLeafNode){
+    for(var i = current.data.length - 1; i >= 0 ; i--) {
+      var node = current.data[i];
+      if (node.value) {
+        callback(node.key, node.value);
+      }
+    }
+  } else {
+    for(var i=node.data.length - 1; i >= 0; i-=2) {
+      this.each(callback, node.data[i]);
+    }
+  }
+};
+
 
 // Get a range
 BPlusTree.prototype.range = function(start, end, callback) {
