@@ -21,8 +21,8 @@ script(id='benchmark_template', type='text/x-jquery-tmpl')
   |     <tbody>
   |       {{each $value.results_by_date}}
   |         <tr>
-  |           <td>\${$index}</td>
-  |           {{each $value}}
+  |           <td>\${$value.date}</td>
+  |           {{each $value.results}}
   |             {{if $index >= 5 && $index % 5 == 0}}
   |               </tr><tr><td></td>
   |             {{/if}}

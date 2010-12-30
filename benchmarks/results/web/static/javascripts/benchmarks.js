@@ -34,6 +34,16 @@ $(document).ready(function() {
               }
             }
             
+            var array_metric_results = [];
+            for (var date in metric_results) {
+              array_metric_results.push({date: date, results: metric_results[date]});
+            }
+            metric_results = array_metric_results.sort(function(a, b) {
+              return (new Date(a.date)).getTime() - (new Date(b.date)).getTime();
+            });
+            
+            console.log(metric_results);
+            
             benchmark_results.push({name: metric_name, results_by_date: metric_results});
           }
         }
@@ -57,6 +67,9 @@ $(document).ready(function() {
               var one_result = metric[day];
               metric_plot_data.push([Date.parse(day), one_result])
             }
+            metric_plot_data = metric_plot_data.sort(function(a, b) {
+              return a[0] - b[0];
+            });
             
             var options = {
               lines: { show: true },
