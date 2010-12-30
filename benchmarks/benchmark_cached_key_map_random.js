@@ -88,12 +88,20 @@ module.exports.run = function(benchmark, next) {
                           gets ++;
                           if (gets == going_for) {
                             benchmark.end();
+                            
+                            benchmark.start('ending key_map');
                             key_map.end(function(err) {
                               if (err) {
                                 throw err;
                               }
+                              benchmark.end();
                               clearTimeout(timeout);
-                              next();
+                              
+                              benchmark.start('wait 10 seconds for gc to kick in');
+                              setTimeout(function() {
+                                benchmark.end();
+                                next();
+                              }, 10000);
                             });
                           }
                         });

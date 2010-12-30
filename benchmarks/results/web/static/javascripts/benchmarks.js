@@ -18,7 +18,7 @@ $(document).ready(function() {
                 var measure = metric[measure_name];
                 for (var day in measure) {
                   if (measure.hasOwnProperty(day)) {
-                    var simple_day = day.toString().substring(0, 10);
+                    var simple_day = day; //.toString().substring(0, 10);
                     if (min_day === undefined || min_day > simple_day) {
                       min_day = simple_day;
                     }
@@ -40,11 +40,10 @@ $(document).ready(function() {
         results.push({name: benchmark_name, results: benchmark_results, position: results.length + 1});
       }
     }
-    console.log(results);
     $('#benchmark_template').tmpl(results).appendTo('#benchmarks');
     
-    min_day = new Date(new Date(min_day).getTime() - (2 * 3600 * 24 * 1000));
-    max_day = new Date(new Date(max_day).getTime() + (2 * 3600 * 24 * 1000));
+    // min_day = new Date(new Date(min_day).getTime() - (2 * 3600 * 24 * 1000));
+    // max_day = new Date(new Date(max_day).getTime() + (2 * 3600 * 24 * 1000));
     
     setTimeout(function() {
       for (var benchmark_name in benchmarks) {
