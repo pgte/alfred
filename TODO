@@ -1,2 +1,6 @@
 - Compact meta key_map on database startup.
 - Allow an order on key_map.find
+- Replication should roll over files on the server and client
+- Streaming API for finding / retrieving? (pause, resume)?
+- Allow master-master replication
+- Allow master-master replication with versioning and conflicts (a la CouchDB) ?

@@ -44,12 +44,12 @@ module.exports.run = function(next) {
                   throw err;
                 }
                 assert.deepEqual(map[key], value);
-                key_map.get_at_pos(pos, length, function(err, ret_key, ret_value) {
+                key_map.getAtPos(pos, length, function(err, ret_key, ret_value) {
                   if (err) {
                     throw err;
                   }
-                  assert.equal(key, ret_key, "iteration key (" + key + ") is not the same as one got from get_at_pos (" + ret_key + ")");
-                  assert.deepEqual(value, ret_value, "iteration value (" + value + ") is not the same as one got from get_at_pos (" + ret_value + ")");
+                  assert.equal(key, ret_key, "iteration key (" + key + ") is not the same as one got from getAtPos (" + ret_key + ")");
+                  assert.deepEqual(value, ret_value, "iteration value (" + value + ") is not the same as one got from getAtPos (" + ret_value + ")");
                   tested_keys ++;
                   if (tested_keys == OBJECT_COUNT) {
                     key_map.end(function(err) {

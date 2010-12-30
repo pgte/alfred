@@ -65,9 +65,9 @@ module.exports.run = function(next) {
                   selected ++;
                   if (selected == 30) {
 
-                    key_map.count_filter('a', filter_function, function(err, count) {
+                    key_map.countFilter('a', filter_function, function(err, count) {
 
-                      assert.equal(selected, count, "key_map.count_filter results (" + count + ") is different from previously selected count (" + selected + ")");
+                      assert.equal(selected, count, "key_map.countFilter results (" + count + ") is different from previously selected count (" + selected + ")");
 
                       key_map.end(function(err) {
                         if (err) {
