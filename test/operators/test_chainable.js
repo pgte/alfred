@@ -59,9 +59,10 @@ module.exports.run = function(next) {
                     var users_1_found = 0;
                     var users_2_found = 0;
                     var users_3_found = 0;
+                    var users_4 = false
                     
                     var end_test = function() {
-                      if (users_1_found == 2 && users_2_found == 4 && users_3_found == 6) {
+                      if (users_1_found == 2 && users_2_found == 4 && users_3_found == 6 && users_4) {
                         db.close(function(err) {
                           if (err) { throw err; }
                           clearTimeout(timeout);
@@ -98,6 +99,15 @@ module.exports.run = function(next) {
                       assert.ok((value.age > 29 && value.age < 35) || value.sex == 'f', '(age is not equal to > 29 and < 35) or sex == \'f\' for found user with key ' + key);
                       users_3_found ++;
                       assert.ok(users_3_found <= 6, 'already found ' + users_3_found + ' users');
+                      end_test();
+                    })
+                    .bulk(function(err, records) {
+                      if (err) { throw err; }
+                      assert.equal(6, records.length);
+                      records.forEach(function(record) {
+                        assert.deepEqual(record.value, USERS[record.key]);
+                      });
+                      users_4 = true;
                       end_test();
                     });
                   }

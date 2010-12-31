@@ -18,7 +18,7 @@ test: mkdirtmp
 	test_nulls_on_unordered_indexes test_nulls_on_ordered_indexes test_false_on_indexes test_ranges_on_ordered_indexes test_meta test_meta_indexes \
 	test_file_close test_stream \
 	operators/test_gte operators/test_gt operators/test_lte operators/test_lt operators/test_eq operators/test_composed operators/test_optimization operators/test_in \
-	operators/test_nin operators/test_neq operators/test_or operators/test_global_or operators/test_order operators/test_desc_order \
+	operators/test_nin operators/test_neq operators/test_or operators/test_global_or operators/test_order operators/test_desc_order operators/test_chainable \
 	replication/test_master replication/test_slave replication/test_slave_reconnect
 
 benchmark: mkdirtmp mkdirresults
