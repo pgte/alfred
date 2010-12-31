@@ -58,16 +58,16 @@ module.exports.run = function(next) {
                   
                     var users_found = 0;
                   
-                    db.users.find({'age' : {$gt: 29, $lt: 42, $lte: 35}, 'sex': {$eq: 'f'}}, function(err, key, value) {
+                    db.users.find({'age' : {$gt: 29, $lt: 42, $lte: 35}, 'sex': {$eq: 'f'}}) (function(err, key, value) {
                       if (err) { throw err; }
                       assert.deepEqual(value, USERS[key]);
                       assert.ok(value.age > 29 && value.age <= 35, 'age is not equal to > 29 and < 35 for found user with key ' + key);
                       users_found ++;
                       assert.ok(users_found <= 2, 'already found ' + users_found + ' users');
                       if (users_found == 2) {
-                        clearTimeout(timeout);
                         db.close(function(err) {
                           if (err) { throw err; }
+                          clearTimeout(timeout);
                           next();
                         })
                       }

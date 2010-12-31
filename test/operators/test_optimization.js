@@ -58,7 +58,7 @@ module.exports.run = function(next) {
                   
                     var users_found = 0;
                   
-                    db.users.find({'age' : {$gt: 29, $lte: 35}}, function(err, key, value) {
+                    db.users.find({'age' : {$gt: 29, $lte: 35}}) (function(err, key, value) {
                       if (err) { throw err; }
                       assert.deepEqual(value, USERS[key]);
                       assert.ok(value.age > 29 && value.age <= 35, 'age is not equal to > 29 and < 35 for found user with key ' + key);

@@ -58,7 +58,7 @@ module.exports.run = function(next) {
                   
                     var users_found = 0;
                   
-                    db.users.find({'age' : {$nin: [32, 42, 30]}}, function(err, key, value) {
+                    db.users.find({'age' : {$nin: [32, 42, 30]}}) (function(err, key, value) {
                       if (err) { throw err; }
                       assert.deepEqual(value, USERS[key]);
                       assert.ok(value.age == 28 || value.age == 29 || value.age == 35, 'age is in [32, 42, 30] for found user with key ' + key + ' and age ' + value.age);

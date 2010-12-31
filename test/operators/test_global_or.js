@@ -58,7 +58,7 @@ module.exports.run = function(next) {
                   
                     var users_found = 0;
                   
-                    db.users.find([{'age' : {$eq: 28}}, {'sex' : {$eq: 'f'}}], function(err, key, value) {
+                    db.users.find([{'age' : {$eq: 28}}, {'sex' : {$eq: 'f'}}]) (function(err, key, value) {
                       if (err) { throw err; }
                       assert.deepEqual(value, USERS[key]);
                       assert.ok(value.age == 28 || value.sex == 'f', 'age is not 28 or sex is not "f" in user with key ' + key);
