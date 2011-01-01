@@ -56,33 +56,27 @@ var processBenchmark = function(when, benchmark, callback) {
 
 var processFile = function(file, callback) {
   var file_full_path = source_dir + '/' + file;
-  fs.stat(file_full_path, function(err, stat) {
+  var date = new Date(parseInt(file.substring(0, 4), 10), parseInt(file.substring(4, 6), 10)-1, parseInt(file.substring(6, 8), 10), parseInt(file.substring(8, 10), 10), parseInt(file.substring(10, 12), 10), parseInt(file.substring(12, 14), 10), 0);
+  fs.readFile(file_full_path, 'utf8', function(err, file_data) {
     if (err) {
       callback(err);
     } else {
-      fs.readFile(file_full_path, 'utf8', function(err, file_data) {
-        if (err) {
-          callback(err);
-        } else {
-          var benchmarks = JSON.parse(file_data);
-          var benchmarks_done = 0;
-          benchmarks.forEach(function(benchmark) {
-            processBenchmark(stat.ctime, benchmark, function(err) {
-              if (err) {
-                callback(err);
-              } else {
-                benchmarks_done ++;
-                if (benchmarks_done == benchmarks.length) {
-                  callback(null);
-                }
-              }
-            });
-          });
-        }
+      var benchmarks = JSON.parse(file_data);
+      var benchmarks_done = 0;
+      benchmarks.forEach(function(benchmark) {
+        processBenchmark(date, benchmark, function(err) {
+          if (err) {
+            callback(err);
+          } else {
+            benchmarks_done ++;
+            if (benchmarks_done == benchmarks.length) {
+              callback(null);
+            }
+          }
+        });
       });
     }
   });
-  
 };
 
 fs.readdir(source_dir, function(err, files) {
