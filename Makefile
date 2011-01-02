@@ -19,7 +19,7 @@ test: mkdirtmp
 	test_file_close test_stream \
 	operators/test_gte operators/test_gt operators/test_lte operators/test_lt operators/test_eq operators/test_composed operators/test_optimization operators/test_in \
 	operators/test_nin operators/test_neq operators/test_or operators/test_global_or operators/test_order operators/test_desc_order operators/test_chainable \
-	operators/test_find_stream operators/test_find_stream_chained
+	operators/test_find_stream operators/test_find_stream_chained \
 	replication/test_master replication/test_slave replication/test_slave_reconnect
 
 benchmark: mkdirtmp mkdirresults
