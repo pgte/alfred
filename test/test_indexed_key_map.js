@@ -56,6 +56,7 @@ module.exports.run = function(next) {
                   var value = map[key];
                   assert.ok(!!value);
                   key_map.get(key, function(err, record) {
+                    if (err) { throw err; }
                     assert.deepEqual(record, value);
                   });
                   tested_keys ++;

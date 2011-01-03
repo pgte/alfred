@@ -47,7 +47,7 @@ module.exports.run = function(next) {
                 if (err) {
                   throw err;
                 }
-
+                
                 indexed_key_map.open(file_path, function(err, key_map) {
                   var timeout = setTimeout(function() {
                     assert.ok(false, "timeout");

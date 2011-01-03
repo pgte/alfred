@@ -13,7 +13,7 @@ clean:
 	rm -rf tmp
 
 test: mkdirtmp
-	node tools/test.js test_collection test_collection_filter test_key_map test_key_map_each_with_pos test_indexed_key_map test_indexed_key_map_reload \
+	node tools/test.js test_collection test_collection_filter test_key_map test_key_map_reload test_key_map_each_with_pos test_indexed_key_map test_indexed_key_map_reload \
 	test_cached_key_map test_unordered_index test_unbuffered_collection test_flush_on_exit test_interleaved test_atomic test_compact test_nulls_on_keymap \
 	test_nulls_on_unordered_indexes test_nulls_on_ordered_indexes test_false_on_indexes test_ranges_on_ordered_indexes test_meta test_meta_indexes \
 	test_file_close test_stream \

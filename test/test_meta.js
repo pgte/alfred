@@ -13,8 +13,8 @@ module.exports.run = function(next) {
   var alfred = require('../lib/alfred');
   
   alfred.open(DB_PATH, function(err, db) {
-    if (err) { throw err; }
-
+    if (err) { next(err); }
+    
     var done = function() {
       db.users.put('abc', 'def', function(err) {
         if (err) { throw err; }

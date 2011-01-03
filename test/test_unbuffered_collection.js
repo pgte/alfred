@@ -3,7 +3,7 @@ module.exports.run = function(next) {
   var assert = require('assert');
   var random = require('../tools/random_generator');
 
-  require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/buffered_collection_test.alf', {buffered: false}, function(err, collection) {
+  require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/unbuffered_collection_test.alf', {buffered: false}, function(err, collection) {
     if (err) {
       throw err;
     }
@@ -29,7 +29,7 @@ module.exports.run = function(next) {
               setTimeout(function() {
                 var index = 0;
                 collection.read(function(error, record) {
-                  assert.equal(error, null);
+                  if (error) { throw error; }
                   if(record === null) {
                     // reached the end
                     assert.equal(records.length, index);

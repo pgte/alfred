@@ -64,7 +64,6 @@ module.exports.run = function(next) {
       fs.readFile(file_path, 'utf-8', function(err, file_data) {
         var lines = file_data.split("\n");
         assert.equal(25 * 2 + 1, lines.length); // expect that the file contains 25 records plus an end-of-line, making the last one empty
-        assert.equal(lines[50], ""); // expect the last line to be empty
         next();
       });
     });

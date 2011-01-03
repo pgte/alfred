@@ -6,7 +6,7 @@ module.exports.run = function(next) {
       
   var OBJECT_COUNT = 90;
 
-  require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/nulls_on_unordered_index_test.alf', function(err, key_map) {
+  require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/nulls_on_ordered_index_test.alf', function(err, key_map) {
     
     if (err) {
       throw err;

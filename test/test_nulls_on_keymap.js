@@ -4,12 +4,12 @@ module.exports.run = function(next) {
       sys    = require('sys'),
       random = require('../tools/random_generator');
 
-  require(__dirname + '/../lib/alfred/indexed_key_map.js').open(__dirname + '/../tmp/unordered_index_test.alf', function(err, key_map) {
+  require(__dirname + '/../lib/alfred/indexed_key_map.js').open(__dirname + '/../tmp/nulls_on_keymap_test.alf', function(err, key_map) {
     
     if (err) {
       throw err;
     }
-
+    
     var map = {};
     var key_count = 0;
     
@@ -39,7 +39,11 @@ module.exports.run = function(next) {
                     if (err) {
                       throw err;
                     }
+
                     key_map.get(key, function(err, value) {
+                      if (err) {
+                        throw err;
+                      }
                       assert.ok(value === null, 'value was not null after setting it to null');
                       got ++;
                       if (got == 90) {
