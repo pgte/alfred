@@ -6,18 +6,29 @@
     .explanation
       p Some features are:
         ol
-          li feature 1
-          li feature 2
+          li multiple key-value maps in on database
+          li atomic operations on one record
   section
     h2 How can I install Alfred?
     .explanation
       p Install via npm:
-      code
-        $ npm install alfred
+      p
+        code
+          $ npm install alfred
   section
     h2 Examples:
     .explanation
-      p Bkdsadasd
+      p
+        pre
+          | var Alfred = require('alfred');
+          | Alfred.open('path/to/db', function(err, db) {
+          |   if (err) { throw err; }
+          |   db.users.find({age: {$gt : 25, $lte: 40}}) (function(err, user) {
+          |     if (err) { throw err; }
+          |     console.log(user);
+          |   });
+          | });
+      p See the <a href="/examples">Examples page</a>.
   section
     h2 How does it work?
     .explanation

@@ -85,16 +85,22 @@ p.note {
 }
 #intro section {
   clear: both;
-  margin-bottom: 5em;
+  margin-bottom: 6em;
 }
 #intro div.explanation {
+  background-color: #f0f0f0;
   float: left;
-  width: 600px;
+  padding-left: 10px;
+  width: 670px;
 }
 #intro h2 {
-  width: 300px;
+  width: 270px;
   float: left;
   font-size: 20px;
+  margin-bottom: 6em;
+}
+#intro pre {
+  font-size: 16px;
 }
 /* Benchmarks */
 
