@@ -7,10 +7,11 @@ var assert        = require('assert')
   
 var SLAVE_DB_PATH = __dirname + '/../../tmp/db2';
 
-module.exports.setup = function() {
+module.exports.setup = function(next) {
   fs.readdirSync(SLAVE_DB_PATH).forEach(function(dir) {
     fs.unlinkSync(SLAVE_DB_PATH + '/' + dir);
   });
+  next();
 };
 
 var child, master;

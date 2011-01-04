@@ -19,13 +19,14 @@ var USERS = {
 
 var USER_COUNT = 7;
 
-module.exports.setup = function() {
+module.exports.setup = function(next) {
   fs.readdirSync(MASTER_DB_PATH).forEach(function(dir) {
     fs.unlinkSync(MASTER_DB_PATH + '/' + dir);
   });
   fs.readdirSync(SLAVE_DB_PATH).forEach(function(dir) {
     fs.unlinkSync(SLAVE_DB_PATH + '/' + dir);
   });
+  next();
 };
 
 var child, master;

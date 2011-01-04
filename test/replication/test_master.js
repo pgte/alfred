@@ -19,10 +19,11 @@ var USERS = {
 
 var USER_COUNT = 7;
 
-module.exports.setup = function() {
+module.exports.setup = function(next) {
   fs.readdirSync(DB_PATH).forEach(function(dir) {
     fs.unlinkSync(DB_PATH + '/' + dir);
   });
+  next();
 };
 
 var child, master;
@@ -245,6 +246,10 @@ module.exports.run = function(next) {
           
           carrier.carry(conn, function(line) {
             var obj = JSON.parse(line);
+            if ('error' in obj) {
+              next(new Error('Error from master: ' + obj.error));
+              return;
+            }
             records.push(obj)
             result_count ++;
             if (result_count == expected_objects.length) {
