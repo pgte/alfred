@@ -19,15 +19,18 @@ var do_exit = function() {
 }
 
 var exception_handler = function(excp) {
+  console.log('EXCEPTION CAUGHT DURING TEST:');
   if (excp.message || excp.name) {
-    if (excp.name) process.stdout.write(excp.name);
-    if (excp.message) process.stdout.write(excp.message);
-    if (excp.backtrace) process.stdout.write(excp.backtrace);
-    if (excp.stack) process.stdout.write(excp.stack);
+    if (excp.name) process.stdout.write(excp.name + " ");
+    if (excp.message) process.stdout.write(excp.message + " ");
   } else {
     var util = require('util');
-    process.stdout.write(util.inspect(excp));    
+    process.stdout.write(util.inspect(excp));
   }
+  if (excp.backtrace) process.stdout.write(excp.backtrace + " ");
+  if (excp.stack) process.stdout.write("stack: " + excp.stack + " ");
+  var util = require('util');
+  process.stdout.write(". Inspecting error: \n" + util.inspect(excp) + " ");    
   process.stdout.write("\n");
   do_exit();
 };

@@ -29,9 +29,9 @@ module.exports.run = function(next) {
   }, 5000);
   
   alfred.open(DB_PATH, function(err, db) {
-    if (err) { throw err; }
+    if (err) { next(err); return; }
     db.ensure_key_map_attached('users', null, function(err) {
-      if (err) { throw err; }
+      if (err) { next(err); return; }
       
       var age_transform_function = function(user) {
         return user.age;
@@ -42,8 +42,9 @@ module.exports.run = function(next) {
       };
       
       db.users.ensureIndex('sex', {ordered: true}, sex_transform_function, function(err) {
+        if (err) { next(err); return; }
         db.users.ensureIndex('age', {ordered: true}, age_transform_function, function(err) {
-          if (err) { throw err; }
+          if (err) { next(err); return; }
         
           var users_in = 0;
           for (var id in USERS) {
@@ -51,7 +52,7 @@ module.exports.run = function(next) {
               (function(id) {
                 var user = USERS[id];
                 db.users.put(id, user, function(err) {
-                  if (err) { throw err; }
+                  if (err) { next(err); return; }
                   users_in ++;
                   if (users_in == USER_COUNT) {
                     // all users done
@@ -64,7 +65,7 @@ module.exports.run = function(next) {
                     var end_test = function() {
                       if (users_1_found == 2 && users_2_found == 4 && users_3_found == 6 && users_4) {
                         db.close(function(err) {
-                          if (err) { throw err; }
+                          if (err) { next(err); return; }
                           clearTimeout(timeout);
                           next();
                         })
@@ -72,7 +73,7 @@ module.exports.run = function(next) {
                     };
                   
                     db.users.find({'age' : {$gt: 29, $lt: 42, $lte: 35}, 'sex': {$eq: 'f'}}) (function(err, key, value) {
-                      if (err) { throw err; }
+                      if (err) { next(err); return; }
                       assert.deepEqual(value, USERS[key]);
                       assert.ok(value.age > 29 && value.age <= 35, 'age is not equal to > 29 and < 35 for found user with key ' + key);
                       assert.ok(value.sex =='f', 'sex != \'f\' for found user with key ' + key);
@@ -83,7 +84,7 @@ module.exports.run = function(next) {
                     .reset()
                     .where({'age' : {$gt: 29, $lt: 42}})
                       (function(err, key, value) {
-                        if (err) { throw err; }
+                        if (err) { next(err); return; }
                         assert.deepEqual(value, USERS[key]);
                         assert.ok(value.age > 29 && value.age < 42, 'age is not equal to > 29 and < 35 for found user with key ' + key);
                         users_2_found ++;
@@ -94,7 +95,7 @@ module.exports.run = function(next) {
                     .where({'age' : {$gt: 29, $lt: 35}})
                     .or({'sex': {$eq: 'f'}})
                     (function(err, key, value) {
-                      if (err) { throw err; }
+                      if (err) { next(err); return; }
                       assert.deepEqual(value, USERS[key]);
                       assert.ok((value.age > 29 && value.age < 35) || value.sex == 'f', '(age is not equal to > 29 and < 35) or sex == \'f\' for found user with key ' + key);
                       users_3_found ++;
@@ -102,7 +103,7 @@ module.exports.run = function(next) {
                       end_test();
                     })
                     .bulk(function(err, records) {
-                      if (err) { throw err; }
+                      if (err) { next(err); return; }
                       assert.equal(6, records.length);
                       records.forEach(function(record) {
                         assert.deepEqual(record.value, USERS[record.key]);

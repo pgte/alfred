@@ -12,10 +12,10 @@ module.exports.setup = function() {
 module.exports.run = function(next) {
   var alfred = require('../lib/alfred');
   alfred.open(DB_PATH, function(err, db) {
-    if (err) { throw err; }
+    if (err) { next(err); return; }
     
     var done = function(err) {
-      if (err) { throw err; }
+      if (err) { next(err); return; }
       var transform_function = function(record) {
         return record;
       };
@@ -25,28 +25,31 @@ module.exports.run = function(next) {
         assert.ok(!!db.users.idx);
         
         db.users.put('abc', 'def', function(err) {
-          if (err) { throw err; }
+          if (err) { next(err); return; }
           var match_count = 0;
           db.users.idx.indexMatch('def', function(err, value) {
-            if (err) { throw err; }
+            if (err) { next(err); return; }
             match_count ++;
             assert.equal(1, match_count, 'more than one match');
-            if (err) { throw err; }
+            if (err) { next(err); return; }
             db.drop_index('users', 'idx', function(err) {
+              if (err) { next(err); return; }
               
               assert.ok(!!!db.users.idx, 'index not removed');
               
               db.users.addIndex('idx', {ordered: true}, transform_function, function(err) {
+                if (err) { next(err); return; }
                 assert.ok(!!db.users.idx);
                 db.close(function(err) {
+                  if (err) { next(err); return; }
                   alfred.open(DB_PATH, function(err, db) {
-                    if (err) { throw err; }
+                    if (err) { next(err); return; }
                     db.users.idx.indexMatch('def', function(err, value) {
-                      if (err) { throw err; }
+                      if (err) { next(err); return; }
                       assert.ok(!!db.users, 'db.users is no longer here after DB restart');
                       assert.ok(!!db.users.idx, 'db.users.idx is no longer here after DB restart');
                       db.close(function(err) {
-                        if (err) { throw err; }
+                        if (err) { next(err); return; }
                         next();
                       });
                     });
@@ -61,7 +64,7 @@ module.exports.run = function(next) {
       
       if (!db.users.idx) {
         db.users.addIndex('idx', {ordered : true}, transform_function, function(err) {
-          if (err) { throw err; }
+          if (err) { next(err); return; }
           done_with_index();
         });
       } else {

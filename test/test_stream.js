@@ -17,9 +17,7 @@ module.exports.run = function(next) {
   }
   require(__dirname + '/../lib/alfred/cached_key_map.js').open(file_path, function(err, key_map) {
     
-    if (err) {
-      throw err;
-    }
+    if (err) { next(err); return; }
 
     var count = 0;
     var values = [];
@@ -30,9 +28,7 @@ module.exports.run = function(next) {
     }
 
     key_map.clear(function(err) {
-      if (err) {
-        throw err;
-      }
+      if (err) { next(err); return; }
       
       var got_interesting = 0;
       var filter = function(key, value) {
@@ -45,7 +41,7 @@ module.exports.run = function(next) {
       });
       
       key_map.on('error', function(err) {
-        throw err;
+        next(err);
       });
       
       for (var i = 0; i < OBJECT_COUNT; i ++) {
@@ -55,9 +51,7 @@ module.exports.run = function(next) {
           interesting ++;
         }
         key_map.put(key, value, function(err) {
-          if (err) {
-            throw err;
-          }
+          if (err) { next(err); return; }
           count ++;
           
           if (count == OBJECT_COUNT) {

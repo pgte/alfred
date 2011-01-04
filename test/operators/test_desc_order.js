@@ -29,9 +29,9 @@ module.exports.run = function(next) {
   }, 5000);
   
   alfred.open(DB_PATH, function(err, db) {
-    if (err) { throw err; }
+    if (err) { next(err); return; }
     db.ensure_key_map_attached('users', null, function(err) {
-      if (err) { throw err; }
+      if (err) { next(err); return; }
       
       var age_transform_function = function(user) {
         return user.age;
@@ -42,8 +42,9 @@ module.exports.run = function(next) {
       };
       
       db.users.ensureIndex('sex', {ordered: true}, sex_transform_function, function(err) {
+        if (err) { next(err); return; }
         db.users.ensureIndex('age', {ordered: true}, age_transform_function, function(err) {
-          if (err) { throw err; }
+          if (err) { next(err); return; }
         
           var users_in = 0;
           for (var id in USERS) {
@@ -51,7 +52,7 @@ module.exports.run = function(next) {
               (function(id) {
                 var user = USERS[id];
                 db.users.put(id, user, function(err) {
-                  if (err) { throw err; }
+                  if (err) { next(err); return; }
                   users_in ++;
                   if (users_in == USER_COUNT) {
                     // all users done
@@ -60,7 +61,7 @@ module.exports.run = function(next) {
                     var last_age = 10000;
                   
                     db.users.find({'age' : {$gt: 29, $lt: 42, $lte: 35}, 'sex': {$eq: 'f'}}).order('age desc') (function(err, key, value) {
-                      if (err) { throw err; }
+                      if (err) { next(err); return; }
                       assert.deepEqual(value, USERS[key]);
                       assert.ok(value.age > 29 && value.age <= 35, 'age is not equal to > 29 and < 35 for found user with key ' + key);
                       assert.ok(last_age >= value.age, 'ages are not ordered descendingly');
@@ -70,7 +71,7 @@ module.exports.run = function(next) {
                       if (users_found == 2) {
                         clearTimeout(timeout);
                         db.close(function(err) {
-                          if (err) { throw err; }
+                          if (err) { next(err); return; }
                           next();
                         })
                       }

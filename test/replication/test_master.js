@@ -108,6 +108,7 @@ module.exports.run = function(next) {
             };
 
             db.users.ensureIndex('sex', {ordered: true}, sex_transform_function, function(err) {
+              if (err) { next(err); return; }
               db.users.ensureIndex('age', {ordered: true}, age_transform_function, function(err) {
                 if (err) { next(err); return; }
 

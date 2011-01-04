@@ -13,38 +13,39 @@ module.exports.run = function(next) {
   var alfred = require('../lib/alfred');
   
   alfred.open(DB_PATH, function(err, db) {
-    if (err) { next(err); }
+    if (err) { next(err); return; }
     
     var done = function() {
       db.users.put('abc', 'def', function(err) {
-        if (err) { throw err; }
+        if (err) { next(err); return; }
         db.users.get('abc', function(err, value) {
-          if (err) { throw err; }
+          if (err) { next(err); return; }
           assert.equal(value, 'def');
         });
 
         db.close(function(err) {
-          if (err) { throw err; }
+          if (err) { next(err); return; }
 
           // Reopen database and see if users key map is still there
           alfred.open(DB_PATH, function(err, db) {
-            if (err) { throw err; }
+            if (err) { next(err); return; }
             assert.ok(!!db.users, 'db.users no longer exists');
             db.users.get('abc', function(err, value) {
+              if (err) { next(err); return; }
               assert.equal(value, 'def');
 
               // Detach
               db.detach_key_map('users', function(err) {
-                if (err) { throw err; }
+                if (err) { next(err); return; }
                 assert.ok(!!!db.users);
 
                 db.close(function(err) {
-                  if (err) { throw err; }
+                  if (err) { next(err); return; }
                   alfred.open(DB_PATH, function(err, db) {
-                    if (err) { throw err; }
+                    if (err) { next(err); return; }
                     assert.ok(!!!db.users);
                     db.close(function(err) {
-                      if (err) { throw err; }
+                      if (err) { next(err); return; }
                       next();
                     });
                   });
@@ -58,7 +59,7 @@ module.exports.run = function(next) {
 
     if (!db.users) {
       db.attach_key_map('users', null, function(err, key_map) {
-        if (err) { throw err; }
+        if (err) { next(err); return; }
         done();
       });
     } else {

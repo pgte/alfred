@@ -6,9 +6,7 @@ module.exports.run = function(next) {
 
   require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/unordered_index_test.alf', function(err, key_map) {
     
-    if (err) {
-      throw err;
-    }
+    if (err) { next(err); return; }
 
     var createRandomObject = function(a, b) {
       return {
@@ -25,9 +23,7 @@ module.exports.run = function(next) {
     var b_values = [random.createRandomString(random.random(100)), random.createRandomString(random.random(100)), random.createRandomString(random.random(100))];
     
     key_map.clear(function(err) {
-      if (err) {
-        throw err;
-      }
+      if (err) { next(err); return; }
       for (var i = 0; i < 90; i ++) {
         (function(i) {
           var value_index = i % 3;
@@ -35,9 +31,7 @@ module.exports.run = function(next) {
           var key = random.createRandomString(16);
           map[key] = value;
           key_map.put(key, value, function(err) {
-            if (err) {
-              throw err;
-            }
+            if (err) { next(err); return; }
 
             key_count ++;
             if (key_count == 90) {
@@ -46,9 +40,7 @@ module.exports.run = function(next) {
                 return record.a + record.b;
               }, function(err, index) {
                 // done creating the index
-                if (err) {
-                  throw err;
-                }
+                if (err) { next(err); return; }
                 var idx = random.random(3);
                 var looking_for = a_values[idx] + b_values[idx];
                 var selected = 0;
@@ -62,17 +54,17 @@ module.exports.run = function(next) {
                 };
 
                 key_map.filter('a', filter_function, function(err, key, value) {
+                  if (err) { next(err); return; }
                   selected ++;
                   if (selected == 30) {
 
                     key_map.countFilter('a', filter_function, function(err, count) {
+                      if (err) { next(err); return; }
 
                       assert.equal(selected, count, "key_map.countFilter results (" + count + ") is different from previously selected count (" + selected + ")");
 
                       key_map.end(function(err) {
-                        if (err) {
-                          throw err;
-                        }
+                        if (err) { next(err); return; }
                         clearTimeout(timeout);
                         next();
                       });

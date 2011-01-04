@@ -17,18 +17,14 @@ module.exports.run = function(next) {
 
   indexed_key_map.open(file_path, function(err, key_map) {
 
-    if (err) {
-      throw err;
-    }
+    if (err) { next(err); return; }
 
     var map = {};
     var keys = [];
     var key_count = 0;
 
     key_map.clear(function(err) {
-      if (err) {
-        throw err;
-      }
+      if (err) { next(err); return; }
       for (var i = 0; i < 1000; i ++) {
         (function(i) {
           var value = random.createRandomObject();
@@ -36,19 +32,17 @@ module.exports.run = function(next) {
           keys.push(key);
           map[key] = value;
           key_map.put(key, value, function(err) {
-            if (err) {
-              throw err;
-            }
+            if (err) { next(err); return; }
             key_count ++;
             if (key_count == 1000) {
               // test if we can retrieve all keys
               key_map.end(function(err) {
 
-                if (err) {
-                  throw err;
-                }
+                if (err) { next(err); return; }
                 
                 indexed_key_map.open(file_path, function(err, key_map) {
+                  if (err) { next(err); return; }
+                  
                   var timeout = setTimeout(function() {
                     assert.ok(false, "timeout");
                   }, 10000);
@@ -61,14 +55,13 @@ module.exports.run = function(next) {
                       var value = map[key];
                       assert.ok(!!value);
                       key_map.get(key, function(err, record) {
+                        if (err) { next(err); return; }
                         assert.deepEqual(record, value);
                       });
                       tested_keys ++;
                       if (tested_keys == TEST_KEYS_NUMBER) {
                         key_map.end(function(err) {
-                          if (err) {
-                            throw err;
-                          }
+                          if (err) { next(err); return; }
                           clearTimeout(timeout);
                           next();
                         });

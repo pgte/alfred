@@ -8,14 +8,10 @@ module.exports.run = function(next) {
 
   require(__dirname + '/../lib/alfred/key_map.js').open(__dirname + '/../tmp/ranges_on_ordered_index_test.alf', function(err, key_map) {
     
-    if (err) {
-      throw err;
-    }
+    if (err) { next(err); return; }
 
     key_map.clear(function(err) {
-      if (err) {
-        throw err;
-      }
+      if (err) { next(err); return; }
       
       var createRandomObject = function(order) {
         return {
@@ -33,9 +29,7 @@ module.exports.run = function(next) {
           var value = createRandomObject(i);
           var key = i;
           key_map.put(key, value, function(err) {
-            if (err) {
-              throw err;
-            }
+            if (err) { next(err); return; }
 
             key_count ++;
             if (key_count == OBJECT_COUNT) {
@@ -43,9 +37,7 @@ module.exports.run = function(next) {
               key_map.addIndex('a', {ordered: true, bplustree_order: 10}, function(record) {
                 return record.a;
               }, function(err) {
-                if (err) {
-                  throw err;
-                }
+                if (err) { next(err); return; }
                 var got = 0;
                 
                 var timeout = setTimeout(function() {
@@ -53,18 +45,14 @@ module.exports.run = function(next) {
                 }, 10000);
                 
                 key_map.range('a', 30, 60, function(err, key, value) {
-                  if (err) {
-                    throw err;
-                  }
+                  if (err) { next(err); return; }
                   assert.ok(value.a >= 30, 'value.a >= 30');
                   assert.ok(value.a <= 60, 'value.a <= 30');
                   got ++;
                   if (got == 30) {
                     clearTimeout(timeout);
                     key_map.end(function(err) {
-                      if (err) {
-                        throw err;
-                      }
+                      if (err) { next(err); return; }
                       next();
                     });
                   }

@@ -10,30 +10,24 @@ module.exports.run = function(next) {
   if (process.env._ALBERT_TEST_FLUSH_CHILD) {
     require(__dirname + '/../lib/alfred/key_map.js').open(file_path, function(err, key_map) {
 
-      if (err) {
-        throw err;
-      }
+      if (err) { next(err); return; }
 
       var map = {};
       var key_count = 0;
 
       key_map.clear(function(err) {
-        if (err) {
-          throw err;
-        }
+        if (err) { next(err); return; }
         for (var i = 0; i < 25; i ++) {
           (function(i){
             var value = random.createRandomObject();
             var key = random.createRandomString(16);
             map[key] = value;
             key_map.put(key, value, function(err) {
-              if (err) {
-                throw err;
-              }
+              if (err) { next(err); return; }
               key_count ++;
               if (key_count == 25) {
                 key_map.end(function(err) {
-                  if (err) { throw err; }
+                  if (err) { next(err); return; }
                   next();
                   process.exit();
                 });
@@ -62,6 +56,7 @@ module.exports.run = function(next) {
     });
     child.on('exit', function() {
       fs.readFile(file_path, 'utf-8', function(err, file_data) {
+        if (err) { next(err); return; }
         var lines = file_data.split("\n");
         assert.equal(25 * 2 + 1, lines.length); // expect that the file contains 25 records plus an end-of-line, making the last one empty
         next();
