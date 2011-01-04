@@ -1,5 +1,3 @@
-- Fix replication to work (or not) with the new file model
-- Make .each resistent to trailer inconsistencies
 - Compact meta key_map on database startup.
 - Replication should roll over files on the server and client
 - Allow master-master replication

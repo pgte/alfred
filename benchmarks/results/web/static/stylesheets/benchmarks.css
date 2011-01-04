@@ -7,12 +7,96 @@ body{font:13px/1.5 'Helvetica Neue',Arial,'Liberation Sans',FreeSans,sans-serif}
 body {
   background-color: #f0f0f0;
 }
-#container {
+body * {
+  line-height: 1.4em;
+}
+#main {
   margin: 0 auto;
   width: 960px;
-  padding-top: 20px;
+  padding: 20px 10px 10px 10px;
   position: relative;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
 }
+
+section#header {
+  background-color: #000;
+  color: #f0f0f0;
+  margin: -20px -10px -10px -10px;
+  padding: 10px;
+}
+section#header h1 {
+  margin-bottom: 0;
+}
+section#header h1 a {
+  color: #f0f0f0;
+  text-decoration: none;
+}
+section#menu {
+  background-color: #f0f0f0;
+  height: 3em;
+  margin-bottom: 2em;
+  width: 600px;
+  float: right;
+  margin-top: -11px;
+  margin-right: -10px;
+}
+section#menu li {
+  display: inline;
+  list-style-type: none;
+  margin: 0px;
+  line-height: 3em;
+}
+section#menu li a {
+  border-bottom-left-radius: 4px 4px;
+  border-bottom-right-radius: 4px 4px;
+  border-top-left-radius: 4px 4px;
+  border-top-right-radius: 4px 4px;
+  color: #666;
+  float: left;
+  font-size: 14px;
+  line-height: 3em;
+  margin-right: 10px;
+  padding: 0px 8px;
+  text-shadow: rgba(255, 255, 255, 0.699219) 1px 1px 0px;
+}
+
+section#menu li a:hover {
+  background-color: #e0e0e0;
+}
+
+/* Global styles */
+
+h1 {
+  font-size: 100px;
+}
+h2 {
+  font-size: 25px;
+  color: grey;
+}
+
+p.note {
+  font-size: 16px;
+}
+
+/* Intro */
+#intro {
+  font-size: 20px;
+}
+#intro section {
+  clear: both;
+  margin-bottom: 5em;
+}
+#intro div.explanation {
+  float: left;
+  width: 600px;
+}
+#intro h2 {
+  width: 300px;
+  float: left;
+  font-size: 20px;
+}
+/* Benchmarks */
 
 .graph_wrapper {
   float: left;
@@ -29,4 +113,8 @@ table th {
 
 h3 {
   text-transform: uppercase;
+}
+
+#footer {
+  clear: both;
 }

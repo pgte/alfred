@@ -23,6 +23,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
+  res.render('content/index');
+});
+
+app.get('/benchmarks', function(req, res) {
   res.render('benchmarks/index');
 });
 
