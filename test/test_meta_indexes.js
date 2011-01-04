@@ -3,10 +3,11 @@ var assert = require('assert')
 
 var DB_PATH = __dirname + '/../tmp/db';
 
-module.exports.setup = function() {
+module.exports.setup = function(next) {
   fs.readdirSync(DB_PATH).forEach(function(dir) {
     fs.unlinkSync(DB_PATH + '/' + dir);
   });
+  next();
 };
 
 module.exports.run = function(next) {

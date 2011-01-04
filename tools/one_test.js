@@ -44,11 +44,23 @@ var abnormal_process_exit = function() {
 };
 process.on('exit', abnormal_process_exit);
 
-if (test_module.setup) test_module.setup();
-
-test_module.run(function(err) {
-  if (err) {
-    exception_handler(err);
-  }
-  do_exit();
-});
+if (test_module.setup) {
+  test_module.setup(function(err) {
+    if (err) {
+      exception_handler(err);
+    }
+    test_module.run(function(err) {
+      if (err) {
+        exception_handler(err);
+      }
+      do_exit();
+    });
+  });
+} else {
+  test_module.run(function(err) {
+    if (err) {
+      exception_handler(err);
+    }
+    do_exit();
+  });
+}

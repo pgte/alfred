@@ -12,10 +12,11 @@ var USERS = {
 
 var USER_COUNT = 4;
 
-module.exports.setup = function() {
+module.exports.setup = function(next) {
   fs.readdirSync(DB_PATH).forEach(function(dir) {
     fs.unlinkSync(DB_PATH + '/' + dir);
   });
+  next();
 };
 
 module.exports.run = function(next) {

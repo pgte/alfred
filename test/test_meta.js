@@ -3,10 +3,11 @@ var assert = require('assert')
 
 var DB_PATH = __dirname + '/../tmp/db';
 
-module.exports.setup = function() {
+module.exports.setup = function(next) {
   fs.readdirSync(DB_PATH).forEach(function(dir) {
     fs.unlinkSync(DB_PATH + '/' + dir);
   });
+  next();
 };
 
 module.exports.run = function(next) {
@@ -25,7 +26,7 @@ module.exports.run = function(next) {
 
         db.close(function(err) {
           if (err) { next(err); return; }
-
+          
           // Reopen database and see if users key map is still there
           alfred.open(DB_PATH, function(err, db) {
             if (err) { next(err); return; }
