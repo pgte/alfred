@@ -17,7 +17,8 @@ p.note Everything here is experimental, and the API is no exception, so expect t
     code
       | var Alfred = require('alfred');
       | Alfred.open('path/to/database/dir', function(err, db) {
-      |  // now I have the db object to do stuff
+      |   if (err) { throw err; }
+      |   // now I have the db object to do stuff
       | });
   
   h2 database.attachKeyMap (key_map_name [, options], callback)
