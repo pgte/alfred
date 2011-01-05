@@ -132,6 +132,10 @@ pre {
   font-size: 14px;
 }
 
+#api h1 {
+  font-size: 50px;
+}
+
 /* Benchmarks */
 
 .graph_wrapper {

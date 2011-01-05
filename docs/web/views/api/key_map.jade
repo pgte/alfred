@@ -1,0 +1,113 @@
+p.note Everything here is experimental, and the API is no exception, so expect things to change in future releases.
+
+#api
+  h4 Key Map
+  h1 Index manipulation
+  h2 key_map.addIndex (name, [options, ] transform_function, callback)
+  p Adds an index to key_map.
+  
+  p
+    ul
+      li <b>name</b>: the name of the index. You will be able to refer to the index as key_map.&lt;name&gt; or key_map[name] after this.
+      li
+        p <b>transform_function</b> (record): a javascript function that takes a record as sole argument and returns the indexed value.
+        p Returned values here should be basic types (comparable with &lt;, &gt;, ==, etc.).
+        p This function should not used variables outside of the scope. The reason for this is that the function will be serialized so it will be available on app restart.
+      li <b>callback</b> (err): called when there is an error or the index is added to the key map.
+      li <b>options</b>:
+        ul
+          li <b>ordered</b>: true the index should be ordered. Defaults to true.
+  h3 Example:
+  pre
+    code
+      | var Alfred = require('alfred');
+      | Alfred.open('path/to/database/dir', function(err, db) {
+      |   if (err) { throw err; }
+      |   db.ensureKeyMapAttached('users', function(err, users) {
+      |     if (err) { throw err; }
+      |     var age_index_function = function(user) {
+      |       return user.age;
+      |     };
+      |     users.addIndex('age', age_index_function, function(err) {
+      |       if (err) { throw err; }
+      |       // Now you can use the users.age index
+      |     });
+      |     
+      |   })
+      | });
+
+  h2 key_map.ensureIndex (name, [options, ] transform_function, callback)
+  p If not created, creates this index.
+  p If an index with this name already exists, it does nothing. If you need to change the options on this index, you must remove and then add.
+  
+  h2 key_map.dropIndex (name, callback)
+  p Removes the index with name from the key map.
+  p
+    ul
+      li <b>name</b>: the name of the index
+      li <b>callback</b> (error): called when there is an error or the index is removed.
+  
+  h1 Store
+  h2 key_map.put (key, value, callback)
+  p Stores a value later retrievable by key_map.get (key, ...).
+  p
+    ul
+      li <b>key</b>: a string or a number
+      li <b>value</b>: a basic type or an object that is serializable / deserializable to and from JSON. Arrays with these objects, objects containing these objects or simple values (numbers, strings, booleans, dates, null)
+      li <b>callback</b> (err): a function that will be called when there is an error or the put is successful.
+
+  h2 key_map.get (key, callback)
+  p Tries to retrieve a value based on a fiven key.
+  p
+    ul
+      li <b>key</b>: a string or a number
+      li <b>callback</b> (err, value): a function that will be called when there is an error (err is not null) or the object is retrieved or the object has not been found (value is null).
+    
+  h2 key_map.destroy (key, callback)
+  Alias to key_map.put (key, null, callback).
+
+  h1 Streams
+  
+  h2 key_map.startStream (filter_function, callback)
+  Starts a filter stream based on the given filter function. For every future put that matches the filter_function, callback is invoked.
+  p
+    ul
+      li <b>filter_function</b> (record): A function that returns true if the record is to be selected.
+      li <b>callback</b> (err, record): Called when there is an error or a record was selected.
+
+  p <b>returns</b>: a stream handle that you can use to stop the stream.
+
+  h2 key_map.stopStream (stream_handle, callback)
+  p Stops a filter stream.
+  p
+    ul
+      li <b>stream_handle</b>: A stream handle previously returned by key_map.startStream().
+      li <b>callback</b> (err, record): Called when there is an error or a record was selected.
+
+  h1 Filtering
+  
+  h2 key_map.range(index, start, end, callback)
+  p.note (only available on ordered indexes)
+  p Get a callback for every record which index value on specified index is greater or equal to <i>start</i> and lesser than or equal to <i>end</i>.
+  p
+    ul
+      li <b>index</b>: the name of the index or the index object itself.
+      li <b>start</b>: the starting value (or null to start from the first one).
+      li <b>end</b>: the ending value (or null to end on the last one).
+      li <b>callback</b> (err, key, value): called when there is an error or one record is retrieved
+
+  h2 key_map.countFilter(index, filter_function, callback)
+  p Count the number of records for which the filter_function, when applied the indexed value returns true.
+  p
+    ul
+      li <b>index</b>: the name of the index or the index object itself.
+      li <b>filter_function</b> (index_value): a filter function that accepts the indexed value as sole argument and returns true if the value should be selected.
+      li <b>callback</b> (err, count): called when there is an error or the count has been reached.
+
+  h2 key_map.indexMatch(index, value, callback)
+  p Calls callback for every element on the index == value.
+  p
+    ul
+      li <b>index</b>: the name of the index or the index object itself.
+      li <b>value</b>: the value the index will be matched against.
+      li <b>callback</b> (err, key, valye): called when there is an error or there is a match.

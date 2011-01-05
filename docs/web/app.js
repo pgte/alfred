@@ -29,9 +29,11 @@ app.get('/', function(req, res) {
 app.get('/api', function(req, res) {
   res.render('api/index');
 });
-
 app.get('/api/database', function(req, res) {
   res.render('api/database');
+});
+app.get('/api/key_map', function(req, res) {
+  res.render('api/key_map');
 });
 
 app.get('/benchmarks', function(req, res) {
