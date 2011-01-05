@@ -1,0 +1,80 @@
+<!DOCTYPE html><html><head><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script><script type="text/javascript" src="javascripts/jquery.tmpl.min.js"></script><script type="text/javascript" src="javascripts/flot/jquery.flot.min.js"></script><link rel="stylesheet" href="stylesheets/benchmarks.css"><title>Alfred.js</title></head><body><div id="header"><h1><a href="index.html">Alfred</a></h1><p><i>Node is your mansion, Alfred is your butler</i></p><div id="menu"><ul><li><a href="api.html">API</a></li><li><a href="examples.html">Examples</a></li><li><a href="features.html">Features</a></li><li><a href="benchmarks.html">Benchmarks</a></li><li><a href="https://github.com/pgte/alfred">Browse source</a></li><li><a href="index.html">Home</a></li></ul></div></div><div id="main"><div id="container"><div id="examples"><h1>Examples</h1><h2>Create a Key Map</h2><p><pre><code>var alfred = require('alfred');
+alfred.open('path/to/db/dir', function(err, db) {
+  if (err) { throw err; }
+  db.ensureKeyMapAttached('users', function(err, users_key_map) {
+    console.log('users key map attached');
+  });
+});  
+</code></pre></p><h2>Populate</h2><p>Populate a Key Map with some values<pre><code>var USERS = {
+    1: {name: 'Pedro', age: 35, sex: 'm'}
+  , 2: {name: 'John', age: 32, sex: 'm'}
+  , 3: {name: 'Bruno', age: 28, sex: 'm'}
+  , 4: {name: 'Sandra', age: 35, sex: 'f'}
+  , 5: {name: 'Patricia', age: 42, sex: 'f'}
+  , 6: {name: 'Joana', age: 29, sex: 'f'}
+  , 7: {name: 'Susana', age: 30, sex: 'f'}
+};
+</code></pre><pre><code>alfred.open('path/to/db/dir', function(err, db) {
+  if (err) { throw err; }
+  for (id in USERS) {
+    if (USERS.hasOwnProperty(id)) {
+      db.put(id, USERS[id], function(err) {
+        if (err) { throw err; }
+        console.log('user with id ' + id + ' inserted.');
+      });
+    }
+  }
+});
+</code></pre></p><h2>Fetch</h2><p>Fetch a value from a key map based on key.</p><p>Assuming we have db open and db.users attached, let's find user with key 4</p><p><pre><code>db.users.get(4, function(err, user) {
+  if (err) { throw err; }
+  console.log(user.name); // -> 'Sandra'
+});
+</code></pre></p><h2>Create index</h2><p>Assuming we have db open and db.users attached, let's add the 'age' and 'sex' indexes':</p><p><pre><code>// add 'age' index to users
+db.users.addIndex('age', function(user) {
+     return user.age;
+  }, function(err) {
+    if (err) { throw err; }
+    console.log('age index added to users');
+});
+</code></pre></p><p>You can add a 'sex' index in a similar way.</p><h2>Find</h2><p>Assuming we have db open and db.users attached, and that db.users has indexes 'age' and 'sex':</p><p><pre><code>// find the users with age = 35
+db.users.find({age: {$eq: 35}}) (function(err, key, user) {
+  if (err) { throw err; }
+  console.log(user);
+});
+</code></pre></p><p><pre><code>// find the feminine users with age > 28 and <= 35
+db.users.find({age: {$gt: 28, $lte: 35}, sex: 'f'}) (function(err, key, user) {
+  if (err) { throw err; }
+  console.log(user);
+});
+</code></pre></p><p><pre><code>// find the with age > 28 and <= 35 OR that are female
+db.users.find({age: {$gt: 28, $lte: 35}}).or({sex: {$eq: 'f'}}) (function(err, key, user) {
+  if (err) { throw err; }
+  console.log(user);
+});
+</code></pre></p><h2>Bulk find</h2><p>Do the same thing, but get all the results on the same callback.</p><p>Assuming we have db open and db.users attached, and that db.users has indexes 'age' and 'sex':</p><p><pre><code>// find the with age > 28 and <= 35 OR that are female
+db.users.find({age: {$gt: 28, $lte: 35}}).or({sex: {$eq: 'f'}}).bulk(function(err, users) {
+  if (err) { throw err; }
+  users.forEach(function(user) {
+    console.log(user);
+  });
+});
+</code></pre></p><h2>Find stream</h2><p>Do the same thing, but get all the results as a stream.</p><p>Assuming we have db open and db.users attached, and that db.users has indexes 'age' and 'sex':</p><p><pre><code>// find the with age > 28 and <= 35 OR that are female
+var stream = db.users.find({age: {$gt: 28, $lte: 35}}).or({sex: {$eq: 'f'}}).stream();
+stream.on('record', function(user) {
+  console.log(user);
+});
+stream.on('error' function(err) {
+  throw err;
+});
+stream.on('end', function() {
+  console.log('ended');
+};
+</code></pre></p><h2>Activity stream</h2><p>Stream filtered <i>puts</i> on a key map. And let it run...</p><p>Assuming we have db open and db.users attached:</p><p><pre><code>var activity_stream = db.users.startStream(function(key, value) {
+    return value.age <= 30;
+}, function(key, user) {
+    console.log('here is a young user: ' + require('util').inspect(user));
+});
+// eventually, stop the stream
+db.users.stopStream(activity_stream);
+</code></pre></p></div></div><div id="footer">&copy; Pedro Teixeira <a href="http://metaduck.com">Blog</a> &middot; <a href="https://github.com/pgte">GitHub</a> &middot; <a href="http://twitter.com/pedrogteixeira">@pedrogteixeira</a>
+</div></div></body></html>

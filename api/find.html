@@ -1,0 +1,47 @@
+<!DOCTYPE html><html><head><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script><script type="text/javascript" src="../javascripts/jquery.tmpl.min.js"></script><script type="text/javascript" src="../javascripts/flot/jquery.flot.min.js"></script><link rel="stylesheet" href="../stylesheets/benchmarks.css"><title>Alfred.js</title></head><body><div id="header"><h1><a href="../index.html">Alfred</a></h1><p><i>Node is your mansion, Alfred is your butler</i></p><div id="menu"><ul><li><a href="../api.html">API</a></li><li><a href="../examples.html">Examples</a></li><li><a href="../features.html">Features</a></li><li><a href="../benchmarks.html">Benchmarks</a></li><li><a href="https://github.com/pgte/alfred">Browse source</a></li><li><a href="../index.html">Home</a></li></ul></div></div><div id="main"><div id="container"><p class="note">Everything here is experimental, and the API is no exception, so expect things to change in future releases.</p><div id="api"><div id="find"><p>The KeyMap finder API lets you easily find records using the indexes.</p><p>The API is chainable, so you can easily do things like:</p><pre><code>// find all users with age > 29 AND <= 35 and of the feminine sex
+db.users.find({age: {$gt: 29, $lte: 35}, sex: {$eq: 'f'}}) (function(err, key, value) {
+  if (err) { next(err); return; }
+  console.log('(1) got ' + key); // I get called once for every matched record
+})
+.reset() // reset query
+.where({age: {$gt: 29, $lt: 42}}) // find all users with age > 29 and < 42
+  (function(err, key, value) {
+    if (err) { next(err); return; }
+    console.log('(2) got ' + key); // I get called once for every matched record
+  })
+.reset() // reset query
+.where({age: {$gt: 29, $lt: 35}})
+.or({sex: {$eq: 'f'}})  // find all users with age > 29 and <= 35 OR of the feminine sex
+(function(err, key, value) {
+  if (err) { next(err); return; }
+  console.log('(3) got ' + key);
+})
+.bulk(function(err, records) {
+  if (err) { next(err); return; }
+  console.log('Found ' + records.length + ' matching records');
+  records.forEach(function(record) {
+    console.log('(4) got ' + record.key);
+    // can also access record.value
+  });
+});
+</code></pre></div><h1>Chainable elements</h1><p>All chainable elements can be chained to each other, building a query and retrieving the results.</p><h2>find (spec)</h2><p>Prepares query, gathering records according to spec. Starts chain.</p><p><ul><li><p><b>spec</b>: specification of which indexes and operators to run.</p><p>Takes an object. Each key of the object is the name of an index, and each value is an operators spec.</p><p>See <a href="find/operators.html">all available operators</a>.</p></li></ul></p><h3>Example:</h3><p><i>users</i> is a key map with indexes <i>age</i> and <i>sex</i>.</p><p>To find all users with age > 29 and <= 35 and of sex == 'f' do:</p><p><pre><code>var chainable = db.users.find({age : {$gt: 29, $lte: 35}, sex: {$eq: 'f'}})
+</code></pre></p><p>This returns a chainable object which you can activate by invoking it like this:</p><p><pre><code>var chainable(function(err, key, value) {
+  console.log('got ' + key);
+});
+</code></pre></p><p>Or, all together:</p><p><pre><code>var chainable = db.users.find({age : {$gt: 29, $lte: 35}, sex: {$eq: 'f'}})
+   (function(err, key, value) {
+      console.log('got ' + key);
+   });
+</code></pre></p><h2>.order (index_spec)</h2><p>Values returned will be ordered accorgin to index_spec.</p><p><ul><li><b>index_spec</b>: format: "&lt;index&gt;" or "&lt;index&gt; ASC" or "&lt;index&gt; DESC". The index may be in the query or not. It must exist on the key_map, though.</li></ul></p><h3>Example:</h3><p><pre><code>db.users.find({age : {$gt: 29, $lte: 35}, sex: {$eq: 'f'}}).order('age DESC')
+</code></pre></p><h2>.reset ()</h2><p>Resets the query. Finder is invalid after this.</p><h2>.where (spec)</h2><p>Overrides the query to spec.</p><p><ul><li><b>spec</b>: must follow the same spec as find(spec).</li></ul></p><h2>.or (spec)</h2><p>Adds an alternative condition to the already existing one.</p><p><ul><li><b>spec</b>: must follow the same spec as find(spec).</li></ul></p><h2>.limit (limit)</h2><p>Sets a limit on the returned number of objects</p><p><ul><li><b>limit</b>: integer > 0</li></ul></p><h2>.offset (x)</h2><p>Ignore the first x objects</p><p><ul><li><b>x</b>: integer >= 0</li></ul></p><h2>.bulk (callback)</h2><p>Get all the objects at once, on one callback.</p><p><ul><li><p><b>callback</b> (err, records): called when there is an error or when all records are retrieved.</p><p><i>records</i> is an Array of objects with <i>key</i> and <i>value</i> attributes.</p></li></ul></p><h2>.stream ([callback])</h2><p>Starts a results stream.</p><p><ul><li><b>callback</b> (stream): optional. Pass this in if you want the callback-style to keep chaining.</li></ul></p><p><b>returns</b> a stream if no callback is given.</p><h3>Example:</h3><p><pre><code>var stream = db.users.find({age : {$gt: 29, $lte: 35}, sex: {$eq: 'f'}}).stream();
+stream.on('record', function(record) {
+  console.log(record);
+});
+stream.on('error', function(err) {
+  throw(err);
+});
+stream.on('end', function() {
+  console.log('ended');
+});
+</code></pre></p></div></div><div id="footer">&copy; Pedro Teixeira <a href="http://metaduck.com">Blog</a> &middot; <a href="https://github.com/pgte">GitHub</a> &middot; <a href="http://twitter.com/pedrogteixeira">@pedrogteixeira</a>
+</div></div></body></html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html><html><head><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script><script type="text/javascript" src="javascripts/jquery.tmpl.min.js"></script><script type="text/javascript" src="javascripts/flot/jquery.flot.min.js"></script><link rel="stylesheet" href="stylesheets/benchmarks.css"><title>Alfred.js</title></head><body><div id="header"><h1><a href="index.html">Alfred</a></h1><p><i>Node is your mansion, Alfred is your butler</i></p><div id="menu"><ul><li><a href="api.html">API</a></li><li><a href="examples.html">Examples</a></li><li><a href="features.html">Features</a></li><li><a href="benchmarks.html">Benchmarks</a></li><li><a href="https://github.com/pgte/alfred">Browse source</a></li><li><a href="index.html">Home</a></li></ul></div></div><div id="main"><div id="container"><h2>All Alfred benchmarks</h2><p>This still needs some explanation...</p><div id="benchmarks"></div><script type="text/javascript" src="javascripts/benchmarks.js"></script><script id="benchmark_template" type="text/x-jquery-tmpl"><a id="${name}"></a>
+<h3>${position}. ${name}</h3>
+{{each results}}
+  <hr />
+  <h4>${$value.name}</h4>
+  <table>
+    <thead>
+     <tr>
+       <th>Date</th>
+       <th>rss_before</th>
+       <th>ellapsed</th>
+       <th>rss_after</th>
+       <th>rss_diff</th>
+       <th>throughput</th>
+     </tr>
+    </thead>
+    <tbody>
+      {{each $value.results_by_date}}
+        <tr>
+          <td>${$value.date}</td>
+          {{each $value.results}}
+            {{if $index >= 5 && $index % 5 == 0}}
+              </tr><tr><td></td>
+            {{/if}}
+            <td>${$value.measure}</td>
+          {{/each}}
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <div class="graph_wrapper">
+    <h5>rss_before</h5>
+    <div id="${($item.data.name + '_' + $value.name).replace(/( |\.)/g, '_')}_rss_before" style="width: 320px; height: 150px"></div>
+  </div>
+  <div class="graph_wrapper">
+    <h5>ellapsed</h5>
+    <div id="${($item.data.name + '_' + $value.name).replace(/( |\.)/g, '_')}_ellapsed" style="width: 320px; height: 150px"></div>
+  </div>
+  <div class="graph_wrapper">
+    <h5>rss_after</h5>
+    <div id="${($item.data.name + '_' + $value.name).replace(/( |\.)/g, '_')}_rss_after" style="width: 320px; height: 150px"></div>
+  </div>
+  <div class="graph_wrapper">
+    <h5>rss_diff</h5>
+    <div id="${($item.data.name + '_' + $value.name).replace(/( |\.)/g, '_')}_rss_diff" style="width: 320px; height: 150px"></div>
+  </div>
+  <div class="graph_wrapper">
+    <h5>throughput</h5>
+    <div id="${($item.data.name + '_' + $value.name).replace(/( |\.)/g, '_')}_throughput" style="width: 320px; height: 150px"></div>
+  </div>
+{{/each}}
+<div style="clear:both"></div>
+</script></div><div id="footer">&copy; Pedro Teixeira <a href="http://metaduck.com">Blog</a> &middot; <a href="https://github.com/pgte">GitHub</a> &middot; <a href="http://twitter.com/pedrogteixeira">@pedrogteixeira</a>
+</div></div></body></html>
