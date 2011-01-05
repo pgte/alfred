@@ -35,6 +35,12 @@ app.get('/api/database', function(req, res) {
 app.get('/api/key_map', function(req, res) {
   res.render('api/key_map');
 });
+app.get('/api/find', function(req, res) {
+  res.render('api/find');
+});
+app.get('/api/find/operators', function(req, res) {
+  res.render('api/find_operators');
+});
 
 app.get('/benchmarks', function(req, res) {
   res.render('benchmarks/index');

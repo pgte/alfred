@@ -7,26 +7,26 @@ html
     link(rel='stylesheet', href='/stylesheets/benchmarks.css')
     title Alfred.js
   body
-    #main
-      section#header
-        h1
-          a(href='/') Alfred
+    #header
+      h1
+        a(href='/') Alfred
+      p
         i Node is your mansion, Alfred is your butler
-        section#menu
-          ul
-            li
-              a(href='/api') API
-            li
-              a(href='/examples') Examples
-            li
-              a(href='/features') Features
-            li
-              a(href='/benchmarks') Benchmarks
-            li
-              a(href='https://github.com/pgte/alfred') Browse source
-            li
-              a(href='/') Home
-      div(style="clear:both")
+      #menu
+        ul
+          li
+            a(href='/api') API
+          li
+            a(href='/examples') Examples
+          li
+            a(href='/features') Features
+          li
+            a(href='/benchmarks') Benchmarks
+          li
+            a(href='https://github.com/pgte/alfred') Browse source
+          li
+            a(href='/') Home
+    #main
       #container!= body
       #footer
         &copy; Pedro Teixeira <a href="http://metaduck.com">Blog</a> &middot; <a href="https://github.com/pgte">GitHub</a> &middot; <a href="http://twitter.com/pedrogteixeira">@pedrogteixeira</a>

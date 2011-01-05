@@ -1,0 +1,40 @@
+p.note Everything here is experimental, and the API is no exception, so expect things to change in future releases.
+
+#api
+  h1 Find Operators
+  p Operators to be used on key_map.find(spec):
+  
+  h2 $eq : value
+  p Indexed value must equal given value.
+  
+  h2 $gt : value
+  p Indexed value must be greater than given value.
+
+  h2 $gte : value
+  p Indexed value must be greater than or equal to given value.
+
+  h2 $in : array
+  p Indexed value must be in array.
+
+  h2 $lt : value
+  p Indexed value must be smaller than given value.
+
+  h2 $lte : value
+  p Indexed value must be smaller than or equal to given value.
+
+  h2 $neq : value
+  p Indexed value must not be equal to given value
+
+  h2 $nin : array
+  p Indexed value must not be in given array
+
+  h2 $or : spec
+  p Give alternative specification. <i>spec</i> must conform to find (spec).
+  
+  h2 $range: start, end [, exclude_start = false [, exclude_end = false]]
+  p.note (only available on ordered indexes)
+  p Selects records greater than or equal to <i>start</i> and smaller than or equal to <i>end</i>.
+  p If <i>start</i> is null starts from the smallest value of the index
+  p If <i>end</i> is null stops at the end of the index
+  p if <i>exclusive_start</i> is true, selects only records greater than <i>start</i>.
+  p if <i>exclusive_end</i> is true, selects only records smaller than <i>end</i>.

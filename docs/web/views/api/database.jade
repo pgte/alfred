@@ -31,6 +31,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
         ul
           li <b>type</b>: can be 'cached_key_map' or 'indexed_key_map'. Defaults to 'cached_key_map'. ('cached_key_map' is also indexed)
           li <b>compact_interval</b>: average compact interval, in miliseconds. Defaults to 1 hour (1000 * 60 * 60).
+          li <b>cache_slots</b>: Maximum number of objects to cache (only valid if type is 'cached_key_map'). Defaults to 1000.
     h3 Example:
     pre
       code

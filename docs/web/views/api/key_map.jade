@@ -64,12 +64,18 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       li <b>callback</b> (err, value): a function that will be called when there is an error (err is not null) or the object is retrieved or the object has not been found (value is null).
     
   h2 key_map.destroy (key, callback)
-  Alias to key_map.put (key, null, callback).
+  p Alias to key_map.put (key, null, callback).
+
+  h2 key_map.count (callback)
+  p Gets the number of objects on the key_map
+  p
+    ul
+      li <b>callback</b> (err, count): Called when there is an error or counting is done
 
   h1 Streams
   
   h2 key_map.startStream (filter_function, callback)
-  Starts a filter stream based on the given filter function. For every future put that matches the filter_function, callback is invoked.
+  p Starts a filter stream based on the given filter function. For every future put that matches the filter_function, callback is invoked.
   p
     ul
       li <b>filter_function</b> (record): A function that returns true if the record is to be selected.
@@ -83,6 +89,14 @@ p.note Everything here is experimental, and the API is no exception, so expect t
     ul
       li <b>stream_handle</b>: A stream handle previously returned by key_map.startStream().
       li <b>callback</b> (err, record): Called when there is an error or a record was selected.
+
+  h1 Traversing
+  
+  h2 key_map.eachInIndex (callback)
+  p Cycles through all records.
+  p
+    ul
+      li <b>callback</b> (err, key, value): Called when there is an error or a record is found.
 
   h1 Filtering
   
@@ -111,3 +125,33 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       li <b>index</b>: the name of the index or the index object itself.
       li <b>value</b>: the value the index will be matched against.
       li <b>callback</b> (err, key, valye): called when there is an error or there is a match.
+  
+  h1 Atomic
+  
+  h2 key_map.atomic (key, callback, result_callback)
+  p Do an atomic operation on a record.
+  p
+    ul
+      li <b>key</b>: the key for the object you are looking for.
+      li <b>callback</b> (err, value): a callback called when there is an error or the record was found or not found. On this function you get the value of the record and return the new value of the record.
+      li <b>result</b> (err): called when the saving of the record finishes. If an error occurred saving the object the first argument will contain that error.
+
+  h3 Example:
+  pre
+    code
+      | // grab account with key 100 and add 5 to it's balance
+      | account_key_map.atomic(100, function(err, account) {
+      |     if (err) { throw err; }
+      |     account.balance += 5;
+      |     return account;
+      |   }, function(err) {
+      |     if (err) { throw err; }
+      |     // account balance was atomically increased of 5
+      |   }
+      | );
+      
+  h1 Compactation
+  
+  h2 key_map.compact (callback)
+  p Compacts a key map, loosing all past history.
+  
