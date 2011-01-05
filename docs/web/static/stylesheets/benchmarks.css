@@ -125,6 +125,7 @@ pre {
 /* API */
 #api {
   font-size: 18px;
+  font-family: Georgia, FreeSerif, Times, serif;;
 }
 
 #api ul ul {

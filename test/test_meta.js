@@ -59,7 +59,7 @@ module.exports.run = function(next) {
     };
 
     if (!db.users) {
-      db.attach_key_map('users', null, function(err, key_map) {
+      db.attachKeyMap('users', function(err, key_map) {
         if (err) { next(err); return; }
         done();
       });

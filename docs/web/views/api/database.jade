@@ -1,6 +1,6 @@
-#api
-  p.note Everything here is experimental, and the API is no exception, so expect things to change in future releases.
+p.note Everything here is experimental, and the API is no exception, so expect things to change in future releases.
 
+#api
   h2 Alfred.open (path_to_database, [options, ] callback)
   p Opens a new or an existing database that resides in <i>path_to_database</i>.
   p
@@ -20,13 +20,60 @@
       |  // now I have the db object to do stuff
       | });
   
-  h2 database.attach_key_map (key_map_name [, options], callback)
+  h2 database.attachKeyMap (key_map_name [, options], callback)
   p Attaches a key map to this database.
   p
     ul
-      li <b>key_map_name</b>: name of this key map. Will be available as <i>database.<key_map_name></i>.
+      li <b>key_map_name</b>: name of this key map. Will be available as a named property of database (<i>database.&lt;key_map_name&gt;</i> or <i>database[key_map_name]</i>).
       li <b>callback</b> (err, key_map): invoked when there is an error or the key map is attached.
       li <b>options</b>:
         ul
-          li <b>type</b>: can be one of 'cached_key_map' or 'indexed_key_map'. Defaults to 'cached_key_map'. ('cached_key_map' is also indexed)
+          li <b>type</b>: can be 'cached_key_map' or 'indexed_key_map'. Defaults to 'cached_key_map'. ('cached_key_map' is also indexed)
           li <b>compact_interval</b>: average compact interval, in miliseconds. Defaults to 1 hour (1000 * 60 * 60).
+    h3 Example:
+    pre
+      code
+        | var Alfred = require('alfred');
+        | Alfred.open('path/to/database/dir', function(err, db) {
+        |   if (err) { throw err; }
+        |   console.log(db.users); // -> undefined
+        |   db.attachKeyMap('users', function(err, users_key_map) {
+        |     if (err) { throw err; }
+        |     // now you can use users_key_map
+        |   })
+        | });
+          
+  h2 database.ensureKeyMapAttached (key_map_name [, options], callback)
+  p If not attached, attaches this key map.
+  p If already attached does nothing. If you need to change the options on this key_map, you msu detach and then attach.
+  h3 Example:
+  pre
+    code
+      | var Alfred = require('alfred');
+      | Alfred.open('path/to/database/dir', function(err, db) {
+      |   if (err) { throw err; }
+      |   db.ensureKeyMapAttached('users', function(err, users_key_map) {
+      |     if (err) { throw err; }
+      |     // now you can use users_key_map
+      |   })
+      | });
+
+  h2 database.detachKeyMap (key_map_name, callback)
+  p Detaches a key map from this database.
+  p <i>database.&lt;key_map_name&gt;</i> must already be attached.
+  p
+    ul
+      li <b>key_map_name</b>: name of the key map to be detached.
+      li <b>callback</b> (err): invoked when an error occurs or when key map is detached.
+    h3 Example:
+    pre
+      code
+        | var Alfred = require('alfred');
+        | Alfred.open('path/to/database/dir', function(err, db) {
+        |   if (err) { throw err; }
+        |   console.log('users' in db); // -> true
+        |   db.detachKeyMap('users', function(err) {
+        |     if (err) { throw err; }
+        |     console.log(db.users); // -> undefined
+        |   })
+        | });
