@@ -113,7 +113,7 @@ pre {
   clear: both;
   margin-bottom: 1em;
 }
-#intro div.explanation {
+#intro .explanation {
   background-color: #f0f0f0;
   float: left;
   padding-left: 10px;
@@ -150,6 +150,26 @@ pre {
 #api #find pre {
   font-size: 14px;
 }
+
+/* Examples */
+
+#examples {
+  font-size: 18px;
+}
+
+#examples h1 {
+  font-size: 50px;
+}
+
+#examples pre {
+  font-size: 16px;
+}
+
+/* Features */
+#features {
+  font-size: 18px;
+}
+
 
 /* Benchmarks */
 

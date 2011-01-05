@@ -1,9 +1,9 @@
 #intro
   p Alfred is a fast <b>in-process key-value store</b> for <b><a href="http://nodejs.org">node.js</a></b>.
   p.note Note that Alfred is still very young, so you shouldn't use it on live systems just yet.
-  section
+  div
     h2 What does it do?
-    .explanation
+    section.explanation
       p Alfred supports:
         ul
           li multiple key-value maps in on database
@@ -19,18 +19,18 @@
       p
         a(href='/features') More...
     .clearboth
-  section
+  div
     h2 How can I install Alfred?
-    .explanation
+    section.explanation
       p Install via npm:
       p.code
         code
           pre
             $ npm install alfred
     .clearboth
-  section
+  div
     h2 Examples:
-    .explanation
+    section.explanation
       pre
         code
           | var Alfred = require('alfred');
@@ -45,9 +45,9 @@
           | });
       p See the <a href="/examples">Examples page</a> or <a href="/api">the API</a>.
     .clearboth
-  section
+  div
     h2 How does it work?
-    .explanation
+    section.explanation
       p Alfred stores data on append-only files, which is good for maintaining a consistent state (even when the writes are interrupted).
       p Writes are fast because many writes can occurr in parallel.
       p Reads are fast because indexes into files are kept in memory.

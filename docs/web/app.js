@@ -42,6 +42,14 @@ app.get('/api/find/operators', function(req, res) {
   res.render('api/find_operators');
 });
 
+app.get('/examples', function(req, res) {
+  res.render('examples/index');
+});
+
+app.get('/features', function(req, res) {
+  res.render('features/index');
+});
+
 app.get('/benchmarks', function(req, res) {
   res.render('benchmarks/index');
 });

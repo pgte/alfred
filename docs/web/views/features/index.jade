@@ -1,0 +1,29 @@
+#features
+
+  h1 Features
+  
+  h2 Durability
+  p Key Maps can be buffered or unbuffered. Buffered Key Maps (default) flushes writes every second by default.
+  p Unbuffered key maps writes to disc before a put callsback.
+  
+  h2 Atomicity
+  p You can perform atomic operations on one record.
+  
+  h2 Multiple stores
+  p A database can have zero or more key-value stores, which Alfred calls <i>key maps</i>.
+  
+  h2 Streams
+  p You can create javascript-function-based activity filter streams.
+  
+  h2 Append-only files
+  p Underneath, key maps store data on append-only files, so you can safely rsync it.
+  
+  h2 Integrity check
+  p Every record does an integrity on retrieval.
+  
+  h2 Replication
+  p Can do master-slave replication.
+  
+  h2 Indexes. in memory
+  p Indexes are stored in memory for fast search and sorting.
+  
