@@ -26,6 +26,14 @@ app.get('/', function(req, res) {
   res.render('content/index');
 });
 
+app.get('/api', function(req, res) {
+  res.render('api/index');
+});
+
+app.get('/api/database', function(req, res) {
+  res.render('api/database');
+});
+
 app.get('/benchmarks', function(req, res) {
   res.render('benchmarks/index');
 });

@@ -1,0 +1,55 @@
+#intro
+  p Alfred is a fast <b>in-process key-value store</b> for <b><a href="http://nodejs.org">node.js</a></b>.
+  p.note Note that Alfred is still very young, so you shouldn't use it on live systems just yet.
+  section
+    h2 What does it do?
+    .explanation
+      p Alfred supports:
+        ul
+          li multiple key-value maps in on database
+          li atomic operations on one record
+          li streams
+          li append-only files
+          li compactation
+          li buffered and unbuffered writes
+          li in-memory indexes
+          li sorting
+          li replication
+          li integrity checks
+      p
+        a(href='/features') More...
+    .clearboth
+  section
+    h2 How can I install Alfred?
+    .explanation
+      p Install via npm:
+      p.code
+        code
+          pre
+            $ npm install alfred
+    .clearboth
+  section
+    h2 Examples:
+    .explanation
+      pre
+        code
+          | var Alfred = require('alfred');
+          | // Open database
+          | Alfred.open('path/to/db', function(err, db) {
+          |   if (err) { throw err; }
+          |   // find and log all users with age > 25 and <= 40
+          |   db.users.find({age: {$gt : 25, $lte: 40}}) (function(err, user) {
+          |     if (err) { throw err; }
+          |     console.log(user);
+          |   });
+          | });
+      p See the <a href="/examples">Examples page</a> or <a href="/api">the API</a>.
+    .clearboth
+  section
+    h2 How does it work?
+    .explanation
+      p Alfred stores data on append-only files, which is good for maintaining a consistent state (even when the writes are interrupted).
+      p Writes are fast because many writes can occurr in parallel.
+      p Reads are fast because indexes into files are kept in memory.
+      p Alfred is generally fast also because you don't have any inter-process communication overhead.
+      p Alfres lets you (optionally) use the power of javascript to filter your data set.
