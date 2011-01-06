@@ -25,7 +25,7 @@ db.users.find({age: {$gt: 29, $lte: 35}, sex: {$eq: 'f'}}) (function(err, key, v
   });
 });
 </code></pre></div><h1>Chainable elements</h1><p>All chainable elements can be chained to each other, building a query and retrieving the results.</p><h2>find (spec)</h2><p>Prepares query, gathering records according to spec. Starts chain.</p><p><ul><li><p><b>spec</b>: specification of which indexes and operators to run.</p><p>Takes an object. Each key of the object is the name of an index, and each value is an operators spec.</p><p>See <a href="find/operators.html">all available operators</a>.</p></li></ul></p><h3>Example:</h3><p><i>users</i> is a key map with indexes <i>age</i> and <i>sex</i>.</p><p>To find all users with age > 29 and <= 35 and of sex == 'f' do:</p><p><pre><code>var chainable = db.users.find({age : {$gt: 29, $lte: 35}, sex: {$eq: 'f'}})
-</code></pre></p><p>This returns a chainable object which you can activate by invoking it like this:</p><p><pre><code>var chainable(function(err, key, value) {
+</code></pre></p><p>This returns a chainable object which you can activate by invoking it like this:</p><p><pre><code>chainable(function(err, key, value) {
   console.log('got ' + key);
 });
 </code></pre></p><p>Or, all together:</p><p><pre><code>var chainable = db.users.find({age : {$gt: 29, $lte: 35}, sex: {$eq: 'f'}})
