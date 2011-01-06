@@ -129,6 +129,10 @@ pre {
   font-size: 15px;
 }
 
+#intro .part {
+  margin-bottom: 3em;
+}
+
 /* API */
 #api {
   font-size: 18px;

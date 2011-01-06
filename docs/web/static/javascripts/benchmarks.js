@@ -1,6 +1,6 @@
 $(document).ready(function() {
   var min_day, max_day;
-  $.getJSON('/summaries/latest', function(benchmarks) {
+  $.getJSON('./summaries/latest', function(benchmarks) {
     var results = [];
     var result, interm_result;
     for(var benchmark_name in benchmarks) {

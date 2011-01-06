@@ -1,6 +1,6 @@
 { "name" : "alfred"
 , "description" : "Top Secret Stuff"
-, "version" : "0.0.1"
+, "version" : "0.1.0beta2"
 , "homepage" : "http://github.com/pgte/alfred"
 , "author" : "Pedro Teixeira <pedro.teixeira@gmail.com> (http://www.metaduck.com)"
 , "contributors" :
@@ -14,7 +14,7 @@
   { "mail" : "pedro.teixeira@gmail.com"
   , "web" : "http://github.com/pgte/alfred/issues"
   }
-, "directories" : { "lib" : "./lib" }
+, "directories" : { "lib" : "./lib/alfred" }
 , "engines" : { "node" : ">=0.3.1" }
 , "scripts" : {}
 , "dependencies" :

@@ -1,14 +1,15 @@
 #intro
   p Alfred is a fast <b>in-process key-value store</b> for <b><a href="http://nodejs.org">node.js</a></b>.
   p.note Note that Alfred is still very young, so you shouldn't use it on live systems just yet.
-  div
+  div.part
     h2 What does it do?
     section.explanation
       p Alfred supports:
         ul
-          li multiple key-value maps in on database
+          li multiple key-value maps in one database
           li atomic operations on one record
-          li streams
+          li finder streams
+          li activity streams
           li append-only files
           li compactation
           li buffered and unbuffered writes
@@ -19,7 +20,7 @@
       p
         a(href='/features') More...
     .clearboth
-  div
+  div.part
     h2 How can I install Alfred?
     section.explanation
       p Install via npm:
@@ -28,7 +29,7 @@
           pre
             $ npm install alfred
     .clearboth
-  div
+  div.part
     h2 Examples:
     section.explanation
       pre
@@ -45,11 +46,11 @@
           | });
       p See the <a href="/examples">Examples page</a> or <a href="/api">the API</a>.
     .clearboth
-  div
+  div.part
     h2 How does it work?
     section.explanation
       p Alfred stores data on append-only files, which is good for maintaining a consistent state (even when the writes are interrupted).
       p Writes are fast because many writes can occurr in parallel.
       p Reads are fast because indexes into files are kept in memory.
       p Alfred is generally fast also because you don't have any inter-process communication overhead.
-      p Alfres lets you (optionally) use the power of javascript to filter your data set.
+      p Alfred lets you (optionally) use the power of javascript to filter your data set.

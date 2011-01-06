@@ -32,7 +32,7 @@
         |   if (err) { throw err; }
         |   for (id in USERS) {
         |     if (USERS.hasOwnProperty(id)) {
-        |       db.put(id, USERS[id], function(err) {
+        |       db.users.put(id, USERS[id], function(err) {
         |         if (err) { throw err; }
         |         console.log('user with id ' + id + ' inserted.');
         |       });
