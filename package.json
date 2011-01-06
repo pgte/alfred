@@ -1,8 +1,8 @@
 { "name" : "alfred"
-, "description" : "Top Secret Stuff"
-, "version" : "0.1.0beta2"
-, "homepage" : "http://github.com/pgte/alfred"
-, "author" : "Pedro Teixeira <pedro.teixeira@gmail.com> (http://www.metaduck.com)"
+, "description" : "In-process key-value store"
+, "version" : "0.1.0beta3"
+, "homepage" : "http://pgte.github.com/alfred"
+, "author" : "Pedro Teixeira <pedro.teixeira@gmail.com> (http://metaduck.com)"
 , "contributors" :
   [ "Pedro Teixeira <pedro.teixeira@gmail.com>"
   ]

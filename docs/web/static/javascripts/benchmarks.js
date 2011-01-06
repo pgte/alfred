@@ -42,8 +42,6 @@ $(document).ready(function() {
               return (new Date(a.date)).getTime() - (new Date(b.date)).getTime();
             });
             
-            console.log(metric_results);
-            
             benchmark_results.push({name: metric_name, results_by_date: metric_results});
           }
         }

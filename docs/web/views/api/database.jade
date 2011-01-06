@@ -79,3 +79,10 @@ p.note Everything here is experimental, and the API is no exception, so expect t
         |     console.log(db.users); // -> undefined
         |   })
         | });
+
+  h2 database.end (callback)
+  p Closes all key maps and meta data.
+  p You should call this before leaving.
+  p
+    ul
+      li <b>callback</b> (err): when an error occurs or the database ends.

@@ -37,7 +37,6 @@ module.exports.run = function(next) {
               read_count ++;
               if (read_count == WRITE_READ_COUNT) {
                 // ended
-                
                 // test functional index interleaving
                 
                 var transform_function = function(record) {
@@ -53,7 +52,6 @@ module.exports.run = function(next) {
                       key_map.put(key2, obj2, function(err) {
                         if (err) { next(err); return; }
                         key_map.filter('a', function(record) {
-                          //console.log(record);
                           return record == obj2.a + obj2.b;
                         }, function(err, key, value) {
                           if (err) { next(err); return; }

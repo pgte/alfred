@@ -7,17 +7,17 @@ if (!path.existsSync(test_path)) throw "Could not find test path " + test_path;
 
 var test_module = require(test_path);
 
-var test_timeout = test_module.global_timeout ? test_module.global_timeout : 30000;
-
 var exiting = false;
-var do_exit = function() {
+var do_exit = function(no_exit) {
   if (exiting) return;
   exiting = true;
   if (test_module.teardown) test_module.teardown();
   process.removeListener('exit', abnormal_process_exit);
-  process.nextTick(function() {
-    process.exit();
-  });
+  if (!no_exit) {
+    process.nextTick(function() {
+      process.exit();
+    });
+  }
 }
 
 var exception_handler = function(excp) {
@@ -47,7 +47,7 @@ var abnormal_process_exit = function() {
 process.on('exit', abnormal_process_exit);
 
 if (test_module.setup) {
-  test_module.setup(function(err) {
+  test_module.setup(function(err, no_exit) {
     if (err) {
       exception_handler(err);
     }
@@ -55,14 +55,14 @@ if (test_module.setup) {
       if (err) {
         exception_handler(err);
       }
-      do_exit();
+      do_exit(no_exit);
     });
   });
 } else {
-  test_module.run(function(err) {
+  test_module.run(function(err, no_exit) {
     if (err) {
       exception_handler(err);
     }
-    do_exit();
+    do_exit(no_exit);
   });
 }
