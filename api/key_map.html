@@ -23,5 +23,8 @@ account_key_map.atomic(100, function(err, account) {
     // account balance was atomically increased of 5
   }
 );
-</code></pre><h1>Compactation</h1><h2>key_map.compact (callback)</h2><p>Compacts a key map, loosing all past history.</p></div></div><div id="footer">&copy; Pedro Teixeira <a href="http://metaduck.com">Blog</a> &middot; <a href="https://github.com/pgte">GitHub</a> &middot; <a href="http://twitter.com/pedrogteixeira">@pedrogteixeira</a>
+</code></pre><h1>Compactation</h1><h2>key_map.compact (callback)</h2><p>Compacts a key map, loosing all past history.</p><h1>Events</h1><p>Regsiter ro receive events like this:</p><p><pre><code>db.users.on('put', function(key, value) {
+  console.log('key ' + key + ' was put on users key map');
+});
+</code></pre></p><p>Supported events are:</p><h2>'before_flush'</h2><p>Emitted right before flushing starts.</p><p><b>callback</b> ()</p><h2>'after_flush'</h2><p>Emitted right after flushing ends.</p><p><b>callback</b> ()</p><h2>'put'</h2><p>Emitted when a put is made.</p><p><b>callback</b> (key, value)</p></div></div><div id="footer">&copy; Pedro Teixeira <a href="http://metaduck.com">Blog</a> &middot; <a href="https://github.com/pgte">GitHub</a> &middot; <a href="http://twitter.com/pedrogteixeira">@pedrogteixeira</a>
 </div></div></body></html>
