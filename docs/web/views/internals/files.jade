@@ -1,0 +1,17 @@
+#internals
+  h1 File structure
+  p Underneath, Alfred stores each Key Map on an append-only file.
+  p The file is homogeneous, i.e., each document is written one after the other.
+  
+  h2 Document header
+  p On a file, each document starts with a header with 14 bytes.
+  p The first two bytes are UTF-invalid magic tracker (0xDC80). It can be used, in case there is a corruption detected, to trace the start of the next document.
+  p The remaining four bytes have the length of the document (ASCII).
+  
+  h2 Document trailer
+  p Each document ends with a 40 byte trailer.
+  p It starts with a 12-byte ASCII-encoded length.
+  p Then comes a CRC32 checksum of the document.
+  
+  p In between, the document is serialized in JSON serialized form.
+  

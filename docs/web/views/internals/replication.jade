@@ -1,0 +1,54 @@
+#internals
+
+  h1 Replication internals
+
+  p.note Replication is still very crudely implemented. The slave gets all the existing data on the first connection, which is less than optimal. As everything here, use it at your own risk.
+  
+  h2 Master
+  
+  p Master can bind a replication TCP server to a designed port (port 5293 by default).
+  p The master server sits listens to command requests from slaves.
+  p For now, the only supported command is 'SYNC'.
+  p When it receives a SYNC command, the master transmits:
+  p
+    ol
+      li the metadata key map (containing the current key maps and indexes)
+      li the exisiting data
+  p and then it starts transmitting live data.
+      
+  h3 Format
+  p All transmissions use the JSON format, separated by line feeds.
+  
+  h3 Internals internals
+  p For each slave connection, the master buffers the transmission data using temporary files. These temporary files roll-over when they reach a configurable maximum.
+  
+  h2 Slave
+  p A slave connects to the master and sends a SYNC command.
+  p As it receives action commands, it starts applying them to the local database.
+  
+  h2 Transmission command structure
+  p meta commands:
+    pre
+      code
+        {m: 'meta', command: &lt;command_name&gt;, arguments: &lt;arguments&gt;}
+  p data commands:
+    pre
+      code
+        {m: &lt;key_map_name&gt;, k: &lt;key&gt;, v: &lt;value&gt;}
+        
+  p Valid meta commands are:
+  
+  h3 attach_key_map (key_map_name, options)
+  p options:
+    ul
+      li <b>type</b>: 'cached_key_map' (default) or 'indexed_key_map'
+      li <b>compact_interval</b>: in miliseconds. Defaults to 1 hour.
+  h3 detach_key_map (key_map_name)
+  
+  h3 add_index (key_map_name, index_name, options, transform_function)
+  p options:
+    ul
+      li <b>ordered</b>: true or false
+      
+  h3 drop_index (key_map_name, index_name)
+  

@@ -53,6 +53,19 @@ app.get('/features', function(req, res) {
   res.render('features/index');
 });
 
+app.get('/internals', function(req, res) {
+  res.render('internals/index');
+});
+app.get('/internals/model', function(req, res) {
+  res.render('internals/model');
+});
+app.get('/internals/files', function(req, res) {
+  res.render('internals/files');
+});
+app.get('/internals/replication', function(req, res) {
+  res.render('internals/replication');
+});
+
 app.get('/benchmarks', function(req, res) {
   res.render('benchmarks/index');
 });

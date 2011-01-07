@@ -1,0 +1,66 @@
+#internals
+
+  h1 Internal Object Model
+  
+  p Bottom-up:
+  
+  h2 Files
+  
+  p
+    img(src='/images/internals/files.jpg')
+  
+  h3 File
+  p A file represents a filesystem file. It keeps track of the last written position. It's responsible for reading and writing records, keeping a record header and a record trailer with a checksum.
+  
+  h3 Buffered File
+  p A Buffered File inherits from File and acts as a buffering layer so writes don't have to wait until fs.write returns. Writes are buffered in queue in memory and flushed every 1 second (by default).
+  
+  h2 Collection
+  p A collection represents an forever-growing ordered list of documents. A Collection uses a File or a Buffered File (optionable) as a way to persist objects when added.
+  p A Collection offers a way to iterate over and filter the entire collection.
+  
+  h2 Key Maps
+  
+  p
+    img(src='/images/internals/keymaps.jpg')
+    
+  h3 Key Map
+  p A Key Map offers a <i>put(key, value)</i> and a <i>get(key)</i> methods that allows you to store and retrieve documents based on a key.
+  p It uses a collection underneath to store the object versions.
+  p A Key Map can zero or many user-defined value-based indexes, which we will cover later.
+  p This class of objects is never instantiated, as it is rather abstract.
+  
+  h3 Indexed Key Map
+  p Indexed Key Map inherits from Key Map and offers a in-memory lookup index by key to speedup <i>gets</i>.
+  p Unlike a Collection, an Indexed Key Map only remembers the latest version of each object.
+  p An Indexed Key Map allows the user to easily scan the entire collection using it's index using the <i>.eachInIndex()</i> method.
+  
+  h4 Atomic
+  p An Indexed Key Map allows you to perform atomic operations on one document using <i>.atomic(key, value_callback, end_callback)</i>.
+  
+  h4 Compact
+  p An Indexed Key Map allows you to compact the underlying collection, making it loose all it's past history.
+  p While this operation is being performed, you can still write to the key map. What happens is that, meanwhile the compacting is in progress, the key map writes to the new collection and the old one at the same time.
+  
+  h3 Cached Key Map
+  p A Cached Key Map inherits from Indexed Key Map and introduces a transparent memory cache.
+  
+  h2 Indexes
+  
+  p
+    img(src='/images/internals/indexes.jpg')
+    
+  p Alfred supports 3 types of indexes, all in memory.
+  p The first one, a Key Index, we already mentioned on the Indexed Key Map. It's used to speed up key-based look ups. Each Indexed Key Map has one.
+  p The other two, Ordered and Unordered Indexes, are functional indexes which the user defines based on the value using a javascript function.
+  p An Unorderd Key Map is a simple memory store for all the index values. You can use it to iterate in memory over the entire index values.
+  p An Ordered Key Map is an in-memory b+tree that allows much fastar range filtering and matching.
+  
+  h2 Database - the meta layer
+  p
+    img(src='/images/internals/database.jpg')
+  
+  p A database is a dynamic collection of Key Maps.
+  p You can attach and detach Key maps to and from a Database.
+  p You can access the Key Maps as direct named properties of a database once it is attached.
+  p A database keeps a meta Key Map where it persists all the attached Key Maps and respective indexes so it can be reconstituted after restart.
