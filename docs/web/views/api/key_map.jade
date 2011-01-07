@@ -155,3 +155,26 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   h2 key_map.compact (callback)
   p Compacts a key map, loosing all past history.
   
+  h1 Events
+  
+  p Regsiter ro receive events like this:
+  p
+    pre
+      code
+        | db.users.on('put', function(key, value) {
+        |   console.log('key ' + key + ' was put on users key map');
+        | });
+  
+  p Supported events are:
+  
+  h2 'before_flush'
+  p Emitted right before flushing starts.
+  p <b>callback</b> ()
+  
+  h2 'after_flush'
+  p Emitted right after flushing ends.
+  p <b>callback</b> ()
+  
+  h2 'put'
+  p Emitted when a put is made.
+  p <b>callback</b> (key, value)

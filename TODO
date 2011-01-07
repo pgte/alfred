@@ -1,4 +1,4 @@
 - Compact meta key_map on database startup.
-- Replication should roll over files on the server and client
+- BUG: For some strange reason the last replication master temp file is not deleted.
 - Allow master-master replication
 - Allow master-master replication with versioning and conflicts (a la CouchDB) ?

@@ -21,7 +21,7 @@ test: mkdirtmp
 	operators/test_nin operators/test_neq operators/test_or operators/test_global_or operators/test_order operators/test_desc_order operators/test_chainable \
 	operators/test_find_stream operators/test_find_stream_chained \
 	recovery/collection_recovery_test \
-	replication/test_master replication/test_slave replication/test_slave_reconnect
+	replication/test_master replication/test_slave replication/test_slave_reconnect replication/test_master_temp_roll
 
 benchmark: mkdirtmp mkdirresults
 	node tools/benchmarks.js benchmark_collection benchmark_collection_filter benchmark_key_map benchmark_key_map_each_with_pos benchmark_indexed_key_map \
@@ -31,5 +31,8 @@ benchmark: mkdirtmp mkdirresults
 aggregate_benchmarks: mkdirresults
 	node tools/aggregate_benchmarks.js > benchmarks/results/summaries/`date  "+%Y%m%d%H%M%S"`
 	cd benchmarks/results/summaries && rm -f latest && ln -s `ls -t1 | head -n1` latest && cd ../../..
+
+publish: clean
+	npm publish .
 
 .PHONY: test
