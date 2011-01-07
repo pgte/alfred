@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><head><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script><script type="text/javascript" src="../javascripts/jquery.tmpl.min.js"></script><script type="text/javascript" src="../javascripts/flot/jquery.flot.min.js"></script><link rel="stylesheet" href="../stylesheets/benchmarks.css"><title>Alfred.js</title></head><body><div id="header"><h1><a href="../index.html">Alfred</a></h1><p><i>Node is your mansion, Alfred is your butler</i></p><div id="menu"><ul><li><a href="../api.html">API</a></li><li><a href="../examples.html">Examples</a></li><li><a href="../features.html">Features</a></li><li><a href="../benchmarks.html">Benchmarks</a></li><li><a href="https://github.com/pgte/alfred">Browse source</a></li><li><a href="../index.html">Home</a></li></ul></div></div><div id="main"><div id="container"><p class="note">Everything here is experimental, and the API is no exception, so expect things to change in future releases.</p><div id="api"><h2>Master</h2><p>You can setup master by simply passing in the Alfred.open option <i>replication_master</i> as true.</p><p>Example:</p><p><pre><code>var Alfred = require('alfred');
+var options = {
+ replication_master: true,
+ replication_port: 5294 // port 5293 is default
+};
+Alfred.open('path/do/master/db/dir', options, function(err, db) {
+ if (err) { throw err; }
+ // Now I have db and a replication server on TCP port 5294
+});
+</code></pre></p><h2>Slave</h2><p>You can easily setup a slave by using the <i>database.replicateFrom</i> method like this:</p><p><pre><code>
+</code>var Alfred = require('alfred');
+var options = {
+  source_port: 5294
+};
+Alfred.open('path/do/slave/db/dir', options, function(err, db) {
+  if (err) { throw err; }
+  db.replicateFrom('master.host.name.com', options, function(err) {
+    // this callback is called when there is an error
+    throw err;
+  });
+});
+</pre></p><h3>database.replicateFrom (host_name, options, error_callback)</h3><p><ul><li><b>host_name</b>: master host name.</li><li><b>error_callback</b> (err): called when there is a replication error.</li><li><b>options</b>: supported options are:<ul><li><b>source_port</b>: TCP port where the master server is listening. Defaults to 5293.</li><li><b>reconnect_count</b>: Number of reconnect tries after loosing connection to master. Defaults to 20.</li><li><b>reconnect_timeout</b>: Average time after which we try to reconnect after loosing connection to master. In miliseconds. Defaults to 1000 (1 second).</li></ul></li></ul></p></div></div><div id="footer">&copy; Pedro Teixeira <a href="http://metaduck.com">Blog</a> &middot; <a href="https://github.com/pgte">GitHub</a> &middot; <a href="http://twitter.com/pedrogteixeira">@pedrogteixeira</a>
+</div></div></body></html>
