@@ -1,0 +1,50 @@
+p.note Everything here is experimental, and the API is no exception, so expect things to change in future releases.
+
+#api
+
+  h2 Master
+  
+  p You can setup master by simply passing in the Alfred.open option <i>replication_master</i> as true.
+  p Example:
+  p
+    pre
+      code
+        | var Alfred = require('alfred');
+        | var options = {
+        |  replication_master: true,
+        |  replication_port: 5294 // port 5293 is default
+        | };
+        | Alfred.open('path/do/master/db/dir', options, function(err, db) {
+        |  if (err) { throw err; }
+        |  // Now I have db and a replication server on TCP port 5294
+        | });
+  
+  h2 Slave
+  
+  p You can easily setup a slave by using the <i>database.replicateFrom</i> method like this:
+  p
+    pre
+      code
+      | var Alfred = require('alfred');
+      | var options = {
+      |   source_port: 5294
+      | };
+      | Alfred.open('path/do/slave/db/dir', options, function(err, db) {
+      |   if (err) { throw err; }
+      |   db.replicateFrom('master.host.name.com', options, function(err) {
+      |     // this callback is called when there is an error
+      |     throw err;
+      |   });
+      | });
+      
+  h3 database.replicateFrom (host_name, options, error_callback)
+  p
+    ul
+      li <b>host_name</b>: master host name.
+      li <b>error_callback</b> (err): called when there is a replication error.
+      li <b>options</b>: supported options are:
+        ul
+          li <b>source_port</b>: TCP port where the master server is listening. Defaults to 5293.
+          li <b>reconnect_count</b>: Number of reconnect tries after loosing connection to master. Defaults to 20.
+          li <b>reconnect_timeout</b>: Average time after which we try to reconnect after loosing connection to master. In miliseconds. Defaults to 1000 (1 second).
+          

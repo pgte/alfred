@@ -41,6 +41,9 @@ app.get('/api/find', function(req, res) {
 app.get('/api/find/operators', function(req, res) {
   res.render('api/find_operators');
 });
+app.get('/api/replication', function(req, res) {
+  res.render('api/replication');
+});
 
 app.get('/examples', function(req, res) {
   res.render('examples/index');

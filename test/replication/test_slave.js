@@ -210,7 +210,7 @@ module.exports.run = function(next) {
         if (err) { next(err); return; }
         
         setTimeout(function() {
-          db.replicate_from('localhost', {}, function(err) {
+          db.replicateFrom('localhost', {}, function(err) {
             next(err);
             throw err;
           });
