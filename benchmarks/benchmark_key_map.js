@@ -12,7 +12,6 @@ module.exports.run = function(benchmark, next) {
     var RETRIEVE_RANDOM_COUNT = 10; //0;
 
     var keys = [];
-    var map = {};
 
     key_map.clear(function(err) {
       if (err) {
@@ -25,7 +24,6 @@ module.exports.run = function(benchmark, next) {
           var value = random.createRandomObject();
           var key = random.createRandomString(16);
           keys.push(key);
-          map[key] = value;
           key_map.put(key, value, function(err) {
             if (err) {
               throw err;

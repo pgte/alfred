@@ -1,7 +1,6 @@
 module.exports.run = function(benchmark, next) {
 
   var random = require('../tools/random_generator');
-  var assert = require('assert');
   
   require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_filter_benchmark.alf', function(err, collection) {
     if (err) {

@@ -26,7 +26,6 @@ module.exports.run = function(benchmark, next) {
       };
     };
 
-    var map = {};
     var key_count = 0;
     
     benchmark.start('clearing key map');
@@ -46,7 +45,6 @@ module.exports.run = function(benchmark, next) {
           var value_index = i % 3;
           var value = createRandomObject(a_values[value_index], b_values[value_index]);
           var key = random.createRandomString(16);
-          map[key] = value;
           key_map.put(key, value, function(err) {
             if (err) {
               throw err;

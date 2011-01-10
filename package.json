@@ -1,6 +1,6 @@
 { "name" : "alfred"
 , "description" : "In-process key-value store"
-, "version" : "0.1.0beta5"
+, "version" : "0.1.0beta6"
 , "homepage" : "http://pgte.github.com/alfred"
 , "author" : "Pedro Teixeira <pedro.teixeira@gmail.com> (http://metaduck.com)"
 , "contributors" :
@@ -20,7 +20,7 @@
 , "dependencies" :
   {
     "step" : ">=0.0.3"
-  , "carrier" : ">= 0.0.4"
+  , "carrier" : ">= 0.1.0"
   , "crc" : ">= 0.1.0"
   } 
 , "licenses" :

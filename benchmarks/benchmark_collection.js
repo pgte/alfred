@@ -10,7 +10,6 @@ module.exports.run = function(benchmark, next) {
     }
     
     benchmark.end();
-    var assert = require('assert');
 
     benchmark.start('prunning collection');
     collection.clear(function(err) {
@@ -34,7 +33,7 @@ module.exports.run = function(benchmark, next) {
       var index = 0;
       benchmark.start('reading entire collection of ' + OBJECT_COUNT + ' records');
       collection.read(function(error, record) {
-        assert.equal(error, null);
+        if (error) { throw error; }
         if (record === null) {
           benchmark.end();
           collection.end(function(err) {

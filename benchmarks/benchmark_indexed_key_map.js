@@ -1,6 +1,5 @@
 module.exports.run = function(benchmark, next) {
   
-  var assert = require('assert');
   var sys    = require('sys') || require('util');
   var fs     = require('fs');
   var random = require('../tools/random_generator');
@@ -24,7 +23,6 @@ module.exports.run = function(benchmark, next) {
     
     benchmark.end();
     
-    var map = {};
     var keys = [];
     var key_count = 0;
     
@@ -41,7 +39,6 @@ module.exports.run = function(benchmark, next) {
           var value = random.createRandomObject();
           var key = random.createRandomString(16);
           keys.push(key);
-          map[key] = value;
           key_map.put(key, value, function(err) {
             if (err) {
               throw err;
@@ -66,7 +63,7 @@ module.exports.run = function(benchmark, next) {
                   benchmark.end();
 
                   var timeout = setTimeout(function() {
-                    assert.ok(false, "timeout");
+                    throw new Error('timeout');
                   }, 240000);
 
                   var tested_keys = 0;
@@ -80,9 +77,8 @@ module.exports.run = function(benchmark, next) {
                       for (var i = 0; i < OBJECT_COUNT; i++) {
                         (function(i) {
                           var key = keys[i];
-                          var value = map[key];
                           key_map.get(key, function(err, record) {
-                            assert.deepEqual(record, value);
+                            if (err) { throw err; }
                           });
                           tested_keys ++;
                           if (tested_keys == going_for) {

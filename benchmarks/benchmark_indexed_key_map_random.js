@@ -24,7 +24,6 @@ module.exports.run = function(benchmark, next) {
     
     benchmark.end();
     
-    var map = {};
     var keys = [];
     var key_count = 0;
     
@@ -41,7 +40,6 @@ module.exports.run = function(benchmark, next) {
           var value = random.createRandomObject();
           var key = random.createRandomString(16);
           keys.push(key);
-          map[key] = value;
           key_map.put(key, value, function(err) {
             if (err) {
               throw err;
