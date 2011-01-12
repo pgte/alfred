@@ -3,28 +3,28 @@ Alfred.open('path/to/database/dir', function(err, db) {
   if (err) { throw err; }
   // now I have the db object to do stuff
 });
-</code></pre><h2>database.attachKeyMap (key_map_name [, options], callback)</h2><p>Attaches a key map to this database.</p><p><ul><li><b>key_map_name</b>: name of this key map. Will be available as a named property of database (<i>database.&lt;key_map_name&gt;</i> or <i>database[key_map_name]</i>).</li><li><b>callback</b> (err, key_map): invoked when there is an error or the key map is attached.</li><li><b>options</b>:<ul><li><b>buffered</b>: if <i>true</i>, writes are buffered (flushes are scheduled every second after the last one by default). If <i>false</i>, key_map.put only callsback when data is written to disk. Defaults to <i>true</i>.</li><li><b>flush_interval</b>: This determines the frequency of flushes. A flush is scheduled <i>flush_interval</i> miliseconds after the last one finished. In miliseconds. Defaults to 1000 (1 second).</li><li><b>type</b>: can be 'cached_key_map' or 'indexed_key_map'. Defaults to 'cached_key_map'. ('cached_key_map' is also indexed)</li><li><b>compact_interval</b>: average compact interval, in miliseconds. Defaults to 1 hour (1000 * 60 * 60).</li><li><b>cache_slots</b>: Maximum number of objects to cache (only valid if type is 'cached_key_map'). Defaults to 1000.</li></ul></li></ul><h3>Example:</h3><pre><code>var Alfred = require('alfred');
-Alfred.open('path/to/database/dir', function(err, db) {
+</code></pre><h2>database.attach (key_map_name [, options], callback)</h2><p>Attaches a key map to this database.</p><p><ul><li><b>key_map_name</b>: name of this key map. Will be available as a named property of database (<i>database.&lt;key_map_name&gt;</i> or <i>database[key_map_name]</i>).</li><li><b>callback</b> (err, key_map): invoked when there is an error or the key map is attached.</li><li><b>options</b>:<ul><li><b>buffered</b>: if <i>true</i>, writes are buffered (flushes are scheduled every second after the last one by default). If <i>false</i>, key_map.put only callsback when data is written to disk. Defaults to <i>true</i>.</li><li><b>flush_interval</b>: This determines the frequency of flushes. A flush is scheduled <i>flush_interval</i> miliseconds after the last one finished. In miliseconds. Defaults to 1000 (1 second).</li><li><b>type</b>: can be 'cached_key_map' or 'indexed_key_map'. Defaults to 'cached_key_map'. ('cached_key_map' is also indexed)</li><li><b>compact_interval</b>: average compact interval, in miliseconds. Defaults to 1 hour (1000 * 60 * 60).</li><li><b>cache_slots</b>: Maximum number of objects to cache (only valid if type is 'cached_key_map'). Defaults to 1000.</li></ul></li></ul><h3>Example:</h3><pre><code>var Alfred = require('alfred');
+Alfred.open ('path/to/database/dir', function(err, db) {
   if (err) { throw err; }
   console.log(db.users); // -> undefined
-  db.attachKeyMap('users', function(err, users_key_map) {
+  db.attach ('users', function(err, users_key_map) {
     if (err) { throw err; }
     // now you can use users_key_map
   })
 });
-</code></pre></p><h2>database.ensureKeyMapAttached (key_map_name [, options], callback)</h2><p>If not attached, attaches this key map.</p><p>If already attached does nothing. If you need to change the options on this key_map, you must detach and then attach.</p><h3>Example:</h3><pre><code>var Alfred = require('alfred');
+</code></pre></p><h2>database.ensure (key_map_name [, options], callback)</h2><p>If not attached, attaches this key map.</p><p>If already attached does nothing. If you need to change the options on this key_map, you must detach and then attach.</p><h3>Example:</h3><pre><code>var Alfred = require('alfred');
 Alfred.open('path/to/database/dir', function(err, db) {
   if (err) { throw err; }
-  db.ensureKeyMapAttached('users', function(err, users_key_map) {
+  db.ensure ('users', function(err, users_key_map) {
     if (err) { throw err; }
     // now you can use users_key_map
   })
 });
-</code></pre><h2>database.detachKeyMap (key_map_name, callback)</h2><p>Detaches a key map from this database.</p><p><i>database.&lt;key_map_name&gt;</i> must already be attached.</p><p><ul><li><b>key_map_name</b>: name of the key map to be detached.</li><li><b>callback</b> (err): invoked when an error occurs or when key map is detached.</li></ul><h3>Example:</h3><pre><code>var Alfred = require('alfred');
+</code></pre><h2>database.detach (key_map_name, callback)</h2><p>Detaches a key map from this database.</p><p><i>database.&lt;key_map_name&gt;</i> must already be attached.</p><p><ul><li><b>key_map_name</b>: name of the key map to be detached.</li><li><b>callback</b> (err): invoked when an error occurs or when key map is detached.</li></ul><h3>Example:</h3><pre><code>var Alfred = require('alfred');
 Alfred.open('path/to/database/dir', function(err, db) {
   if (err) { throw err; }
   console.log('users' in db); // -> true
-  db.detachKeyMap('users', function(err) {
+  db.detach('users', function(err) {
     if (err) { throw err; }
     console.log(db.users); // -> undefined
   })
