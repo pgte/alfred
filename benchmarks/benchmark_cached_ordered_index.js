@@ -73,7 +73,6 @@ module.exports.run = function(benchmark, next) {
 
                   benchmark.start('adding index to key map with ' + OBJECT_COUNT + ' entries');
                   key_map.addIndex('a', {ordered: true}, function(record) {
-                    //console.log(record);
                     return {
                       e: record.a + record.b,
                       f: record.a + record.c
@@ -83,7 +82,7 @@ module.exports.run = function(benchmark, next) {
                     if (err) {
                       throw err;
                     }
-
+                    
                     benchmark.end();
 
                     var timeout = setTimeout(function() {
@@ -99,7 +98,7 @@ module.exports.run = function(benchmark, next) {
                       if (err) {
                         throw err;
                       }
-
+                      
                       clearTimeout(timeout);
                       benchmark.end();
                       assert.equal(null, key);
@@ -111,7 +110,7 @@ module.exports.run = function(benchmark, next) {
 
                       timeout = setTimeout(function() {
                         assert.ok(false, "key_map.filter timeout 2");
-                      }, 60000);
+                      }, 120000);
 
                       benchmark.start('filter and get ' + expect_count + ' records from a key map with ' + OBJECT_COUNT + ' elements');
                       

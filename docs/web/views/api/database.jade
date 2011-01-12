@@ -22,7 +22,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       |   // now I have the db object to do stuff
       | });
   
-  h2 database.attachKeyMap (key_map_name [, options], callback)
+  h2 database.attach (key_map_name [, options], callback)
   p Attaches a key map to this database.
   p
     ul
@@ -39,16 +39,16 @@ p.note Everything here is experimental, and the API is no exception, so expect t
     pre
       code
         | var Alfred = require('alfred');
-        | Alfred.open('path/to/database/dir', function(err, db) {
+        | Alfred.open ('path/to/database/dir', function(err, db) {
         |   if (err) { throw err; }
         |   console.log(db.users); // -> undefined
-        |   db.attachKeyMap('users', function(err, users_key_map) {
+        |   db.attach ('users', function(err, users_key_map) {
         |     if (err) { throw err; }
         |     // now you can use users_key_map
         |   })
         | });
           
-  h2 database.ensureKeyMapAttached (key_map_name [, options], callback)
+  h2 database.ensure (key_map_name [, options], callback)
   p If not attached, attaches this key map.
   p If already attached does nothing. If you need to change the options on this key_map, you must detach and then attach.
   h3 Example:
@@ -57,13 +57,13 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       | var Alfred = require('alfred');
       | Alfred.open('path/to/database/dir', function(err, db) {
       |   if (err) { throw err; }
-      |   db.ensureKeyMapAttached('users', function(err, users_key_map) {
+      |   db.ensure ('users', function(err, users_key_map) {
       |     if (err) { throw err; }
       |     // now you can use users_key_map
       |   })
       | });
 
-  h2 database.detachKeyMap (key_map_name, callback)
+  h2 database.detach (key_map_name, callback)
   p Detaches a key map from this database.
   p <i>database.&lt;key_map_name&gt;</i> must already be attached.
   p
@@ -77,7 +77,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
         | Alfred.open('path/to/database/dir', function(err, db) {
         |   if (err) { throw err; }
         |   console.log('users' in db); // -> true
-        |   db.detachKeyMap('users', function(err) {
+        |   db.detach('users', function(err) {
         |     if (err) { throw err; }
         |     console.log(db.users); // -> undefined
         |   })

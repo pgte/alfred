@@ -1,0 +1,17 @@
+SyntaxErrorUnexpected end of inputSyntaxError: Unexpected end of input
+    at Object.parse (native)
+    at /Users/pedroteixeira/projects/alfred/tools/aggregate_benchmarks.js:64:29
+    at [object Object].<anonymous> (fs.js:86:5)
+    at [object Object].emit (events.js:28:17)
+    at afterRead (fs.js:746:12)TypeErrorObject ended $eq
+[{"name":"populating keymap that has 2 attached indexes","started":1294849271571,"count":100000,"mem_usage_before":{"rss":13787136,"vsize":3117813760,"heapTotal":6433984,"heapUsed":4229984},"ended":1294851836641,"ellapsed":2565070,"average":25.6507,"throughput":38,"memory_usage_after":{"rss":249720832,"vsize":3326128128,"heapTotal":243245600,"heapUsed":200117376},"rss_diff":235933696},{"name":"find $eq operator","started":1294851836641,"count":1000,"mem_usage_before":{"rss":249720832,"vsize":3326128128,"heapTotal":243245600,"heapUsed":200118816},"ended":1294851852879,"ellapsed":16238,"average":16.238,"throughput":61,"memory_usage_after":{"rss":249823232,"vsize":3326128128,"heapTotal":243245600,"heapUsed":205502072},"rss_diff":102400},{"name":"find $range operator","started":1294851852879,"count":1000,"mem_usage_before":{"rss":249823232,"vsize":3326128128,"heapTotal":243245600,"heapUsed":205503344},"ended":1294851885392,"ellapsed":32513,"average":32.513,"throughput":30,"memory_usage_after":{"rss":249839616,"vsize":3326144512,"heapTotal":243261984,"heapUsed":207037624},"rss_diff":16384}]
+ has no method 'forEach'TypeError: Object ended $eq
+[{"name":"populating keymap that has 2 attached indexes","started":1294849271571,"count":100000,"mem_usage_before":{"rss":13787136,"vsize":3117813760,"heapTotal":6433984,"heapUsed":4229984},"ended":1294851836641,"ellapsed":2565070,"average":25.6507,"throughput":38,"memory_usage_after":{"rss":249720832,"vsize":3326128128,"heapTotal":243245600,"heapUsed":200117376},"rss_diff":235933696},{"name":"find $eq operator","started":1294851836641,"count":1000,"mem_usage_before":{"rss":249720832,"vsize":3326128128,"heapTotal":243245600,"heapUsed":200118816},"ended":1294851852879,"ellapsed":16238,"average":16.238,"throughput":61,"memory_usage_after":{"rss":249823232,"vsize":3326128128,"heapTotal":243245600,"heapUsed":205502072},"rss_diff":102400},{"name":"find $range operator","started":1294851852879,"count":1000,"mem_usage_before":{"rss":249823232,"vsize":3326128128,"heapTotal":243245600,"heapUsed":205503344},"ended":1294851885392,"ellapsed":32513,"average":32.513,"throughput":30,"memory_usage_after":{"rss":249839616,"vsize":3326144512,"heapTotal":243261984,"heapUsed":207037624},"rss_diff":16384}]
+ has no method 'forEach'
+    at /Users/pedroteixeira/projects/alfred/tools/aggregate_benchmarks.js:47:21
+    at /Users/pedroteixeira/projects/alfred/tools/aggregate_benchmarks.js:67:9
+    at Array.forEach (native)
+    at /Users/pedroteixeira/projects/alfred/tools/aggregate_benchmarks.js:66:18
+    at [object Object].<anonymous> (fs.js:86:5)
+    at [object Object].emit (events.js:28:17)
+    at afterRead (fs.js:746:12)

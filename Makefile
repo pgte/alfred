@@ -24,7 +24,7 @@ test: mkdirtmp
 	replication/test_master replication/test_slave replication/test_slave_reconnect replication/test_master_temp_roll
 
 benchmark: mkdirtmp mkdirresults
-	node tools/benchmarks.js benchmark_collection benchmark_collection_filter benchmark_key_map benchmark_key_map_each_with_pos benchmark_indexed_key_map \
+	node tools/benchmarks.js benchmark_find benchmark_collection benchmark_collection_filter benchmark_key_map benchmark_key_map_each_with_pos benchmark_indexed_key_map \
 	benchmark_indexed_key_map_random benchmark_cached_key_map_random benchmark_unordered_index benchmark_cached_unordered_index \
 	benchmark_cached_ordered_index > benchmarks/results/runs/`date  "+%Y%m%d%H%M%S"`
 

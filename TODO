@@ -1,3 +1,4 @@
+- Create a chainable .first() (which maps into .limit(1))
 - Compact meta key_map on database startup.
 - BUG: For some strange reason the last replication master temp file is not deleted.
 - Allow master-master replication

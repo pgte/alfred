@@ -49,7 +49,7 @@ module.exports.run = function(next) {
 
     var timeout = setTimeout(function() {
       assert.ok(false, 'timeout');
-    }, 10000);
+    }, 20000);
     
     var args = process.argv;
     var command = args.splice(0, 1)[0];
