@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><head><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script><script type="text/javascript" src="javascripts/jquery.tmpl.min.js"></script><script type="text/javascript" src="javascripts/flot/jquery.flot.min.js"></script><link rel="stylesheet" href="stylesheets/benchmarks.css"><title>Alfred.js</title></head><body><div id="header"><h1><a href="index.html">Alfred</a></h1><p><i>Node is your mansion, Alfred is your butler</i></p><div id="menu"><ul><li><a href="api.html">API</a></li><li><a href="examples.html">Examples</a></li><li><a href="features.html">Features</a></li><li><a href="internals.html">Internals</a></li><li><a href="benchmarks.html">Benchmarks</a></li><li><a href="https://github.com/pgte/alfred">Browse source</a></li><li><a href="index.html">Home</a></li></ul></div></div><div id="main"><div id="container"><div id="examples"><h1>Examples</h1><h2>Create a Key Map</h2><p><pre><code>var alfred = require('alfred');
 alfred.open('path/to/db/dir', function(err, db) {
   if (err) { throw err; }
-  db.ensureKeyMapAttached('users', function(err, users_key_map) {
+  db.ensure('users', function(err, users_key_map) {
     console.log('users key map attached');
   });
 });  
