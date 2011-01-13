@@ -2,6 +2,26 @@ p.note Everything here is experimental, and the API is no exception, so expect t
 
 #api
   h4 Key Map
+  
+  ol
+    li
+      a(href='#index_manip') Index Manipulation
+    li
+      a(href='#store') Store
+    li
+      a(href='#streams') Streams
+    li
+      a(href='#traversing') Traversing
+    li
+      a(href='#filtering') Filtering
+    li
+      a(href='#atomic') Atomic
+    li
+      a(href='#compactation') Compactation
+    li
+      a(href='#events') Events
+  
+  a(id='index_manip')
   h1 Index manipulation
   h2 key_map.addIndex (name, [options, ] transform_function, callback)
   p Adds an index to key_map.
@@ -32,7 +52,6 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       |       if (err) { throw err; }
       |       // Now you can use the users.age index
       |     });
-      |     
       |   })
       | });
 
@@ -47,6 +66,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       li <b>name</b>: the name of the index
       li <b>callback</b> (error): called when there is an error or the index is removed.
   
+  a(id='store')
   h1 Store
   h2 key_map.put (key, value, callback)
   p Stores a value later retrievable by key_map.get (key, ...).
@@ -72,6 +92,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
     ul
       li <b>callback</b> (err, count): Called when there is an error or counting is done
 
+  a(id='streams')
   h1 Streams
   
   h2 key_map.startStream (filter_function, callback)
@@ -90,6 +111,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       li <b>stream_handle</b>: A stream handle previously returned by key_map.startStream().
       li <b>callback</b> (err, record): Called when there is an error or a record was selected.
 
+  a(id='traversing')
   h1 Traversing
   
   h2 key_map.scan (callback)
@@ -98,6 +120,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
     ul
       li <b>callback</b> (err, key, value): Called when there is an error or a record is found.
 
+  a(id='filtering')
   h1 Filtering
   
   h2 key_map.range(index, start, end, callback)
@@ -126,6 +149,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       li <b>value</b>: the value the index will be matched against.
       li <b>callback</b> (err, key, valye): called when there is an error or there is a match.
   
+  a(id='atomic')
   h1 Atomic
   
   h2 key_map.atomic (key, callback, result_callback)
@@ -150,11 +174,13 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       |   }
       | );
       
+  a(id='compactation')
   h1 Compactation
   
   h2 key_map.compact (callback)
   p Compacts a key map, loosing all past history.
   
+  a(id='events')
   h1 Events
   
   p Regsiter ro receive events like this:

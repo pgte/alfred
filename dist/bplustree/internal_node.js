@@ -9,6 +9,7 @@ var InternalNode = module.exports = function(order) {
 };
 
 InternalNode.prototype.split = function() {
+  var time = Date.now();
   var m = null;
   if(this.order % 2){
     var m = (this.data.length-1)/2 - 1;

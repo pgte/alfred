@@ -2,7 +2,7 @@ var LeafNode     = require('./leaf_node'),
     InternalNode = require('./internal_node');
 
 var default_options = {
-  order: 2 // Min 1
+  order: 100 // Min 1
 };
 
 var BPlusTree = module.exports = function(options) {
@@ -52,7 +52,7 @@ BPlusTree.prototype._search = function(key) {
     // Follow infinity pointer
     if(!found) current = current.data[len - 1];
   }
-
+  
   return current;
 };
 

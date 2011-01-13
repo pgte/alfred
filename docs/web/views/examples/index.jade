@@ -8,7 +8,7 @@
         | var alfred = require('alfred');
         | alfred.open('path/to/db/dir', function(err, db) {
         |   if (err) { throw err; }
-        |   db.ensureKeyMapAttached('users', function(err, users_key_map) {
+        |   db.ensure('users', function(err, users_key_map) {
         |     console.log('users key map attached');
         |   });
         | });  
