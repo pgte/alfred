@@ -78,7 +78,7 @@ $(document).ready(function() {
                 min: (new Date(min_day)).getTime(),
                 max: (new Date(max_day)).getTime()              }
             };
-            var plot_in = '#'+benchmark_name + '_' + result_name.replace(/( |\.)/g, '_') + '_' + metric_name.replace(/ /g, '_');
+            var plot_in = '#'+benchmark_name + '_' + result_name.replace(/( |\.|\$)/g, '_') + '_' + metric_name.replace(/ /g, '_');
             $.plot($(plot_in), [metric_plot_data], options);
             
           }

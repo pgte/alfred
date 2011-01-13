@@ -15,6 +15,8 @@ ol
   li
     a(href='#benchmark_collection_filter') Benchmark collection filter
   li
+    a(href='#benchmark_key_map') Benchmark key map
+  li
     a(href='#benchmark_key_map_each_with_pos') Benchmark key map.eachWithPos
   li
     a(href='#benchmark_indexed_key_map') Benchmark indexed key map
@@ -28,6 +30,8 @@ ol
     a(href='#benchmark_cached_unordered_index') Benchmark cached unordered index
   li
     a(href='#benchmark_cached_ordered_index') Benchmark cached ordered index
+  li
+    a(href='#benchmark_find') Benchmark find
 
 #benchmarks
 script(type='text/javascript', src='/javascripts/benchmarks.js')
@@ -64,23 +68,23 @@ script(id='benchmark_template', type='text/x-jquery-tmpl')
   |   </table>
   |   <div class="graph_wrapper">
   |     <h5>rss_before</h5>
-  |     <div id="\${($item.data.name + '_' + $value.name).replace(/( |\\.)/g, '_')}_rss_before" style="width: 320px; height: 150px"></div>
+  |     <div id="\${($item.data.name + '_' + $value.name).replace(/( |\\.|\\$)/g, '_')}_rss_before" style="width: 320px; height: 150px"></div>
   |   </div>
   |   <div class="graph_wrapper">
   |     <h5>ellapsed</h5>
-  |     <div id="\${($item.data.name + '_' + $value.name).replace(/( |\\.)/g, '_')}_ellapsed" style="width: 320px; height: 150px"></div>
+  |     <div id="\${($item.data.name + '_' + $value.name).replace(/( |\\.|\\$)/g, '_')}_ellapsed" style="width: 320px; height: 150px"></div>
   |   </div>
   |   <div class="graph_wrapper">
   |     <h5>rss_after</h5>
-  |     <div id="\${($item.data.name + '_' + $value.name).replace(/( |\\.)/g, '_')}_rss_after" style="width: 320px; height: 150px"></div>
+  |     <div id="\${($item.data.name + '_' + $value.name).replace(/( |\\.|\\$)/g, '_')}_rss_after" style="width: 320px; height: 150px"></div>
   |   </div>
   |   <div class="graph_wrapper">
   |     <h5>rss_diff</h5>
-  |     <div id="\${($item.data.name + '_' + $value.name).replace(/( |\\.)/g, '_')}_rss_diff" style="width: 320px; height: 150px"></div>
+  |     <div id="\${($item.data.name + '_' + $value.name).replace(/( |\\.|\\$)/g, '_')}_rss_diff" style="width: 320px; height: 150px"></div>
   |   </div>
   |   <div class="graph_wrapper">
   |     <h5>throughput</h5>
-  |     <div id="\${($item.data.name + '_' + $value.name).replace(/( |\\.)/g, '_')}_throughput" style="width: 320px; height: 150px"></div>
+  |     <div id="\${($item.data.name + '_' + $value.name).replace(/( |\\.|\\$)/g, '_')}_throughput" style="width: 320px; height: 150px"></div>
   |   </div>
   | {{/each}}
   | <div style="clear:both"></div>
