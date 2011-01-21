@@ -20,9 +20,18 @@ var USERS = {
 var USER_COUNT = 7;
 
 module.exports.setup = function(next) {
-  fs.readdirSync(DB_PATH).forEach(function(dir) {
-    fs.unlinkSync(DB_PATH + '/' + dir);
-  });
+  (function removeFilesUnder(dir) {
+    fs.readdirSync(dir).forEach(function(path) {
+      var path = dir + '/' + path;
+      var stat = fs.statSync(path);
+      if (stat.isFile()) {
+        fs.unlinkSync(path);
+      } else {
+        removeFilesUnder(path);
+        fs.rmdirSync(path);
+      }
+    });
+  })(DB_PATH);
   next();
 };
 
@@ -155,7 +164,6 @@ module.exports.run = function(next) {
       
     } else {
       // mock-slave
-      
       var expected_objects = [
         { m: 'meta',
         command: 'attach_key_map',
@@ -250,10 +258,9 @@ module.exports.run = function(next) {
               next(new Error('Error from master: ' + obj.error));
               return;
             }
-            records.push(obj)
+            assert.deepEqual(expected_objects[result_count], obj);
             result_count ++;
             if (result_count == expected_objects.length) {
-              assert.deepEqual(expected_objects, records);
               clearTimeout(timeout);
               next();
             }

@@ -1,4 +1,5 @@
 var fs     = require('fs'),
+    assert = require('assert'),
     Alfred = require('../lib/alfred'),
     RandomGenerator = require('../tools/random_generator');
 
@@ -47,34 +48,50 @@ module.exports.run = function(benchmark, next) {
                 var found = 0;
                 benchmark.end();
                 
-                benchmark.start('find $eq operator', FIND_COUNT);
-                for (var j = 0; j < FIND_COUNT; j++) {
-                  db.users.find({age: {$eq : Math.floor(Math.random() * 100)}}).bulk(function(err) {
+                benchmark.start('finder with no get', FIND_COUNT);
+                
+                for (var ii = 0; ii < FIND_COUNT; ii++) {
+                  db.users.find({age: {$eq: RandomGenerator.createRandomString(90)}}).bulk(function(err, users) {
                     if (err) { throw err; }
-                    
-                    if (++found == FIND_COUNT) {
-                      
-                      found = 0;
-                      
+                    found ++;
+                    assert.equal(0, users.length);
+                    if (found == FIND_COUNT) {
                       benchmark.end();
-                      
-                      benchmark.start('find $range operator', FIND_COUNT);
-                      for (var k = 0; k < FIND_COUNT; k++) {
-                        var new_age = Math.floor(Math.random() * 100)
-                        db.users.find({age: {$range : [new_age, new_age + 1]}}).bulk(function(err) {
-                          if (err) { throw err; }
-                          if (++found == FIND_COUNT) {
-                            benchmark.end();
-                            db.close(function(err) {
-                              if (err) { throw err; }
-                              next();
-                            });
-                          }
-                        });
-                      }
+                      (function() {
+                        var found = 0;
+                        benchmark.start('find $eq operator', FIND_COUNT);
+                        for (var j = 0; j < FIND_COUNT; j++) {
+                          db.users.find({age: {$eq : Math.floor(Math.random() * 100)}}).bulk(function(err) {
+                            if (err) { throw err; }
+
+                            if (++found == FIND_COUNT) {
+
+                              found = 0;
+
+                              benchmark.end();
+
+                              benchmark.start('find $range operator', FIND_COUNT);
+                              for (var k = 0; k < FIND_COUNT; k++) {
+                                var new_age = Math.floor(Math.random() * 100)
+                                db.users.find({age: {$range : [new_age, new_age + 1]}}).bulk(function(err) {
+                                  if (err) { throw err; }
+                                  if (++found == FIND_COUNT) {
+                                    benchmark.end();
+                                    db.close(function(err) {
+                                      if (err) { throw err; }
+                                      next();
+                                    });
+                                  }
+                                });
+                              }
+                            }
+                          });
+                        }
+                      })();
                     }
                   });
                 }
+
               }
             });
           }
