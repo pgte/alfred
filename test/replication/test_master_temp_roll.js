@@ -94,7 +94,7 @@ module.exports.run = function(next) {
       
       var db_options = {
         replication_master: true,
-        replication_max_temp_file_size_kb: 100
+        replication_max_file_size_kb: 10
       };
 
       alfred.open(DB_PATH, db_options, function(err, db) {
@@ -106,15 +106,18 @@ module.exports.run = function(next) {
             var put_count = 0;
             
             setTimeout(function() {
-              for (var i = 0; i < 10000; i++) {
-                (function (i) {
-                  var obj = random_generator.createRandomObject();
-                  obj.__index = i;
-                  db.store.put(random_generator.createRandomString(), obj, function(err) {
-                    if (err) { next(err); return; }
-                  });
-                }) (i);
-              }
+              var i = 0;
+              var interval = setInterval(function() {
+                var obj = random_generator.createRandomObject();
+                obj.__index = i;
+                db.store.put(random_generator.createRandomString(), obj, function(err) {
+                  if (err) { next(err); return; }
+                });
+                i ++;
+                if (i == 1000) {
+                  clearInterval(interval);
+                }
+              }, 10);
             }, 3000);
           })
           
@@ -152,12 +155,11 @@ module.exports.run = function(next) {
               next(new Error('Error from master: ' + obj.error));
               return;
             }
-            
             if (obj.m != 'meta') {
               assert.equal(obj.m, 'store');
               assert.equal(result_count, obj.v.__index);
               result_count ++;
-              if (result_count == 10000) {
+              if (result_count == 1000) {
                 clearTimeout(timeout);
                 setTimeout(function() {
                   next();
