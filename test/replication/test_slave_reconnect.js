@@ -8,9 +8,18 @@ var assert        = require('assert')
 var SLAVE_DB_PATH = __dirname + '/../../tmp/db2';
 
 module.exports.setup = function(next) {
-  fs.readdirSync(SLAVE_DB_PATH).forEach(function(dir) {
-    fs.unlinkSync(SLAVE_DB_PATH + '/' + dir);
-  });
+  (function removeFilesUnder(dir) {
+    fs.readdirSync(dir).forEach(function(path) {
+      var path = dir + '/' + path;
+      var stat = fs.statSync(path);
+      if (stat.isFile()) {
+        fs.unlinkSync(path);
+      } else {
+        removeFilesUnder(path);
+        fs.rmdirSync(path);
+      }
+    });
+  })(SLAVE_DB_PATH);
   next();
 };
 
