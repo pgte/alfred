@@ -1,5 +1,6 @@
 var assert        = require('assert')
   , fs            = require('fs')
+  , path          = require('path')
   , net           = require('net')
   , child_process = require('child_process')
   , util          = require('util')
@@ -21,16 +22,18 @@ var USER_COUNT = 7;
 
 module.exports.setup = function(next) {
   (function removeFilesUnder(dir) {
-    fs.readdirSync(dir).forEach(function(path) {
-      var path = dir + '/' + path;
-      var stat = fs.statSync(path);
-      if (stat.isFile()) {
-        fs.unlinkSync(path);
-      } else {
-        removeFilesUnder(path);
-        fs.rmdirSync(path);
-      }
-    });
+    if (path.existsSync(dir)) {
+      fs.readdirSync(dir).forEach(function(path) {
+        var path = dir + '/' + path;
+        var stat = fs.statSync(path);
+        if (stat.isFile()) {
+          fs.unlinkSync(path);
+        } else {
+          removeFilesUnder(path);
+          fs.rmdirSync(path);
+        }
+      });
+    }
   })(DB_PATH);
   next();
 };
