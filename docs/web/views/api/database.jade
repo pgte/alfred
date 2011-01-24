@@ -13,6 +13,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
           li <b>replication_master</b>: true if this database is going to act as a replication master. Defaults to false.
           li <b>replication_port</b>: replication server port for this database. Defaults to 5293.
           li <b>replication_max_file_size_kb</b>: maximum file size for replication temporary files on master. Defaults to 10000 KBytes.
+          li <b>replication_max_keep_ms</b>: maximum time a replication temporary file should be kept around. Defaults to 15 days.
   h3 Example:
   pre
     code

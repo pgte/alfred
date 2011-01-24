@@ -170,7 +170,8 @@ module.exports.run = function(next) {
       var expected_objects = [
         { m: 'meta',
         command: 'attach_key_map',
-        arguments: [ 'users', { cache_slots: 1000 } ] }
+        arguments: [ 'users', { cache_slots: 1000 }, ],
+        __log_pos: 1}
 
       , { m: 'meta',
         command: 'add_index',
@@ -178,7 +179,8 @@ module.exports.run = function(next) {
          [ 'users',
            'sex',
            { bplustree_order: 100, ordered: true },
-           'function (user) {\n              return user.sex;\n            }' ] }
+           'function (user) {\n              return user.sex;\n            }' ],
+        __log_pos: 2}
 
       , { m: 'meta',
         command: 'add_index',
@@ -186,50 +188,65 @@ module.exports.run = function(next) {
          [ 'users',
            'age',
            { bplustree_order: 100, ordered: true },
-           'function (user) {\n              return user.age;\n            }' ] }
+           'function (user) {\n              return user.age;\n            }' ],
+        __log_pos: 3}
 
       ,{ m: 'users',
         k: '1',
-        v: { name: 'Pedro', age: 35, sex: 'm' } }
+        v: { name: 'Pedro', age: 35, sex: 'm' },
+        __log_pos: 4}
       ,{ m: 'users',
         k: '2',
-        v: { name: 'John', age: 32, sex: 'm' } }
+        v: { name: 'John', age: 32, sex: 'm' },
+        __log_pos: 5}
       ,{ m: 'users',
         k: '3',
-        v: { name: 'Bruno', age: 28, sex: 'm' } }
+        v: { name: 'Bruno', age: 28, sex: 'm' },
+        __log_pos: 6}
       ,{ m: 'users',
         k: '4',
-        v: { name: 'Sandra', age: 35, sex: 'f' } }
+        v: { name: 'Sandra', age: 35, sex: 'f' },
+        __log_pos: 7}
       , { m: 'users',
         k: '5',
-        v: { name: 'Patricia', age: 42, sex: 'f' } }
+        v: { name: 'Patricia', age: 42, sex: 'f' },
+        __log_pos: 8}
       , { m: 'users',
         k: '6',
-        v: { name: 'Joana', age: 29, sex: 'f' } }
+        v: { name: 'Joana', age: 29, sex: 'f' },
+        __log_pos: 9}
       , { m: 'users',
         k: '7',
-        v: { name: 'Susana', age: 30, sex: 'f' } }
+        v: { name: 'Susana', age: 30, sex: 'f' },
+        __log_pos: 10}
       , { m: 'users',
         k: '1',
-        v: { name: 'Pedro', age: 35, sex: 'm', rndm: '1' } }
+        v: { name: 'Pedro', age: 35, sex: 'm', rndm: '1' },
+        __log_pos: 11}
       , { m: 'users',
         k: '2',
-        v: { name: 'John', age: 32, sex: 'm', rndm: '2' } }
+        v: { name: 'John', age: 32, sex: 'm', rndm: '2' },
+        __log_pos: 12}
       , { m: 'users',
         k: '3',
-        v: { name: 'Bruno', age: 28, sex: 'm', rndm: '3' } }
+        v: { name: 'Bruno', age: 28, sex: 'm', rndm: '3' },
+        __log_pos: 13}
       , { m: 'users',
         k: '4',
-        v: { name: 'Sandra', age: 35, sex: 'f', rndm: '4' } }
+        v: { name: 'Sandra', age: 35, sex: 'f', rndm: '4' },
+        __log_pos: 14}
       , { m: 'users',
         k: '5',
-        v: { name: 'Patricia', age: 42, sex: 'f', rndm: '5' } }
+        v: { name: 'Patricia', age: 42, sex: 'f', rndm: '5' },
+        __log_pos: 15}
       , { m: 'users',
         k: '6',
-        v: { name: 'Joana', age: 29, sex: 'f', rndm: '6' } }
+        v: { name: 'Joana', age: 29, sex: 'f', rndm: '6' },
+        __log_pos: 16}
       , { m: 'users',
         k: '7',
-        v: { name: 'Susana', age: 30, sex: 'f', rndm: '7' } }
+        v: { name: 'Susana', age: 30, sex: 'f', rndm: '7' },
+        __log_pos: 17}
       ];
       
       var records = [];
