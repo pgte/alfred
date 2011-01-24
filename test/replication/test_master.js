@@ -278,6 +278,7 @@ module.exports.run = function(next) {
               next(new Error('Error from master: ' + obj.error));
               return;
             }
+            delete obj['__logger_id'];
             assert.deepEqual(expected_objects[result_count], obj);
             result_count ++;
             if (result_count == expected_objects.length) {
