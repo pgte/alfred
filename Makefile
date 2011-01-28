@@ -22,7 +22,7 @@ test: mkdirtmp
 	operators/test_find_stream operators/test_find_stream_chained \
 	recovery/collection_recovery_test \
 	replication/test_master replication/test_slave replication/test_slave_reconnect replication/test_master_temp_roll replication/test_master_seek \
-	model/test_model_save
+	model/test_model_save model/test_model_properties
 
 benchmark: mkdirtmp mkdirresults
 	node tools/benchmarks.js benchmark_find benchmark_collection benchmark_collection_filter benchmark_key_map benchmark_key_map_each_with_pos benchmark_indexed_key_map \

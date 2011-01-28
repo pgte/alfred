@@ -48,9 +48,9 @@ module.exports.run = function(next) {
     var users = [];
     
     USERS.forEach(function(USER) {
-      var user = User.instantiate(USER);
+      var user = User.new(USER);
       user.save(function(errors) {
-        if (errors) { next(new Error('validation errors: ' + util.inspect(errors))); }
+        if (errors) { next(new Error('validation errors: ' + util.inspect(errors))); return; }
         users.push(user);
         if (-- left === 0) {
           left = users.length;
@@ -59,7 +59,7 @@ module.exports.run = function(next) {
               assert.ok(user.equal(gotUser), 'user ('+user.toString()+') and gotten user ('+gotUser.toString()+') are different');
               if (-- left === 0) {
                 clearTimeout(timeout);
-                next();
+                db.close(next)
               }
             });
           });
