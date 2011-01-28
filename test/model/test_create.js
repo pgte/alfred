@@ -1,6 +1,7 @@
 var assert = require('assert')
   , fs     = require('fs')
-  , util   = require('util');
+  , util   = require('util')
+  , path   = require('path');
 
 var DB_PATH = __dirname + '/../../tmp/db';
 
@@ -15,9 +16,20 @@ var USERS = [
 ];
 
 module.exports.setup = function(next) {
-  fs.readdirSync(DB_PATH).forEach(function(dir) {
-    fs.unlinkSync(DB_PATH + '/' + dir);
-  });
+  (function removeFilesUnder(dir) {
+    if (path.existsSync(dir)) {
+      fs.readdirSync(dir).forEach(function(path) {
+        var path = dir + '/' + path;
+        var stat = fs.statSync(path);
+        if (stat.isFile()) {
+          fs.unlinkSync(path);
+        } else {
+          removeFilesUnder(path);
+          fs.rmdirSync(path);
+        }
+      });
+    }
+  })(DB_PATH);
   next();
 };
 

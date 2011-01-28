@@ -279,6 +279,7 @@ module.exports.run = function(next) {
               next(new Error('Error from master: ' + obj.error));
               return;
             }
+            delete obj['__logger_id'];
             assert.deepEqual(expected_objects[result_count], obj);
             result_count ++;
             if (obj.__log_pos == 10) {
@@ -296,6 +297,7 @@ module.exports.run = function(next) {
                       next(new Error('Error from master: ' + obj.error));
                       return;
                     }
+                    delete obj['__logger_id'];
                     assert.ok(obj.__log_pos > 10, '__log_pos < 10');
                     assert.deepEqual(expected_objects[result_count], obj);
                     result_count ++;
