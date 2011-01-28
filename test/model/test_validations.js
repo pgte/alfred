@@ -5,7 +5,7 @@ var assert = require('assert')
 
 var DB_PATH = __dirname + '/../../tmp/db';
 
-var WRONG_USER = {name: 'Pedro Gonçalves Teixeira', sex: 'k', address: 'a', married: 1, email: 'pupup@gugu'};
+var WRONG_USER = {name: 'Pedro Gonçalves Teixeira', sex: 'k', address: 'a', married: 1, email: 'pupup@gugu', role: 'gugu'};
 var EXPECTED_ERRORS = [
   { attribute: 'maxLength',
     property: 'name',
@@ -41,10 +41,16 @@ var EXPECTED_ERRORS = [
     property: 'email',
     expected: /^([a-zA-Z0-9_\.-])+@(([a-zA-Z0-9-])+\.)+[a-zA-Z0-9]{2,4}/,
     actual: 'pupup@gugu',
-    message: 'IINNVVAALLIID' }
+    message: 'IINNVVAALLIID' },
+  { attribute: 'validateWith',
+    property: 'role',
+    expected: 'Function',
+    actual: 'gugu',
+    message: 'is invalid'
+  }
 ];
     
-var RIGHT_USER = {name: 'Pedro', age: 30, sex: 'm', address: 'Estrada 1', email: 'pupup@gugu.co.uk', married: true};
+var RIGHT_USER = {name: 'Pedro', age: 30, sex: 'm', address: 'Estrada 1', email: 'pupup@gugu.co.uk', married: true, role: 'admin'};
 
 module.exports.setup = function(next) {
   (function removeFilesUnder(dir) {
@@ -96,6 +102,11 @@ module.exports.run = function(next) {
     User.property('email', 'string', {
       pattern: /^([a-zA-Z0-9_\.-])+@(([a-zA-Z0-9-])+\.)+[a-zA-Z0-9]{2,4}/,
       messages: {pattern: 'IINNVVAALLIID'}
+    });
+    User.property('role', 'string', {
+      validateWith: function(role) {
+        return role == 'admin';
+      }
     });
     
     var user = User.new(WRONG_USER);
