@@ -102,7 +102,7 @@
     pre
       code
         | // find the with age > 28 and <= 35 OR that are female
-        | db.users.find({age: {$gt: 28, $lte: 35}}).or({sex: {$eq: 'f'}}).bulk(function(err, users) {
+        | db.users.find({age: {$gt: 28, $lte: 35}}).or({sex: {$eq: 'f'}}).all(function(err, users) {
         |   if (err) { throw err; }
         |   users.forEach(function(user) {
         |     console.log(user);

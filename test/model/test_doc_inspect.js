@@ -1,0 +1,1 @@
+// Test doc.inspect()
