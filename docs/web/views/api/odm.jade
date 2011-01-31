@@ -1,6 +1,22 @@
 p.note Everything here is experimental, and the API is no exception, so expect things to change in future releases.
 
+
 #api
+
+  h2 Index
+  p
+    ul
+      li
+        a(href="#database") Database
+      li
+        a(href="#model") Model
+      li
+        a(href="#document") Document
+      li
+        a(href="#events") Events
+
+
+  a(id="database")
   h1 Database
   h2 Alfred.open (path_to_database, [options, ] callback)
   p Opens a new or an existing database that resides in <i>path_to_database</i>.
@@ -24,14 +40,14 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       |   // now I have the db object to do stuff
       | });
   
+  a(id="model")
   h1 Model
   
-  h2 database.define (modelName, schema, options)
+  h2 database.define (modelName,options)
   p Define a new model.
   p
     ul
       li <b>modelName</b>: the model name. Ex.: "User".
-      li <b>schema</b>: See <a href="/api/dom/schema">Schema</a>.
       li <b>options</b>: Optional. The same options as db.attach:
         ul
           li <b>buffered</b>: if <i>true</i>, writes are buffered (flushes are scheduled every second after the last one by default). If <i>false</i>, key_map.put only callsback when data is written to disk. Defaults to <i>true</i>.
@@ -41,8 +57,72 @@ p.note Everything here is experimental, and the API is no exception, so expect t
           li <b>cache_slots</b>: Maximum number of objects to cache (only valid if type is 'cached_key_map'). Defaults to 1000.
   p <b>Returns</b>: a model instance
   
+  h2 Model.property (name, type, schema)
+  p Defines a new property for the model
+  p
+    ul
+      li <b>name</b>: The name of the property. You can later get and set it.
+      li <b>type</b>: Alfred.js currently supports: 'string', 'array','object', 'number', 'integer', 'null', 'boolean' and 'any'.
+      li <b>schema</b>: An object containing the schema definition for the property. Valid properties are:
+        ul
+          li <b>optional</b>: true or false
+          li <b>enum</b>: the value should contain an array with the possible values
+          li <b>validateWith</b>: pass in a function that gets the document and returns true if the document id valid.
+          li <b>pattern</b>: pass in a RegExp that the string should conform to (in case of a string).
+          li <b>minLength</b>: define the minimum length (in case of a string).
+          li <b>maxLength</b>: define the maximum length (in case of a string).
+          li <b>minimum</b>: define the minimum value (in case of a number).
+          li <b>maximum</b>: define the maximum value (in case of a number).
+          li <b>divisibleBy</b>: should be divisible by (in case of a number)
+  p Example:
+  p
+    pre
+      code
+        | var User = db.define('User');
+        | User.property('name', 'string', {
+        |   minLength: 3,
+        |   maxLength: 10
+        | });
+        | User.property('address', 'string', {
+        |   minLength: 3,
+        |   maxLength: 10
+        | });
+        | User.property('age', Number, { required: true });
+        | User.property('sex', 'string', {
+        |   enum: ['f', 'm'],
+        |   required: true,
+        | });
+        | User.property('married', 'boolean');
+        | User.property('email', 'string', {
+        |   pattern: /^([a-zA-Z0-9_\.-])+@(([a-zA-Z0-9-])+\.)+[a-zA-Z0-9]{2,4}/,
+        |   messages: {pattern: 'IINNVVAALLIID'}
+        | });
+        | User.property('role', 'string', {
+        |   validateWith: function(role) {
+        |     return role == 'admin';
+        |   }
+        | });
+  
+  h2 Model.index(name, fn, options)
+  p Creates an index if the index is not already defined.<br />If an index with this name already exists the index is not modified.
+  p
+    ul
+      li <b>name</b>: the name of the index. You will use this name on finders.
+      li <b>fn</b> (document): A function that gets a document and returns the indexable falue.
+      li <b>options</b>: object containing or not the following properties:
+        ul
+          li <b>ordered</b>: true the index should be ordered. Defaults to true.
+  p Example:
+  p
+    pre
+      code
+        | var User = db.define('User');
+        | User.index('age', function(user) {
+        |   return user.age;
+        | });
+  
   h2 Model.get(id, callback)
-  p Get a model by ID
+  p Get a document by ID.
   p Example:
     pre
       code
@@ -60,7 +140,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
         | var user = User.new({name: 'Pedro Teixeira', role: 'admin'});
 
   h2 Model.destroy(id, callback)
-  p Destroy the model by id.
+  p Destroy the document by id.
   p
     ul
       li <b>callback</b>: called when the model is destroyed.
@@ -82,6 +162,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
         |   console.log('Found ' + users.length + ' users');
         | }).or({sex: {$eq: 'f'}});
 
+  a(id="document")
   h1 Document
   
   h2 document.save(callback)
@@ -114,4 +195,30 @@ p.note Everything here is experimental, and the API is no exception, so expect t
         | var user = User.get(id);
         | user.destroy(function() {
         |   console.log('user with id ' + id + ' destroyed');
+        | });
+
+  a(id="events")
+  h1 Events
+  
+  p You can bind for events on documents. These are the supported events:
+  
+  h2 "beforeValidate" (document)
+  p Called after the "save" is called on the API, but before any validation is done.
+  
+  h2 "afterValidate" (document)
+  p Called after validation is done.
+  
+  h2 "beforeSave" (document)
+  p Called before saving is done.
+  
+  h2 "afterSave" (document)
+  p Called after saving is done.
+  
+  p Example:
+  p
+    pre
+      code
+        | var User = db.define('User');
+        | User.on('beforeSave', function(user) {
+        |   console.log('going to save user ' + user.inspect());
         | });
