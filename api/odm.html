@@ -1,0 +1,66 @@
+<!DOCTYPE html><html><head><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script><script type="text/javascript" src="../javascripts/jquery.tmpl.min.js"></script><script type="text/javascript" src="../javascripts/flot/jquery.flot.min.js"></script><link rel="stylesheet" href="../stylesheets/benchmarks.css"><title>Alfred.js</title></head><body><div id="header"><h1><a href="../index.html">Alfred<span class="js">.js</span></a></h1><p><i>Node is your mansion, Alfred is your butler</i></p><div id="menu"><ul><li><a href="../api.html">API</a></li><li><a href="../examples.html">Examples</a></li><li><a href="../features.html">Features</a></li><li><a href="../internals.html">Internals</a></li><li><a href="../benchmarks.html">Benchmarks</a></li><li><a href="https://github.com/pgte/alfred">Browse source</a></li><li><a href="../index.html">Home</a></li></ul></div></div><div id="main"><div id="container"><p class="note">Everything here is experimental, and the API is no exception, so expect things to change in future releases.</p><div id="api"><h2>Index</h2><p><ul><li><a href="odm.html#database">Database</a></li><li><a href="odm.html#model">Model</a></li><li><a href="odm.html#document">Document</a></li><li><a href="odm.html#events">Events</a></li></ul></p><a id="database"></a><h1>Database</h1><h2>Alfred.open (path_to_database, [options, ] callback)</h2><p>Opens a new or an existing database that resides in <i>path_to_database</i>.</p><p><ul><li><b>path_to_database</b>: directory where the database files (will) reside. Must already exist.</li><li><b>callback</b> (err, db): invoked when there is an error or the database is open. Use db to access / create / remove key maps.</li><li><b>options:</b><ul><li><b>meta_compact_interval</b>: default average compact interval for the metadata key map, in miliseconds. Defaults to 1 hour (1000 * 60 * 60).</li><li><b>replication_master</b>: true if this database is going to act as a replication master. Defaults to false.</li><li><b>replication_port</b>: replication server port for this database. Defaults to 5293.</li><li><b>replication_max_file_size_kb</b>: maximum file size for replication temporary files on master. Defaults to 10000 KBytes.</li><li><b>replication_max_keep_ms</b>: maximum time a replication temporary file should be kept around. Defaults to 15 days.</li></ul></li></ul></p><h3>Example:</h3><pre><code>var Alfred = require('alfred');
+Alfred.open('path/to/database/dir', function(err, db) {
+  if (err) { throw err; }
+  // now I have the db object to do stuff
+});
+</code></pre><a id="model"></a><h1>Model</h1><h2>database.define (modelName,options)</h2><p>Define a new model.</p><p><ul><li><b>modelName</b>: the model name. Ex.: "User".</li><li><b>options</b>: Optional. The same options as db.attach:<ul><li><b>buffered</b>: if <i>true</i>, writes are buffered (flushes are scheduled every second after the last one by default). If <i>false</i>, key_map.put only callsback when data is written to disk. Defaults to <i>true</i>.</li><li><b>flush_interval</b>: This determines the frequency of flushes. A flush is scheduled <i>flush_interval</i> miliseconds after the last one finished. In miliseconds. Defaults to 1000 (1 second).</li><li><b>type</b>: can be 'cached_key_map' or 'indexed_key_map'. Defaults to 'cached_key_map'. ('cached_key_map' is also indexed)</li><li><b>compact_interval</b>: average compact interval, in miliseconds. Defaults to 1 hour (1000 * 60 * 60).</li><li><b>cache_slots</b>: Maximum number of objects to cache (only valid if type is 'cached_key_map'). Defaults to 1000.</li></ul></li></ul></p><p><b>Returns</b>: a model instance</p><h2>Model.property (name, type, schema)</h2><p>Defines a new property for the model</p><p><ul><li><b>name</b>: The name of the property. You can later get and set it.</li><li><b>type</b>: Alfred.js currently supports: 'string', 'array','object', 'number', 'integer', 'null', 'boolean' and 'any'.</li><li><b>schema</b>: An object containing the schema definition for the property. Valid properties are:<ul><li><b>optional</b>: true or false</li><li><b>enum</b>: the value should contain an array with the possible values</li><li><b>validateWith</b>: pass in a function that gets the document and returns true if the document id valid.</li><li><b>pattern</b>: pass in a RegExp that the string should conform to (in case of a string).</li><li><b>minLength</b>: define the minimum length (in case of a string).</li><li><b>maxLength</b>: define the maximum length (in case of a string).</li><li><b>minimum</b>: define the minimum value (in case of a number).</li><li><b>maximum</b>: define the maximum value (in case of a number).</li><li><b>divisibleBy</b>: should be divisible by (in case of a number)</li></ul></li></ul></p><p>Example:</p><p><pre><code>var User = db.define('User');
+User.property('name', 'string', {
+  minLength: 3,
+  maxLength: 10
+});
+User.property('address', 'string', {
+  minLength: 3,
+  maxLength: 10
+});
+User.property('age', Number, { required: true });
+User.property('sex', 'string', {
+  enum: ['f', 'm'],
+  required: true,
+});
+User.property('married', 'boolean');
+User.property('email', 'string', {
+  pattern: /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+[a-zA-Z0-9]{2,4}/,
+  messages: {pattern: 'IINNVVAALLIID'}
+});
+User.property('role', 'string', {
+  validateWith: function(role) {
+    return role == 'admin';
+  }
+});
+</code></pre></p><h2>Model.index(name, fn, options)</h2><p>Creates an index if the index is not already defined.<br />If an index with this name already exists the index is not modified.</p><p><ul><li><b>name</b>: the name of the index. You will use this name on finders.</li><li><b>fn</b> (document): A function that gets a document and returns the indexable falue.</li><li><b>options</b>: object containing or not the following properties:<ul><li><b>ordered</b>: true the index should be ordered. Defaults to true.</li></ul></li></ul></p><p>Example:</p><p><pre><code>var User = db.define('User');
+User.index('age', function(user) {
+  return user.age;
+});
+</code></pre></p><h2>Model.get(id, callback)</h2><p>Get a document by ID.</p><p>Example:<pre><code>var User = db.define('User', schema);
+User.get(id, function(user) {
+  console.log(user.inspect());
+});
+</code></pre></p><h2>Model.new([properties])</h2><p>Create a new (unsaved) document.</p><p>Example:<pre><code>var User = db.define('User', schema);
+var user = User.new({name: 'Pedro Teixeira', role: 'admin'});
+</code></pre></p><h2>Model.destroy(id, callback)</h2><p>Destroy the document by id.</p><p><ul><li><b>callback</b>: called when the model is destroyed.</li></ul></p><p>Example:<pre><code>var User = db.define('User', schema);
+var id = '123abc';
+var user = User.destroy(id);
+</code></pre></p><h2>Model.find(spec)</h2><p>Starts a finder. Implements the same chainable API as the <a href="find.html">KeyMap finder</a>, but with documents instead of raw objects.</p><p>Example:</p><p><pre><code>var User = db.define('User', schema);
+User.find({age: {$gt: 18, $lte: 40}}).all(function(users) {
+  console.log('Found ' + users.length + ' users');
+}).or({sex: {$eq: 'f'}});
+</code></pre></p><a id="document"></a><h1>Document</h1><h2>document.save(callback)</h2><p>Saves the document</p><p><ul><li><b>callback</b> ([validationErrors]): called if validation errors detected or when saved.</li></ul></p><p>Example:<pre><code>var User = db.define('User', schema);
+var user = User.new({name: 'Pedro Teixeira', role: 'admin'});
+user.save(function(calidationErrors) {
+  if (errors) {
+    throw new Exception('validation errors found.');
+  }
+  console.log('User saved');
+});
+</code></pre></p><h2>document.destroy(callback)</h2><p>Destroys the document</p><p><ul><li><b>callback</b>: called when the model is destroyed.</li></ul></p><p>Example:<pre><code>var User = db.define('User', schema);
+var id = 'abc123';
+var user = User.get(id);
+user.destroy(function() {
+  console.log('user with id ' + id + ' destroyed');
+});
+</code></pre></p><a id="events"></a><h1>Events</h1><p>You can bind for events on documents. These are the supported events:</p><h2>"beforeValidate" (document)</h2><p>Called after the "save" is called on the API, but before any validation is done.</p><h2>"afterValidate" (document)</h2><p>Called after validation is done.</p><h2>"beforeSave" (document)</h2><p>Called before saving is done.</p><h2>"afterSave" (document)</h2><p>Called after saving is done.</p><p>Example:</p><p><pre><code>var User = db.define('User');
+User.on('beforeSave', function(user) {
+  console.log('going to save user ' + user.inspect());
+});
+</code></pre></p></div></div><div id="footer">&copy; Pedro Teixeira <a href="http://metaduck.com">Blog</a> &middot; <a href="https://github.com/pgte">GitHub</a> &middot; <a href="http://twitter.com/pedrogteixeira">@pedrogteixeira</a>
+</div></div></body></html>
