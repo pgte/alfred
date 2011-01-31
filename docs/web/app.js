@@ -29,6 +29,9 @@ app.get('/', function(req, res) {
 app.get('/api', function(req, res) {
   res.render('api/index');
 });
+app.get('/api/odm', function(req, res) {
+  res.render('api/odm');
+});
 app.get('/api/database', function(req, res) {
   res.render('api/database');
 });

@@ -39,21 +39,15 @@ module.exports.run = function(next) {
       next(err);
     });
     
-    var User = db.define('User', {
-      indexes: [
-        {
-          name: 'age',
-          fn: function(user) {
-            return user.age;
-          }
-        }
-      ]
-    });
+    var User = db.define('User');
     User.property('name');
     User.property('address');
     User.property('age', Number);
     User.property('married', 'boolean');
     User.property('email', 'string');
+    User.index('age', function(user) {
+      return user.age;
+    });
     
     var user = User.new(USER);
     user.save(function(errors) {

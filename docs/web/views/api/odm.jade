@@ -1,0 +1,117 @@
+p.note Everything here is experimental, and the API is no exception, so expect things to change in future releases.
+
+#api
+  h1 Database
+  h2 Alfred.open (path_to_database, [options, ] callback)
+  p Opens a new or an existing database that resides in <i>path_to_database</i>.
+  p
+    ul
+      li <b>path_to_database</b>: directory where the database files (will) reside. Must already exist.
+      li <b>callback</b> (err, db): invoked when there is an error or the database is open. Use db to access / create / remove key maps.
+      li <b>options:</b>
+        ul
+          li <b>meta_compact_interval</b>: default average compact interval for the metadata key map, in miliseconds. Defaults to 1 hour (1000 * 60 * 60).
+          li <b>replication_master</b>: true if this database is going to act as a replication master. Defaults to false.
+          li <b>replication_port</b>: replication server port for this database. Defaults to 5293.
+          li <b>replication_max_file_size_kb</b>: maximum file size for replication temporary files on master. Defaults to 10000 KBytes.
+          li <b>replication_max_keep_ms</b>: maximum time a replication temporary file should be kept around. Defaults to 15 days.
+  h3 Example:
+  pre
+    code
+      | var Alfred = require('alfred');
+      | Alfred.open('path/to/database/dir', function(err, db) {
+      |   if (err) { throw err; }
+      |   // now I have the db object to do stuff
+      | });
+  
+  h1 Model
+  
+  h2 database.define (modelName, schema, options)
+  p Define a new model.
+  p
+    ul
+      li <b>modelName</b>: the model name. Ex.: "User".
+      li <b>schema</b>: See <a href="/api/dom/schema">Schema</a>.
+      li <b>options</b>: Optional. The same options as db.attach:
+        ul
+          li <b>buffered</b>: if <i>true</i>, writes are buffered (flushes are scheduled every second after the last one by default). If <i>false</i>, key_map.put only callsback when data is written to disk. Defaults to <i>true</i>.
+          li <b>flush_interval</b>: This determines the frequency of flushes. A flush is scheduled <i>flush_interval</i> miliseconds after the last one finished. In miliseconds. Defaults to 1000 (1 second).
+          li <b>type</b>: can be 'cached_key_map' or 'indexed_key_map'. Defaults to 'cached_key_map'. ('cached_key_map' is also indexed)
+          li <b>compact_interval</b>: average compact interval, in miliseconds. Defaults to 1 hour (1000 * 60 * 60).
+          li <b>cache_slots</b>: Maximum number of objects to cache (only valid if type is 'cached_key_map'). Defaults to 1000.
+  p <b>Returns</b>: a model instance
+  
+  h2 Model.get(id, callback)
+  p Get a model by ID
+  p Example:
+    pre
+      code
+        | var User = db.define('User', schema);
+        | User.get(id, function(user) {
+        |   console.log(user.inspect());
+        | });
+      
+  h2 Model.new([properties])
+  p Create a new (unsaved) document.
+  p Example:
+    pre
+      code
+        | var User = db.define('User', schema);
+        | var user = User.new({name: 'Pedro Teixeira', role: 'admin'});
+
+  h2 Model.destroy(id, callback)
+  p Destroy the model by id.
+  p
+    ul
+      li <b>callback</b>: called when the model is destroyed.
+  p Example:
+    pre
+      code
+        | var User = db.define('User', schema);
+        | var id = '123abc';
+        | var user = User.destroy(id);
+  
+  h2 Model.find(spec)
+  p Starts a finder. Implements the same chainable API as the <a href="/api/find">KeyMap finder</a>, but with documents instead of raw objects.
+  p Example:
+  p
+    pre
+      code
+        | var User = db.define('User', schema);
+        | User.find({age: {$gt: 18, $lte: 40}}).all(function(users) {
+        |   console.log('Found ' + users.length + ' users');
+        | }).or({sex: {$eq: 'f'}});
+
+  h1 Document
+  
+  h2 document.save(callback)
+  p Saves the document
+  p
+    ul
+      li <b>callback</b> ([validationErrors]): called if validation errors detected or when saved.
+  p Example:
+    pre
+      code
+        | var User = db.define('User', schema);
+        | var user = User.new({name: 'Pedro Teixeira', role: 'admin'});
+        | user.save(function(calidationErrors) {
+        |   if (errors) {
+        |     throw new Exception('validation errors found.');
+        |   }
+        |   console.log('User saved');
+        | });
+
+  h2 document.destroy(callback)
+  p Destroys the document
+  p
+    ul
+      li <b>callback</b>: called when the model is destroyed.
+  p Example:
+    pre
+      code
+        | var User = db.define('User', schema);
+        | var id = 'abc123';
+        | var user = User.get(id);
+        | user.destroy(function() {
+        |   console.log('user with id ' + id + ' destroyed');
+        | });

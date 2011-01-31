@@ -1,11 +1,12 @@
 #intro
-  p Alfred is a fast <b>in-process key-value store</b> for <b><a href="http://nodejs.org">node.js</a></b>.
-  p.note Note that Alfred is still very young, so you shouldn't use it on live systems just yet.
+  p Alfred.js is a fast <b>in-process key-value store</b> for <b><a href="http://nodejs.org">node.js</a></b>.
+  p.note Note that Alfred.js is still very young, so you shouldn't use it on live systems just yet.
   div.part
     h2 What does it do?
     section.explanation
       p Alfred supports:
         ul
+          li ODM (Object Document Model)
           li multiple key-value maps in one database
           li atomic operations on one record
           li finder streams
@@ -21,7 +22,7 @@
         a(href='/features') More...
     .clearboth
   div.part
-    h2 How can I install Alfred?
+    h2 How can I install Alfred.js?
     section.explanation
       p Install via npm:
       p.code
@@ -32,6 +33,35 @@
   div.part
     h2 Examples:
     section.explanation
+      p Using the ODM:
+      pre
+        code
+        | var Alfred = require('alfred');
+        | // Open database
+        | Alfred.open('path/to/db', function(err, db) {
+        |   if (err) { throw err; }
+        | 
+        |   // define User model and its properties
+        |   var User = db.define('User', {
+        |     indexes: [{name: 'age',
+        |               fn: function(user) { return user.age; }]
+        |   });
+        |   User.property('name', 'string', {
+        |     maxLength: 100
+        |   });
+        |   User.property('active', 'boolean');
+        | 
+        |   // get user by id
+        |   User.get(id, function(user) {
+        |     console.log(user.inspect());
+        |   };
+        | 
+        |   // find users
+        |   User.find({age: {$gt: 18}}).all(function(users) {
+        |     console.log('Found ' + users.length + ' users with more than 18 years') ;
+        |   });
+        | });
+      p Raw:
       pre
         code
           | var Alfred = require('alfred');
@@ -49,8 +79,8 @@
   div.part
     h2 How does it work?
     section.explanation
-      p Alfred stores data on append-only files, which is good for maintaining a consistent state (even when the writes are interrupted).
+      p Alfred.js stores data on append-only files, which is good for maintaining a consistent state (even when the writes are interrupted).
       p Writes are fast because many writes can occurr in parallel.
       p Reads are fast because indexes into files are kept in memory.
-      p Alfred is generally fast also because you don't have any inter-process communication overhead.
-      p Alfred lets you (optionally) use the power of javascript to filter your data set.
+      p Alfred.js is generally fast also because you don't have any inter-process communication overhead.
+      p Alfred.js lets you (optionally) use the power of javascript to filter your data set.

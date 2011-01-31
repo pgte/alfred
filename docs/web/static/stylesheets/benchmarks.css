@@ -31,10 +31,19 @@ div#header {
 div#header h1 {
   background-color: #000;
   margin-bottom: 0;
+  position: relative;
 }
 div#header h1 a {
   color: #f0f0f0;
   text-decoration: none;
+}
+div#header h1 .js {
+  position: absolute;
+  font-size: 35%;
+  left: 275px;
+  bottom: 10px;
+  color: #ffa126;
+  text-shadow: rgba(255, 255, 255, 0.4) 1px 1px 0px;
 }
 div#header p {
   background-color: #000;
