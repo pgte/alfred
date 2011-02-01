@@ -39,7 +39,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
           li <b>ordered</b>: true the index should be ordered. Defaults to true.
   h3 Example:
   pre
-    code
+    code.prettyprint
       | var Alfred = require('alfred');
       | Alfred.open('path/to/database/dir', function(err, db) {
       |   if (err) { throw err; }
@@ -163,7 +163,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
 
   h3 Example:
   pre
-    code
+    code.prettyprint
       | // grab account with key 100 and add 5 to it's balance
       | account_key_map.atomic(100, function(err, account) {
       |     if (err) { throw err; }
@@ -187,7 +187,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   p Regsiter ro receive events like this:
   p
     pre
-      code
+      code.prettyprint
         | db.users.on('put', function(key, value) {
         |   console.log('key ' + key + ' was put on users key map');
         | });

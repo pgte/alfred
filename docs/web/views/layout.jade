@@ -3,10 +3,14 @@ html
   head
     script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js')
     script(type='text/javascript', src='/javascripts/jquery.tmpl.min.js')
+    link(href="/stylesheets/prettify.css", type="text/css", rel="stylesheet")
+    script(type="text/javascript", src="/javascripts/prettify/prettify.js")
     script(type='text/javascript', src='/javascripts/flot/jquery.flot.min.js')
     link(rel='stylesheet', href='/stylesheets/benchmarks.css')
     title Alfred.js
-  body
+  body(onload=" prettyPrint()")
+    .ribbon
+      a(href="https://github.com/pgte/alfred", rel="me") Fork me on GitHub
     #header
       h1
         a(href='/') Alfred<span class="js">.js</span>
@@ -32,3 +36,4 @@ html
       #container!= body
       #footer
         &copy; Pedro Teixeira <a href="http://metaduck.com">Blog</a> &middot; <a href="https://github.com/pgte">GitHub</a> &middot; <a href="http://twitter.com/pedrogteixeira">@pedrogteixeira</a>
+    

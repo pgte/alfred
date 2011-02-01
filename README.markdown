@@ -26,11 +26,26 @@ Example:
     // Open database
     Alfred.open('path/to/db', function(err, db) {
       if (err) { throw err; }
-      // find and log all users with age > 25 and <= 40
-      db.users.find({age: {$gt : 25, $lte: 40}}) (function(err, user) {
-        if (err) { throw err; }
-        console.log(user);
+ 
+      // define User model and its properties
+      var User = db.define('User', {
+        indexes: [{name: 'age',
+                  fn: function(user) { return user.age; }]
+      });
+      User.property('name', 'string', {
+        maxLength: 100
+      });
+      User.property('active', 'boolean');
+ 
+      // get user by id
+      User.get(id, function(user) {
+        console.log(user.inspect());
+      };
+ 
+      // find users
+      User.find({age: {$gt: 18}}).all(function(users) {
+        console.log('Found ' + users.length + ' users with more than 18 years') ;
       });
     });
-
+    
 [Read more about it](http://pgte.github.com/alfred)

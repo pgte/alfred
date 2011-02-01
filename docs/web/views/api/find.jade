@@ -6,7 +6,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
     p The API is chainable, so you can easily do things like:
   
     pre
-      code
+      code.prettyprint
         | // find all users with age > 29 AND <= 35 and of the feminine sex
         | db.users.find({age: {$gt: 29, $lte: 35}, sex: {$eq: 'f'}}) (function(err, key, value) {
         |   if (err) { next(err); return; }
@@ -51,19 +51,19 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   p To find all users with age > 29 and <= 35 and of sex == 'f' do:
   p
     pre
-      code
+      code.prettyprint
         | var chainable = db.users.find({age : {$gt: 29, $lte: 35}, sex: {$eq: 'f'}})
   p This returns a chainable object which you can activate by invoking it like this:
   p
     pre
-      code
+      code.prettyprint
         | chainable(function(err, key, value) {
         |   console.log('got ' + key);
         | });
   p Or, all together:
   p
     pre
-      code
+      code.prettyprint
         | var chainable = db.users.find({age : {$gt: 29, $lte: 35}, sex: {$eq: 'f'}})
         |    (function(err, key, value) {
         |       console.log('got ' + key);
@@ -77,7 +77,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   h3 Example:
   p
     pre
-      code
+      code.prettyprint
         | db.users.find({age : {$gt: 29, $lte: 35}, sex: {$eq: 'f'}}).order('age DESC')
   
   h2 .reset ()
@@ -127,7 +127,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   h3 Example:
   p
     pre
-      code
+      code.prettyprint
         | var stream = db.users.find({age : {$gt: 29, $lte: 35}, sex: {$eq: 'f'}}).stream();
         | stream.on('record', function(record) {
         |   console.log(record);

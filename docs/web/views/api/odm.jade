@@ -33,7 +33,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
           li <b>replication_max_keep_ms</b>: maximum time a replication temporary file should be kept around. Defaults to 15 days.
   h3 Example:
   pre
-    code
+    code.prettyprint
       | var Alfred = require('alfred');
       | Alfred.open('path/to/database/dir', function(err, db) {
       |   if (err) { throw err; }
@@ -77,7 +77,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   p Example:
   p
     pre
-      code
+      code.prettyprint
         | var User = db.define('User');
         | User.property('name', 'string', {
         |   minLength: 3,
@@ -115,7 +115,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   p Example:
   p
     pre
-      code
+      code.prettyprint
         | var User = db.define('User');
         | User.index('age', function(user) {
         |   return user.age;
@@ -125,7 +125,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   p Get a document by ID.
   p Example:
     pre
-      code
+      code.prettyprint
         | var User = db.define('User', schema);
         | User.get(id, function(user) {
         |   console.log(user.inspect());
@@ -135,7 +135,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   p Create a new (unsaved) document.
   p Example:
     pre
-      code
+      code.prettyprint
         | var User = db.define('User', schema);
         | var user = User.new({name: 'Pedro Teixeira', role: 'admin'});
 
@@ -146,7 +146,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       li <b>callback</b>: called when the model is destroyed.
   p Example:
     pre
-      code
+      code.prettyprint
         | var User = db.define('User', schema);
         | var id = '123abc';
         | var user = User.destroy(id);
@@ -156,7 +156,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   p Example:
   p
     pre
-      code
+      code.prettyprint
         | var User = db.define('User', schema);
         | User.find({age: {$gt: 18, $lte: 40}}).all(function(users) {
         |   console.log('Found ' + users.length + ' users');
@@ -172,7 +172,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       li <b>callback</b> ([validationErrors]): called if validation errors detected or when saved.
   p Example:
     pre
-      code
+      code.prettyprint
         | var User = db.define('User', schema);
         | var user = User.new({name: 'Pedro Teixeira', role: 'admin'});
         | user.save(function(calidationErrors) {
@@ -189,7 +189,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       li <b>callback</b>: called when the model is destroyed.
   p Example:
     pre
-      code
+      code.prettyprint
         | var User = db.define('User', schema);
         | var id = 'abc123';
         | var user = User.get(id);
@@ -217,7 +217,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   p Example:
   p
     pre
-      code
+      code.prettyprint
         | var User = db.define('User');
         | User.on('beforeSave', function(user) {
         |   console.log('going to save user ' + user.inspect());

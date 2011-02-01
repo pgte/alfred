@@ -16,7 +16,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
           li <b>replication_max_keep_ms</b>: maximum time a replication temporary file should be kept around. Defaults to 15 days.
   h3 Example:
   pre
-    code
+    code.prettyprint
       | var Alfred = require('alfred');
       | Alfred.open('path/to/database/dir', function(err, db) {
       |   if (err) { throw err; }
@@ -38,7 +38,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
           li <b>cache_slots</b>: Maximum number of objects to cache (only valid if type is 'cached_key_map'). Defaults to 1000.
     h3 Example:
     pre
-      code
+      code.prettyprint
         | var Alfred = require('alfred');
         | Alfred.open ('path/to/database/dir', function(err, db) {
         |   if (err) { throw err; }
@@ -54,7 +54,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   p If already attached does nothing. If you need to change the options on this key_map, you must detach and then attach.
   h3 Example:
   pre
-    code
+    code.prettyprint
       | var Alfred = require('alfred');
       | Alfred.open('path/to/database/dir', function(err, db) {
       |   if (err) { throw err; }
@@ -73,7 +73,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
       li <b>callback</b> (err): invoked when an error occurs or when key map is detached.
     h3 Example:
     pre
-      code
+      code.prettyprint
         | var Alfred = require('alfred');
         | Alfred.open('path/to/database/dir', function(err, db) {
         |   if (err) { throw err; }
@@ -97,7 +97,7 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   
   p
     pre
-      code
+      code.prettyprint
         | db.on('error', function(err) {
         |   // handle error
         | });

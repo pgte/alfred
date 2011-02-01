@@ -4,7 +4,7 @@
   h2 Create a Key Map
   p
     pre
-      code
+      code.prettyprint
         | var alfred = require('alfred');
         | alfred.open('path/to/db/dir', function(err, db) {
         |   if (err) { throw err; }
@@ -16,7 +16,7 @@
   h2 Populate
   p Populate a Key Map with some values
     pre
-      code
+      code.prettyprint
         | var USERS = {
         |     1: {name: 'Pedro', age: 35, sex: 'm'}
         |   , 2: {name: 'John', age: 32, sex: 'm'}
@@ -27,7 +27,7 @@
         |   , 7: {name: 'Susana', age: 30, sex: 'f'}
         | };
     pre
-      code
+      code.prettyprint
         | alfred.open('path/to/db/dir', function(err, db) {
         |   if (err) { throw err; }
         |   for (id in USERS) {
@@ -45,7 +45,7 @@
   p Assuming we have db open and db.users attached, let's find user with key 4
   p
     pre
-      code
+      code.prettyprint
         | db.users.get(4, function(err, user) {
         |   if (err) { throw err; }
         |   console.log(user.name); // -> 'Sandra'
@@ -55,7 +55,7 @@
   p Assuming we have db open and db.users attached, let's add the 'age' and 'sex' indexes':
   p
     pre
-      code
+      code.prettyprint
         | // add 'age' index to users
         | db.users.addIndex('age', function(user) {
         |      return user.age;
@@ -70,7 +70,7 @@
   p Assuming we have db open and db.users attached, and that db.users has indexes 'age' and 'sex':
   p
     pre
-      code
+      code.prettyprint
         | // find the users with age = 35
         | db.users.find({age: {$eq: 35}}) (function(err, key, user) {
         |   if (err) { throw err; }
@@ -79,7 +79,7 @@
 
   p
     pre
-      code
+      code.prettyprint
         | // find the feminine users with age > 28 and <= 35
         | db.users.find({age: {$gt: 28, $lte: 35}, sex: 'f'}) (function(err, key, user) {
         |   if (err) { throw err; }
