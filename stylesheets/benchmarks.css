@@ -13,7 +13,7 @@ body * {
 }
 #main {
   margin: 0 auto;
-/*  width: 960px;*/
+  min-width: 960px;
   padding: 20px 10px 10px 10px;
   position: relative;
   background-color: #fff;
@@ -22,7 +22,7 @@ body * {
 
 div#header {
   margin: 0 auto;
-/*  width: 960px;*/
+  min-width: 960px;
   background-color: #000;
   color: #f0f0f0;
   padding: 10px;
