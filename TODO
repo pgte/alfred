@@ -1,3 +1,5 @@
+- ODM: do a more intelligent id generator for a new document.
+- Improve index loading time by having bing chunks of a file read at a time and implementing a stream_reader.w
 - Compact meta key_map on database startup.
 - BUG: For some strange reason the last replication master temp file is not deleted.
 - Allow master-master replication
