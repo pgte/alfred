@@ -114,11 +114,12 @@ p.note Everything here is experimental, and the API is no exception, so expect t
   a(id='traversing')
   h1 Traversing
   
-  h2 key_map.scan (callback)
+  h2 key_map.scan (callback [, nullOnEnd])
   p Cycles through all records.
   p
     ul
       li <b>callback</b> (err, key, value): Called when there is an error or a record is found.
+      li <b>nullOnEnd</b>: Pass through if you want callback to be called when the last record is fetched. In this case, the first (err) and second (key) arguments on callback will be null.
 
   a(id='filtering')
   h1 Filtering

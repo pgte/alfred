@@ -51,6 +51,12 @@ app.get('/api/replication', function(req, res) {
 app.get('/examples', function(req, res) {
   res.render('examples/index');
 });
+app.get('/examples/odm', function(req, res) {
+  res.render('examples/odm');
+});
+app.get('/examples/raw', function(req, res) {
+  res.render('examples/raw');
+});
 
 app.get('/features', function(req, res) {
   res.render('features/index');
