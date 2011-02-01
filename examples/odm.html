@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script><script type="text/javascript" src="../javascripts/jquery.tmpl.min.js"></script><script type="text/javascript" src="../javascripts/flot/jquery.flot.min.js"></script><link rel="stylesheet" href="../stylesheets/benchmarks.css"><title>Alfred.js</title></head><body><div id="header"><h1><a href="../index.html">Alfred<span class="js">.js</span></a></h1><p><i>Node is your mansion, Alfred is your butler</i></p><div id="menu"><ul><li><a href="../api.html">API</a></li><li><a href="../examples.html">Examples</a></li><li><a href="../features.html">Features</a></li><li><a href="../internals.html">Internals</a></li><li><a href="../benchmarks.html">Benchmarks</a></li><li><a href="https://github.com/pgte/alfred">Browse source</a></li><li><a href="../index.html">Home</a></li></ul></div></div><div id="main"><div id="container"><div id="examples"><h1>Examples (raw accesss)</h1><h2>Define a User model</h2><p><pre><code>var User = db.define('User');
+<!DOCTYPE html><html><head><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script><script type="text/javascript" src="../javascripts/jquery.tmpl.min.js"></script><link href="../stylesheets/prettify.css" type="text/css" rel="stylesheet"><script type="text/javascript" src="../javascripts/prettify/prettify.js"></script><script type="text/javascript" src="../javascripts/flot/jquery.flot.min.js"></script><link rel="stylesheet" href="../stylesheets/benchmarks.css"><title>Alfred.js</title></head><body onload=" prettyPrint()"><div id="header"><h1><a href="../index.html">Alfred<span class="js">.js</span></a></h1><p><i>Node is your mansion, Alfred is your butler</i></p><div id="menu"><ul><li><a href="../api.html">API</a></li><li><a href="../examples.html">Examples</a></li><li><a href="../features.html">Features</a></li><li><a href="../internals.html">Internals</a></li><li><a href="../benchmarks.html">Benchmarks</a></li><li><a href="https://github.com/pgte/alfred">Browse source</a></li><li><a href="../index.html">Home</a></li></ul></div></div><div id="main"><div id="container"><div id="examples"><h1>Examples (raw accesss)</h1><h2>Define a User model</h2><p><pre><code class="prettyprint">var User = db.define('User');
 User.property('name');
 User.property('address');
 User.property('age', Number);
@@ -7,26 +7,25 @@ User.property('email', 'string');
 User.index('age', function(user) {
   return user.age;
 });
-</code></pre></p><h2>Create a new User document</h2><p><pre><code>var user = User.new(USER);
+</code></pre></p><h2>Create a new User document</h2><p><pre><code class="prettyprint">var user = User.new(USER);
 user.save(function(validationErrors) {
-  assert.ok(errors === null, 'errors is not null');
-  console.log('User saved');
+  if (validationErrors) {
+    console.log('Did not save because of some validation errors:');
+    console.log(validationErrors);
+  } else {
+    console.log('User saved');
+  }
 });
-</code></pre></p><h2>Find User document by ID</h2><p><pre><code>var id = 'abc';
+</code></pre></p><h2>Find User document by ID</h2><p><pre><code class="prettyprint">var id = 'abc';
 User.get(id, function(user) {
   console.log('found user: ' + user.inspect());
 });
-</code></pre></p><h2>Find</h2><p><pre><code> User.find({age: {$lte: 30}}) (function(gotUser) {
-   assert.ok(user.equal(gotUser), 'user ('+user.toString()+') and gotten user ('+gotUser.toString()+') are different');
-    done();
-  }).all(function(users) {
-    assert.equal(1, users.length);
-    assert.ok(user.equal(users[0]), 'user ('+user.toString()+') and gotten user ('+users[0].toString()+') are different');
-    done();
-  }).where({age: {$gt: 30}}).all(function(users) {
-    assert.equal(0, users.length);
-    done();
-  });
-});
+</code></pre></p><h2>Find</h2><p><pre><code class="prettyprint"> User.find({age: {$lt: 30}}) (function(gotUser) {
+   console.log('Found user ' + gotUser.inspect() + ' that has less than 30 years old');
+ }).all(function(users) {
+   console.log('Found ' + users.length + ' users that are less than 30 years old');
+ }).where({age: {$gt: 30}}).all(function(users) {
+   console.log('Found ' + users.length + ' users that are more than 30 years old');
+ });
 </code></pre></p></div></div><div id="footer">&copy; Pedro Teixeira <a href="http://metaduck.com">Blog</a> &middot; <a href="https://github.com/pgte">GitHub</a> &middot; <a href="http://twitter.com/pedrogteixeira">@pedrogteixeira</a>
 </div></div></body></html>
