@@ -52,13 +52,20 @@ user.save(function(calidationErrors) {
   }
   console.log('User saved');
 });
-</code></pre></p><h2>document.destroy(callback)</h2><p>Destroys the document</p><p><ul><li><b>callback</b>: called when the model is destroyed.</li></ul></p><p>Example:<pre><code class="prettyprint">var User = db.define('User', schema);
+</code></pre></p><h2>document.atomic(key, valueCallback, doneCallback)</h2><p>Fetches and locks the document, preventing concurrent updates. You must return the new value from valueCallback.</p><p><ul><li><b>valueCallback</b> (document): a callback invoked with the fetched document. You must return the document to update it. Return <i>null</i> or <i>undefined</i> if you don't wish to update it.</li><li><b>doneCallback</b> (): Called after the document is saved.</li></ul></p><h2>document.destroy(callback)</h2><p>Destroys the document</p><p><ul><li><b>callback</b>: called when the model is destroyed.</li></ul></p><p>Example:<pre><code class="prettyprint">var User = db.define('User', schema);
 var id = 'abc123';
 var user = User.get(id);
 user.destroy(function() {
   console.log('user with id ' + id + ' destroyed');
 });
-</code></pre></p><a id="events"></a><h1>Events</h1><p>You can bind for events on documents. These are the supported events:</p><h2>"beforeValidate" (document)</h2><p>Called after the "save" is called on the API, but before any validation is done.</p><h2>"afterValidate" (document)</h2><p>Called after validation is done.</p><h2>"beforeSave" (document)</h2><p>Called before saving is done.</p><h2>"afterSave" (document)</h2><p>Called after saving is done.</p><p>Example:</p><p><pre><code class="prettyprint">var User = db.define('User');
+</code></pre></p><a id="events"></a><h1>Events</h1><h2>Database events</h2><p>You should listen for error events on the database like this:</p><p><pre><code class="prettyprint">var Alfred = require('alfred');
+Alfred.open('path/to/database/dir', function(err, db) {
+  if (err) { throw err; }
+  db.on('error', function(err) {
+     console.log('OMG, an error occurred!: ' + err.message);
+  });
+});
+</code></pre></p><h2>Document events</h2><p>You can bind for events on documents. These are the supported events:</p><h2>"beforeValidate" (document)</h2><p>Called after the "save" is called on the API, but before any validation is done.</p><h2>"afterValidate" (document)</h2><p>Called after validation is done.</p><h2>"beforeSave" (document)</h2><p>Called before saving is done.</p><h2>"afterSave" (document)</h2><p>Called after saving is done.</p><p>Example:</p><p><pre><code class="prettyprint">var User = db.define('User');
 User.on('beforeSave', function(user) {
   console.log('going to save user ' + user.inspect());
 });
