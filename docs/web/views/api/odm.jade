@@ -182,6 +182,13 @@ p.note Everything here is experimental, and the API is no exception, so expect t
         |   console.log('User saved');
         | });
 
+  h2 document.atomic(key, valueCallback, doneCallback)
+  p Fetches and locks the document, preventing concurrent updates. You must return the new value from valueCallback.
+  p
+    ul
+      li <b>valueCallback</b> (document): a callback invoked with the fetched document. You must return the document to update it. Return <i>null</i> or <i>undefined</i> if you don't wish to update it.
+      li <b>doneCallback</b> (): Called after the document is saved.
+
   h2 document.destroy(callback)
   p Destroys the document
   p
@@ -199,6 +206,22 @@ p.note Everything here is experimental, and the API is no exception, so expect t
 
   a(id="events")
   h1 Events
+  
+  h2 Database events
+  
+  p You should listen for error events on the database like this:
+  p
+    pre
+      code.prettyprint
+        | var Alfred = require('alfred');
+        | Alfred.open('path/to/database/dir', function(err, db) {
+        |   if (err) { throw err; }
+        |   db.on('error', function(err) {
+        |      console.log('OMG, an error occurred!: ' + err.message);
+        |   });
+        | });
+  
+  h2 Document events
   
   p You can bind for events on documents. These are the supported events:
   
