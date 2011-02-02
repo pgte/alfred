@@ -65,7 +65,7 @@ Alfred.open('path/to/database/dir', function(err, db) {
      console.log('OMG, an error occurred!: ' + err.message);
   });
 });
-</code></pre></p><h2>Document events</h2><p>You can bind for events on documents. These are the supported events:</p><h2>"beforeValidate" (document)</h2><p>Called after the "save" is called on the API, but before any validation is done.</p><h2>"afterValidate" (document)</h2><p>Called after validation is done.</p><h2>"beforeSave" (document)</h2><p>Called before saving is done.</p><h2>"afterSave" (document)</h2><p>Called after saving is done.</p><p>Example:</p><p><pre><code class="prettyprint">var User = db.define('User');
+</code></pre></p><h2>Document events</h2><p>You can bind for events on documents. These are the supported events:</p><h3>"beforeValidate" (document)</h3><p>Called after the "save" is called on the API, but before any validation is done.</p><h3>"afterValidate" (document)</h3><p>Called after validation is done.</p><h3>"beforeSave" (document)</h3><p>Called before saving is done.</p><h3>"afterSave" (document)</h3><p>Called after saving is done.</p><p>Example:</p><p><pre><code class="prettyprint">var User = db.define('User');
 User.on('beforeSave', function(user) {
   console.log('going to save user ' + user.inspect());
 });
