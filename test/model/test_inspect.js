@@ -8,10 +8,7 @@ var assert = require('assert')
 var DB_PATH = __dirname + '/../../tmp/db';
 
 var USER = {name: 'Pedro', age: 35, sex: 'm'};
-var EXPECTED_INSPECT = "{ name: 'Pedro',\n\
-  age: 35,\n\
-  sex: 'm',\n\
-  id: '<<<ID>>>' }";
+var EXPECTED_INSPECT = "{ name: 'Pedro', age: 35, sex: 'm', id: '<<<ID>>>' }";
 
 module.exports.setup = function(next) {
   (function removeFilesUnder(dir) {
