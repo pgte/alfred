@@ -18,26 +18,24 @@ module.exports.run = function(next) {
           collection.write(record, function(err) {
             if (err) { next(err); return; }
             written ++;
-            if (written == 1000) {
-              // wait for flush
-              setTimeout(function() {
-                var index = 0;
-                collection.read(function(error, record) {
-                  if (err) { next(err); return; }
-                  if(record === null) {
-                    // reached the end
-                    assert.equal(records.length, index);
-                    collection.end(function(err) {
-                      if (err) { next(err); return; }
-                      next();
-                    });
+            if (written == 10000) {
+              var read = 0;
+              collection.read(function(error, record) {
+                if (err) { next(err); return; }
+                if(!record) {
+                  // reached the end
+                  assert.equal(records.length, read);
+                  collection.end(function(err) {
+                    if (err) { next(err); return; }
+                    next();
+                  });
 
-                  } else {
-                    assert.deepEqual(record, records[index], "Object at index " + index + ' differs.');
-                    index ++;
-                  }
-                }, true);
-              }, 2000);
+                } else {
+                  assert.deepEqual(record, records[read], "Object at index " + read + ' differs.');
+                  read ++;
+                  //console.log(read);
+                }
+              }, true);
             }
           });
         })(i);

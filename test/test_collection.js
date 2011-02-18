@@ -1,10 +1,13 @@
-var util = require('util');
+var util = require('util'),
+    Collection = require(__dirname + '/../lib/alfred/collection.js');
+
+var col_path = __dirname + '/../tmp/collection_test.alf';
 
 module.exports.run = function(next) {
   
   var assert = require('assert');
   var random = require('../tools/random_generator');
-  require(__dirname + '/../lib/alfred/collection.js').open(__dirname + '/../tmp/collection_test.alf', {read_buffer_size: 1024}, function(err, collection) {
+  Collection.open(col_path, {read_buffer_size: 1024}, function(err, collection) {
     if (err) { next(err); return; }
     
     var records = [];
@@ -21,21 +24,27 @@ module.exports.run = function(next) {
             written ++;
             if (written == 1000) {
               var index = 0;
-              collection.read(function(error, record) {
+              collection.end(function(err) {
                 if (err) { next(err); return; }
-                if(record === null) {
-                  // reached the end
-                  assert.equal(records.length, index);
-                  collection.end(function(err) {
+                Collection.open(col_path, function(err, collection) {
+                  if (err) { next(err); return; }
+                  collection.read(function(err, record) {
                     if (err) { next(err); return; }
-                    next();
-                  });
+                    if(record === null) {
+                      // reached the end
+                      assert.equal(records.length, index);
+                      collection.end(function(err) {
+                        if (err) { next(err); return; }
+                        next();
+                      });
 
-                } else {
-                  assert.deepEqual(record, records[index], "Object at index " + index + ' differs: original: ' + util.inspect(records[index]) + ', read: ' + util.inspect(record));
-                  index ++;
-                }
-              }, true);
+                    } else {
+                      assert.deepEqual(record, records[index], "Object at index " + index + ' differs: original: ' + util.inspect(records[index]) + ', read: ' + util.inspect(record));
+                      index ++;
+                    }
+                  }, true);
+                })
+              });
             }
           });
         })(i);

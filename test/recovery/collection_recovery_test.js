@@ -32,7 +32,7 @@ module.exports.run = function(next) {
         // close collection
         collection.end(function(err) {
           if (err) { next(err); return; }
-
+          
           // Now, let's plant some rotten eggs
 
           fs.stat(COLL_PATH, function(err, stat) {
