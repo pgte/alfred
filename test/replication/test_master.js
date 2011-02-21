@@ -124,7 +124,7 @@ module.exports.run = function(next) {
               if (err) { next(err); return; }
               db.users.ensureIndex('age', {ordered: true}, age_transform_function, function(err) {
                 if (err) { next(err); return; }
-
+                
                 var users_in = 0;
                 for (var id in USERS) {
                   if (USERS.hasOwnProperty(id)) {

@@ -26,7 +26,7 @@ var benchmark_results = [];
 
 var do_benchmark = function() {
   var benchmark = benchmarks[benchmark_index];
-
+  
   var module_path = path.join(__dirname, '..', 'benchmarks', benchmark + ".js");
   if (!path.existsSync(module_path)) throw new Error("Could not find benchmark path "+module_path);
   var run_this = [path.join(__dirname, 'benchmark.js'), benchmark];
