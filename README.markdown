@@ -1,3 +1,5 @@
+# No longer supported!!!
+
 Alfred is a fast in-process key-value store for node.js.
 
 Alfred supports:
